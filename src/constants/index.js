@@ -178,7 +178,7 @@ export const experiences = [
     ],
   },
   {
-    title: "Bachelor's",
+    title: "Bachelor's Programme",
     company_name: "B.P. Poddar Institute of Management and Technology",
     icon: "/images/B.P. Poddar Institute of Management and Technology.png",
     iconBg: "#383E56",
@@ -191,7 +191,7 @@ export const experiences = [
     ],
   },
   {
-    title: "High School",
+    title: "Senior High School",
     company_name: "National English School",
     icon: "/images/National English School.png",
     iconBg: "#E6DEDD",
