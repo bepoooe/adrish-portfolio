@@ -156,8 +156,8 @@ export const Portfolio = () => {
 
       {/* Footer */}
       <footer className="py-8 px-4 text-center bg-gray-900 bg-opacity-70 backdrop-filter backdrop-blur-lg relative z-10">
-        <p className="text-blue-400">© {new Date().getFullYear()} Your Name. All rights reserved.</p>
-        <p className="mt-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">Built with React, Three.js, and ❤️</p>
+        <p className="text-blue-400">© 2025 bepo. All rights reserved.</p>
+        <p className="mt-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600">Built with React, Three.js, and Vite</p>
       </footer>
     </div>
   );
