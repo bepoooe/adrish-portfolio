@@ -20,24 +20,32 @@ export const textVariant = (delay) => {
 };
 
 export const timelineElementVariant = (delay = 0, direction = "left") => {
+  // Detect if we're on mobile for responsive animation adjustments
+  const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+  
   return {
     hidden: { 
       opacity: 0, 
-      // Maintain the original left/right entrance direction
-      x: direction === "right" ? 100 : -100,
-      scale: 0.95 
+      // Smaller x offset on mobile for subtler animation
+      x: direction === "right" ? (isMobile ? 50 : 100) : (isMobile ? -50 : -100),
+      // Less dramatic scale change on mobile
+      scale: isMobile ? 0.97 : 0.95
     },
     show: {
       opacity: 1,
       x: 0,
       scale: 1,
       transition: {
-        type: "spring",
-        duration: 0.8,
-        delay: delay,
-        damping: 20,
-        stiffness: 90,
-        ease: [0.25, 0.1, 0.25, 1]
+        // Use tween for mobile for smoother performance
+        type: isMobile ? "tween" : "spring",
+        // Shorter duration on mobile for snappier feeling
+        duration: isMobile ? 0.5 : 0.8,
+        delay: isMobile ? Math.min(delay, 0.3) : delay, // Cap delay on mobile
+        // Less bouncy spring on mobile
+        damping: isMobile ? 25 : 20,
+        stiffness: isMobile ? 100 : 90,
+        // Smoother easing for mobile
+        ease: isMobile ? "easeOut" : [0.25, 0.1, 0.25, 1]
       },
     },
   };

@@ -1,11 +1,13 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100..900&display=swap");
 /* Tailwind directives - these are processed during build time */
-/* cssconfig-disable-next-line */
+/* ! postcss-preset-env stage 1 end */
+/* ! tailwindcss */
 @tailwind base;
-/* cssconfig-disable-next-line */
+/* ! tailwindcss */
 @tailwind components;
-/* cssconfig-disable-next-line */
+/* ! tailwindcss */
 @tailwind utilities;
+/* ! postcss-preset-env stage 1 start */
 
 #root {
   width: 100%;
@@ -20,6 +22,15 @@
   position: relative;
   z-index: 5;
   overflow: visible; /* Allow book card to overflow */
+  
+  /* Mobile height adjustment */
+  @media (max-width: 768px) {
+    height: auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 /* Custom fix for the dark rectangle */
@@ -41,6 +52,13 @@
   margin: 0 auto;
   padding-top: 40px;
   position: relative;
+  
+  /* Mobile responsive grid */
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    height: auto;
+    padding-top: 100px;
+  }
 }
 
 /* Left side text container */
@@ -53,6 +71,14 @@
   height: 100%;
   margin-left: 0;
   margin-right: 0;
+  
+  /* Mobile adjustments */
+  @media (max-width: 768px) {
+    padding: 1rem;
+    height: auto;
+    min-height: 50vh;
+    width: 100%;
+  }
 }
 
 /* Text content styling */
@@ -70,6 +96,14 @@
   line-height: 1;
   font-size: 3.8rem;
   font-weight: bold;
+  
+  /* Responsive font size */
+  @media (max-width: 768px) {
+    font-size: 2.5rem;
+  }
+  @media (max-width: 480px) {
+    font-size: 2rem;
+  }
 }
 
 /* Hero sub text styling */
@@ -91,6 +125,17 @@
   justify-content: center;
   z-index: 15;
   pointer-events: auto;
+  
+  /* Mobile responsive adjustments */
+  @media (max-width: 768px) {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    transform: none;
+    margin: 2rem auto;
+    height: 50vh;
+  }
 }
 
 /* Book card styling */
@@ -108,6 +153,14 @@
   position: relative;
   z-index: 10;
   transition: all 0.4s ease;
+  
+  /* Mobile sizing */
+  @media (max-width: 768px) {
+    width: 90%;
+    max-width: 400px;
+    aspect-ratio: 16/12;
+    margin: 0 auto;
+  }
 }
 
 /* Book card hover effects */
@@ -839,6 +892,51 @@ body {
   
   .floating-element {
     display: none;
+  }
+  
+  /* Additional mobile adjustments */
+  .glass-details {
+    padding: 0 20px;
+  }
+  
+  .glass-details h3 {
+    font-size: 2rem;
+  }
+  
+  .canvas-container {
+    height: 100%;
+    width: 100%;
+  }
+  
+  /* Adjust card layouts for mobile */
+  .project-card, .about-card, .education-card {
+    min-height: auto;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Smaller margins and paddings on mobile */
+  .section-margin {
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+  }
+  
+  /* Tech stack and skills sections */
+  .tech-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .tech-item {
+    padding: 0.5rem;
+  }
+  
+  /* Timeline adjustments */
+  .timeline-container {
+    flex-direction: column;
+  }
+  
+  .timeline-card {
+    width: 100%;
+    margin-bottom: 1rem;
   }
 }
 

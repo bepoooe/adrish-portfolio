@@ -16,8 +16,10 @@ import { textVariant, timelineElementVariant } from "../utils/motion";
 import StarryBackground from "./StarryBackground";
 
 const ExperienceCard = ({ experience, index }) => {
+  // Use different threshold for mobile vs desktop
+  const isMobile = window.innerWidth <= 768;
   const [ref, inView] = useInView({
-    threshold: 0.2,
+    threshold: isMobile ? 0.1 : 0.2, // Lower threshold for mobile for earlier animation triggering
     triggerOnce: false,
   });
   const controls = useAnimation();
@@ -26,9 +28,12 @@ const ExperienceCard = ({ experience, index }) => {
     if (inView) {
       controls.start("show");
     } else {
-      controls.start("hidden");
+      // On mobile, we don't want to hide elements as aggressively to avoid janky animations
+      if (!isMobile) {
+        controls.start("hidden");
+      }
     }
-  }, [controls, inView]);
+  }, [controls, inView, isMobile]);
 
   return (
     <div ref={ref}>
@@ -111,15 +116,32 @@ const ExperienceCard = ({ experience, index }) => {
 };
 
 const ScholasticRecord = () => {
+  // Detect if we're on mobile for responsive animation adjustments
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // Adjust threshold and animation behavior for mobile
   const [ref, inView] = useInView({
-    threshold: 0.1,
+    threshold: isMobile ? 0.05 : 0.1, // Lower threshold on mobile for earlier triggering
     triggerOnce: false,
   });
   const controls = useAnimation();
   const [hasAnimatedOnce, setHasAnimatedOnce] = useState(false);
   
-  // When scrolling back up, we want all items to be visible immediately
-  // rather than staggered loading again
+  // Mobile detection effect
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    // Initial check
+    checkMobile();
+    
+    // Listen for window resize
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
+  // Animation control effect with mobile optimizations
   useEffect(() => {
     if (inView) {
       controls.start("show");
@@ -129,10 +151,13 @@ const ScholasticRecord = () => {
         setHasAnimatedOnce(true);
       }
     } else {
-      // Reset state when scrolling away
-      controls.start("hidden");
+      // On mobile, we're more conservative with hiding animations to avoid jumpiness
+      // when scrolling quickly
+      if (!isMobile) {
+        controls.start("hidden");
+      }
     }
-  }, [controls, inView, hasAnimatedOnce]);
+  }, [controls, inView, hasAnimatedOnce, isMobile]);
 
   return (
     <>

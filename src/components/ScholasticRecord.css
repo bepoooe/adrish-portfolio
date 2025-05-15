@@ -4,12 +4,16 @@
 .vertical-timeline::before {
   left: 50%;
   margin-left: -2px;
+  width: 4px;
+  background: linear-gradient(to bottom, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.5), rgba(59, 130, 246, 0.1));
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
 }
 
 /* Add more separation between cards */
 .vertical-timeline {
   width: 95%;
   max-width: 1200px;
+  margin: 0 auto;
 }
 
 /* Style for cards on left */
@@ -33,6 +37,15 @@
   transform: translateY(-5px);
 }
 
+/* Mobile tap effect for better feedback */
+@media (hover: none) {
+  .vertical-timeline-element:active .vertical-timeline-element-content {
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.4);
+    transform: translateY(-2px);
+    transition: all 0.2s ease-out;
+  }
+}
+
 /* Smooth transition for all elements */
 .vertical-timeline-element * {
   transition: all 0.3s ease-out;
@@ -43,13 +56,73 @@
   .vertical-timeline-element-content {
     margin-left: 0 !important;
     margin-right: 0 !important;
+    padding: 1.5rem !important;
+    border-radius: 12px !important;
   }
   
   .vertical-timeline::before {
     left: 18px;
+    /* Enhanced visibility for mobile */
+    width: 3px;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
   }
   
   .vertical-timeline-element-content-arrow {
     top: 15px;
+  }
+  
+  /* Adjust icon sizes for mobile */
+  .vertical-timeline-element-icon {
+    width: 40px !important;
+    height: 40px !important;
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+    box-shadow: 0 0 10px rgba(59, 130, 246, 0.4) !important;
+  }
+  
+  /* Improve spacing between elements */
+  .vertical-timeline-element {
+    margin: 2rem 0 !important;
+  }
+  
+  /* Font size adjustments */
+  .vertical-timeline-element h3 {
+    font-size: 1.25rem !important;
+  }
+  
+  .vertical-timeline-element p {
+    font-size: 0.9rem !important;
+  }
+  
+  /* Improve date visibility */
+  .vertical-timeline-element-date {
+    font-size: 0.8rem !important;
+    padding: 0.5rem !important;
+    margin: 0.5rem 0 !important;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 4px;
+    display: inline-block !important;
+    color: white !important;
+  }
+  
+  /* Smoother animations for mobile */
+  .vertical-timeline-element {
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out !important;
+  }
+}
+
+/* Small mobile adjustments */
+@media only screen and (max-width: 480px) {
+  .vertical-timeline-element-content {
+    padding: 1rem !important;
+  }
+  
+  .vertical-timeline-element-icon {
+    width: 35px !important;
+    height: 35px !important;
+  }
+  
+  .vertical-timeline-element h3 {
+    font-size: 1.1rem !important;
   }
 }

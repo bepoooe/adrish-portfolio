@@ -16,11 +16,11 @@ function App() {
       <UI />
       <Loader />
       
-      {/* Hero Section with Book Card on right side */}
+      {/* Hero Section with Book Card (responsive layout) */}
       <div className="hero-section">
         <Hero />
         
-        {/* Book Card positioned on mid-to-right area */}
+        {/* Book Card - responsive positioning */}
         <div className="book-card-overlay">
           <div className="book-card">
             <div className="canvas-container" id="book">

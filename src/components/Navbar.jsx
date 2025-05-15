@@ -183,7 +183,7 @@ const Navbar = () => {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: toggle ? 1 : 0, scale: toggle ? 1 : 0.8 }}
           transition={{ duration: 0.2 }}
-          className={`${!toggle ? "hidden" : "flex"} p-6 bg-black bg-opacity-80 absolute top-20 right-4 mx-4 my-2 min-w-[140px] z-10 rounded-xl backdrop-blur-sm border border-gray-700 shadow-[0_4px_20px_rgba(0,0,0,0.5)] relative overflow-hidden`}
+          className={`${!toggle ? "hidden" : "flex"} p-6 bg-black bg-opacity-80 absolute top-20 right-4 mx-4 my-2 min-w-[200px] z-10 rounded-xl backdrop-blur-sm border border-gray-700 shadow-[0_4px_20px_rgba(0,0,0,0.5)] relative overflow-hidden w-[80%] max-w-[300px]`}
         >
           {/* Decorative stars for mobile menu */}
           <div className="absolute top-1/4 right-[10%] w-1 h-1 bg-white rounded-full opacity-70 star-twinkle"></div>
