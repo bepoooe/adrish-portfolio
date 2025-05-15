@@ -12,6 +12,9 @@ export default {
         "12xl": "12rem",
         "13xl": "13rem",
       },
+      boxShadow: {
+        'glow': '0 0 15px rgba(255, 255, 255, 0.5), 0 0 30px rgba(255, 255, 255, 0.3)',
+      },
       animation: {
         "horizontal-scroll": "horizontal-scroll linear 16s infinite ",
         "horizontal-scroll-2": "horizontal-scroll-2 linear 16s infinite ",

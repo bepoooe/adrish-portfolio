@@ -8,6 +8,7 @@ import {
   BoxGeometry,
   Color,
   Float32BufferAttribute,
+  LinearFilter,
   MathUtils,
   MeshStandardMaterial,
   Skeleton,
@@ -21,9 +22,9 @@ import { pageAtom, pages } from "./UI";
 
 const easingFactor = 0.5; // Controls the speed of the easing
 const easingFactorFold = 0.3; // Controls the speed of the easing
-const insideCurveStrength = 0.18; // Controls the strength of the curve
-const outsideCurveStrength = 0.05; // Controls the strength of the curve
-const turningCurveStrength = 0.09; // Controls the strength of the curve
+const insideCurveStrength = 0.12; // Controls the strength of the curve - reduced for better readability
+const outsideCurveStrength = 0.03; // Controls the strength of the curve - reduced for better readability
+const turningCurveStrength = 0.06; // Controls the strength of the curve - reduced for better readability
 
 const PAGE_WIDTH = 1.28;
 const PAGE_HEIGHT = 1.71; // 4:3 aspect ratio
@@ -67,8 +68,8 @@ pageGeometry.setAttribute(
   new Float32BufferAttribute(skinWeights, 4)
 );
 
-const whiteColor = new Color("white");
-const emissiveColor = new Color("orange");
+const whiteColor = new Color("#f9f9f9"); // Slightly off-white for better text contrast
+const emissiveColor = new Color("#333333");
 
 const pageMaterials = [
   new MeshStandardMaterial({
@@ -99,7 +100,21 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
       ? [`/textures/book-cover-roughness.jpg`]
       : []),
   ]);
+  // Basic texture enhancement for better readability
   picture.colorSpace = picture2.colorSpace = SRGBColorSpace;
+  
+  // Set anisotropic filtering if supported by the GPU
+  if (picture.anisotropy !== undefined) {
+    picture.anisotropy = picture2.anisotropy = 16;
+  }
+  
+  // Use appropriate texture filtering
+  picture.minFilter = picture2.minFilter = LinearFilter;
+  picture.magFilter = picture2.magFilter = LinearFilter;
+  
+  // Ensure textures update
+  picture.needsUpdate = picture2.needsUpdate = true;
+
   const group = useRef();
   const turnedAt = useRef(0);
   const lastOpened = useRef(opened);
@@ -130,25 +145,36 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
         ...(number === 0
           ? {
               roughnessMap: pictureRoughness,
+              metalness: 0,
+              roughness: 0.8
             }
           : {
-              roughness: 0.1,
+              roughness: 0.95,
+              metalness: 0,
+              reflectivity: 0.05
             }),
         emissive: emissiveColor,
         emissiveIntensity: 0,
       }),
       new MeshStandardMaterial({
-        color: whiteColor,
+        color: new Color("#ffffff"),
         map: picture2,
-        ...(number === pages.length - 1
+        ...(number === 0 || number === pages.length - 1
           ? {
               roughnessMap: pictureRoughness,
+              metalness: 0,
+              roughness: 1.0,
+              envMapIntensity: 0
             }
           : {
-              roughness: 0.1,
+              roughness: 1.0,
+              metalness: 0,
+              reflectivity: 0,
+              envMapIntensity: 0
             }),
-        emissive: emissiveColor,
-        emissiveIntensity: 0,
+        // Significantly increase contrast for better text visibility
+        emissive: new Color("#ffffff"),
+        emissiveIntensity: 0.4, // Higher intensity for better visibility
       }),
     ];
     const mesh = new SkinnedMesh(pageGeometry, materials);
@@ -167,7 +193,7 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
       return;
     }
 
-    const emissiveIntensity = highlighted ? 0.22 : 0;
+    const emissiveIntensity = highlighted ? 0.05 : 0.0;
     skinnedMeshRef.current.material[4].emissiveIntensity =
       skinnedMeshRef.current.material[5].emissiveIntensity = MathUtils.lerp(
         skinnedMeshRef.current.material[4].emissiveIntensity,
@@ -309,3 +335,4 @@ export const Book = ({ ...props }) => {
     </group>
   );
 };
+

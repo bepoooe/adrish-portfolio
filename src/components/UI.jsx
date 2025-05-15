@@ -1,43 +1,28 @@
 import { atom, useAtom } from "jotai";
 import { useEffect, useState } from "react";
 
+// Array of image names to use for book pages
 const pictures = [
   "DSC00680",
   "DSC00933",
-  "DSC00966",
-  "DSC00983",
-  "DSC01011",
-  "DSC01040",
-  "DSC01064",
-  "DSC01071",
-  "DSC01103",
-  "DSC01145",
-  "DSC01420",
-  "DSC01461",
-  "DSC01489",
-  "DSC02031",
-  "DSC02064",
-  "DSC02069",
 ];
 
 export const pageAtom = atom(0);
+
+// Create pages structure with exactly 2 pages (Cover, Page 1, Back Cover)
 export const pages = [
+  // Page 0: Front cover
   {
     front: "book-cover",
-    back: pictures[0],
+    back: pictures[0], // Page 1 content (back of cover)
+  },
+  // Page 1: Back cover
+  {
+    front: pictures[1 % pictures.length], // Page 2 content
+    back: "book-back", // Back cover
   },
 ];
-for (let i = 1; i < pictures.length - 1; i += 2) {
-  pages.push({
-    front: pictures[i % pictures.length],
-    back: pictures[(i + 1) % pictures.length],
-  });
-}
 
-pages.push({
-  front: pictures[pictures.length - 1],
-  back: "book-back",
-});
 
 export const UI = () => {
   const [page, setPage] = useAtom(pageAtom);
@@ -80,100 +65,59 @@ export const UI = () => {
       >
         <div className="flex-grow"></div>
         <div className="w-full overflow-auto pointer-events-auto flex justify-center mb-8">
-          <div className="overflow-auto flex items-center gap-2 max-w-full p-4 bg-black/50 backdrop-blur-sm rounded-xl shadow-xl">
-            {/* First page (Cover) */}
+          <div className="overflow-auto flex items-center gap-3 max-w-full p-5 bg-black/70 backdrop-blur-md rounded-xl shadow-2xl border border-white/10">
+            {/* Cover */}
             <button
-              className={`border-transparent hover:border-white transition-all duration-300 px-4 py-2 rounded-full text-sm md:text-base uppercase shrink-0 border ${
-                page === 0
-                  ? "bg-white/90 text-black"
-                  : "bg-black/70 text-white"
+              className={`border border-white/30 hover:border-white hover:shadow-glow transition-all duration-300 px-5 py-3 rounded-full text-sm md:text-base font-semibold uppercase shrink-0 ${
+                page === 0 ? "bg-white/90 text-black" : "bg-black/80 text-white"
               }`}
               onClick={() => setPage(0)}
             >
               Cover
             </button>
             
-            {/* Middle pages */}
-            {pages.slice(1, pages.length - 1).map((_, idx) => {
-              const pageIndex = idx + 1; // Adjust index to account for cover
-              return (
-                <button
-                  key={pageIndex}
-                  className={`border-transparent hover:border-white transition-all duration-300 px-4 py-2 rounded-full text-sm md:text-base uppercase shrink-0 border ${
-                    pageIndex === page
-                      ? "bg-white/90 text-black"
-                      : "bg-black/70 text-white"
-                  }`}
-                  onClick={() => setPage(pageIndex)}
-                >
-                  {`Page ${pageIndex}`}
-                </button>
-              );
-            })}
-            
-            {/* Back cover */}
+            {/* Page 1 */}
             <button
-              className={`border-transparent hover:border-white transition-all duration-300 px-4 py-2 rounded-full text-sm md:text-base uppercase shrink-0 border ${
-                page === pages.length - 1
-                  ? "bg-white/90 text-black"
-                  : "bg-black/70 text-white"
+              className={`border border-white/30 hover:border-white hover:shadow-glow transition-all duration-300 px-5 py-3 rounded-full text-sm md:text-base font-semibold uppercase shrink-0 ${
+                page === 1 ? "bg-white/90 text-black" : "bg-black/80 text-white"
               }`}
-              onClick={() => setPage(pages.length - 1)}
+              onClick={() => setPage(1)}
+            >
+              Page 1
+            </button>
+            
+
+            
+            {/* Back Cover */}
+            <button
+              className={`border border-white/30 hover:border-white hover:shadow-glow transition-all duration-300 px-5 py-3 rounded-full text-sm md:text-base font-semibold uppercase shrink-0 ${
+                page === pages.length ? "bg-white/90 text-black" : "bg-black/80 text-white"
+              }`}
+              onClick={() => setPage(pages.length)}
             >
               Back Cover
             </button>
+            
+            {/* Divider */}
+            <div className="h-8 border-l border-white/30 mx-1"></div>
+            
+            {/* Download Resume Button */}
+            <a
+              href="/Resume-Adrish.pdf"
+              download
+              className="border border-white/30 hover:border-white hover:shadow-glow transition-all duration-300 px-5 py-3 rounded-full text-sm md:text-base font-semibold uppercase shrink-0 bg-black/80 text-white flex items-center gap-2"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Resume
+            </a>
           </div>
         </div>
       </main>
 
-      <div
-        className={`fixed inset-0 flex items-center -rotate-2 select-none transition-all duration-1000 ${
-          page === pages.length ? "opacity-100 scale-100" : "opacity-0 scale-90"
-        }`}
-      >
-        <div className="relative">
-          <div className="bg-white/0 animate-horizontal-scroll flex items-center gap-8 w-max px-8">
-            <h1 className="shrink-0 text-white text-10xl font-black">
-              Happy
-            </h1>
-            <h2 className="shrink-0 text-white text-8xl italic font-light">
-              Birthday
-            </h2>
-            <h2 className="shrink-0 text-white text-12xl font-bold">Ishaa</h2>
-            <h2 className="shrink-0 text-transparent text-12xl font-bold italic outline-text">
-              :3
-            </h2>
-            <h2 className="shrink-0 text-white text-9xl font-medium">I</h2>
-            <h2 className="shrink-0 text-white text-9xl font-extralight italic">
-              LOVE
-            </h2>
-            <h2 className="shrink-0 text-white text-13xl font-bold">You</h2>
-            <h2 className="shrink-0 text-transparent text-13xl font-bold outline-text italic">
-              Sooooooooooooooo Muchhhhhhhhh
-            </h2>
-          </div>
-          <div className="absolute top-0 left-0 bg-white/0 animate-horizontal-scroll-2 flex items-center gap-8 px-8 w-max">
-            <h1 className="shrink-0 text-white text-10xl font-black">
-              Happy
-            </h1>
-            <h2 className="shrink-0 text-white text-8xl italic font-light">
-              Birthday
-            </h2>
-            <h2 className="shrink-0 text-white text-12xl font-bold">Ishaa</h2>
-            <h2 className="shrink-0 text-transparent text-12xl font-bold italic outline-text">
-              I
-            </h2>
-            <h2 className="shrink-0 text-white text-9xl font-medium">Love</h2>
-            <h2 className="shrink-0 text-white text-9xl font-extralight italic">
-              You
-            </h2>
-            <h2 className="shrink-0 text-white text-13xl font-bold">sooooooooooooooo</h2>
-            <h2 className="shrink-0 text-transparent text-13xl font-bold outline-text italic">
-              Muchhhhhhhhhhh
-            </h2>
-          </div>
-        </div>
-      </div>
+
     </>
   );
 };
