@@ -59,7 +59,7 @@ export const MusicPlayer = () => {
 
   return (
     <div 
-      className="fixed top-5 right-5 z-20 flex flex-col items-end gap-2"
+      className="fixed sm:top-5 top-20 right-5 z-20 flex flex-col items-end gap-2"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
