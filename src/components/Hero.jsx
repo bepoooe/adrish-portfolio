@@ -41,20 +41,21 @@ const Hero = () => {
         <div className="stars stars-large"></div>
       </motion.div>
       
-      <div className="hero-content-wrapper">
+      <div className="hero-content-wrapper" style={{ position: 'relative', zIndex: 5 }}>
         {/* Left side - Text content */}
-        <div className="hero-text-container">
+        <div className="hero-text-container" style={{ position: 'relative', zIndex: 10 }}>
           <div className="flex flex-col justify-center items-center h-full">
             <div className="w-5 h-5 rounded-full bg-[#6382ff]" />
             <div className="w-1 sm:h-80 h-40 blue-gradient" />
           </div>
           
-          <div className="hero-text-content">
+          <div className="hero-text-content" style={{ position: 'relative', zIndex: 10 }}>
             <motion.h1 
               className="text-white hero-main-text mb-0"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
+              style={{ textShadow: '0 0 10px rgba(0, 0, 0, 0.5)' }} // Add text shadow for better readability
             >
               <motion.span
                 initial={{ opacity: 0, x: -20 }}
@@ -88,6 +89,11 @@ const Hero = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8, duration: 0.8, type: "spring", damping: 12 }}
               whileHover={{ color: "#6382ff", scale: 1.02 }}
+              style={{ 
+                textShadow: '0 0 8px rgba(0, 0, 0, 0.7)',  // Add text shadow for better readability
+                position: 'relative',
+                zIndex: 10
+              }}
             >
               Flip through the<br />
               pages of my<br />
@@ -175,10 +181,11 @@ const Hero = () => {
           repeatType: "reverse",
         }}
         style={{
-          top: '15%',
-          left: '15%',
+          top: '5%',  // Moved higher to avoid text overlap
+          left: '5%', // Moved further left
           borderRadius: '5px',
-          transform: 'rotate(10deg)'
+          transform: 'rotate(10deg)',
+          zIndex: 0  // Ensure it stays behind text
         }}
       />
       <motion.div 
@@ -194,10 +201,11 @@ const Hero = () => {
           repeatType: "reverse",
         }}
         style={{
-          top: '25%',
-          right: '15%',
+          top: '10%',  // Moved higher to avoid text overlap
+          right: '5%', // Moved further right
           borderRadius: '5px',
-          transform: 'rotate(-5deg)'
+          transform: 'rotate(-5deg)',
+          zIndex: 0  // Ensure it stays behind text
         }}
       />
       
@@ -252,10 +260,11 @@ const Hero = () => {
           repeatType: "reverse",
         }}
         style={{
-          top: '20%',
-          left: '25%',
+          top: '5%',  // Moved higher to avoid text overlap
+          left: '70%', // Moved to the right side
           borderRadius: '2px',
-          transform: 'rotate(5deg)'
+          transform: 'rotate(5deg)',
+          zIndex: 0  // Ensure it stays behind text
         }}
       />
       <motion.div
@@ -270,10 +279,11 @@ const Hero = () => {
           repeatType: "reverse",
         }}
         style={{
-          top: '40%',
-          left: '65%',
+          top: '60%',  // Moved lower to avoid text overlap
+          left: '80%', // Moved further right
           borderRadius: '2px',
-          transform: 'rotate(-3deg)'
+          transform: 'rotate(-3deg)',
+          zIndex: 0  // Ensure it stays behind text
         }}
       />
     </motion.section>

@@ -150,6 +150,17 @@
   .floating-element {
     display: none;
   }
+  
+  /* Ensure blur elements don't interfere with text */
+  .filter.blur-sm, .filter.blur-md {
+    opacity: 0.5 !important; /* Reduce opacity on mobile */
+    z-index: 1 !important; /* Ensure they stay behind text */
+  }
+  
+  /* Enhance text readability on mobile */
+  .hero-main-text, .hero-sub-text {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
+  }
 }
 
 /* Navbar mobile adjustments */

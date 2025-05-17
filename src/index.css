@@ -71,13 +71,18 @@
   height: 100%;
   margin-left: 0;
   margin-right: 0;
+  position: relative;
+  z-index: 15;
   
   /* Mobile adjustments */
   @media (max-width: 768px) {
-    padding: 1rem;
+    padding: 1.5rem;
     height: auto;
     min-height: 50vh;
     width: 100%;
+    margin-top: 1rem;
+    position: relative;
+    z-index: 30; /* Higher z-index on mobile to ensure it's above blur elements */
   }
 }
 
@@ -87,6 +92,18 @@
   margin-top: 0;
   padding: 0;
   text-align: left;
+  position: relative;
+  z-index: 20; /* Ensure text is always on top */
+  
+  /* Mobile-specific enhancements */
+  @media (max-width: 768px) {
+    background: rgba(0, 0, 0, 0.2); /* Subtle background for better readability */
+    padding: 1rem;
+    border-radius: 8px;
+    backdrop-filter: blur(2px); /* Very subtle blur for the text background */
+    -webkit-backdrop-filter: blur(2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
 }
 
 /* Hero main text enhancement */
