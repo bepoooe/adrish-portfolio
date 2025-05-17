@@ -22,46 +22,83 @@
 
 .star {
   position: absolute;
-  background-color: #fff;
   border-radius: 50%;
   opacity: 0;
   animation: twinkle var(--duration) ease-in-out infinite;
   animation-delay: var(--delay);
+  background-color: var(--star-color, #fff);
+  filter: blur(var(--blur, 0px));
 }
 
 .star-tiny {
   width: 0.5px;
   height: 0.5px;
-  box-shadow: 0 0 0.5px rgba(255, 255, 255, 0.7);
+  box-shadow: 0 0 0.5px var(--glow-color, rgba(255, 255, 255, 0.7));
 }
 
 .star-small {
   width: 0.8px;
   height: 0.8px;
-  box-shadow: 0 0 0.8px rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 0.8px var(--glow-color, rgba(255, 255, 255, 0.8));
 }
 
 .star-medium {
   width: 1px;
   height: 1px;
-  box-shadow: 0 0 1px rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 1px var(--glow-color, rgba(255, 255, 255, 0.9));
 }
 
 .star-large {
-  width: 1.2px;
-  height: 1.2px;
-  box-shadow: 0 0 1px rgba(255, 255, 255, 1);
+  width: 1.5px;
+  height: 1.5px;
+  box-shadow: 0 0 2px var(--glow-color, rgba(255, 255, 255, 1));
+}
+
+.star-huge {
+  width: 2px;
+  height: 2px;
+  box-shadow: 0 0 3px var(--glow-color, rgba(255, 255, 255, 1));
 }
 
 .shooting-star {
   position: absolute;
-  width: 80px;
-  height: 0.5px;
-  background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%);
+  width: var(--length, 80px);
+  height: var(--width, 0.5px);
+  background: linear-gradient(to right, 
+    rgba(255, 255, 255, 0) 0%, 
+    rgba(255, 255, 255, 0.1) 20%, 
+    var(--meteor-color, rgba(255, 255, 255, 0.7)) 50%, 
+    rgba(255, 255, 255, 0.1) 80%, 
+    rgba(255, 255, 255, 0) 100%);
   opacity: 0;
   transform: rotate(var(--angle));
   animation: shooting var(--duration) ease-out infinite;
   animation-delay: var(--delay);
+  box-shadow: 0 0 var(--glow-size, 2px) var(--glow-color, rgba(255, 255, 255, 0.4));
+  border-radius: 100px;
+}
+
+/* Nebula effects */
+.nebula {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    var(--nebula-inner-color, rgba(100, 100, 255, 0.01)) 0%,
+    var(--nebula-outer-color, rgba(50, 50, 150, 0.005)) 50%,
+    transparent 70%
+  );
+  opacity: var(--nebula-opacity, 0.2);
+  filter: blur(var(--nebula-blur, 20px));
+  mix-blend-mode: screen;
+}
+
+/* Star cluster */
+.star-cluster {
+  position: absolute;
+  width: var(--cluster-size, 100px);
+  height: var(--cluster-size, 100px);
+  opacity: var(--cluster-opacity, 0.8);
 }
 
 /* Keyframes for animations */
@@ -76,10 +113,18 @@
     transform: translateX(-200px) translateY(0) rotate(var(--angle));
     opacity: 0;
   }
-  10% { opacity: 0.8; }
-  20% { opacity: 0.2; }
+  5% { opacity: 0.1; }
+  10% { opacity: var(--meteor-brightness, 0.8); }
+  15% { opacity: var(--meteor-brightness, 0.8); }
+  30% { opacity: 0.1; }
   100% { 
     transform: translateX(calc(100vw + 200px)) translateY(calc(var(--angle-distance) * 100vw)) rotate(var(--angle));
     opacity: 0;
   }
+}
+
+@keyframes pulse {
+  0% { opacity: var(--min-opacity, 0.1); }
+  50% { opacity: var(--max-opacity, 0.3); }
+  100% { opacity: var(--min-opacity, 0.1); }
 }
