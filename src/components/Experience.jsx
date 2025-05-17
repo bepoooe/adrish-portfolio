@@ -1,5 +1,5 @@
-import { Environment, Float, OrbitControls, useThree } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
+import { Environment, Float, OrbitControls } from "@react-three/drei";
+import { useFrame, useThree } from "@react-three/fiber";
 import { Book } from "./Book";
 import { Particles } from "./Particles";
 import { useEffect, useState } from "react";

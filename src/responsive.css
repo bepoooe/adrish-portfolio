@@ -151,3 +151,38 @@
     display: none;
   }
 }
+
+/* Navbar mobile adjustments */
+@media (max-width: 640px) {
+  /* Add xs breakpoint for Tailwind compatibility */
+  .xs\:inline {
+    display: inline;
+  }
+  
+  /* Ensure the navbar is properly sized */
+  .navbar-glow {
+    padding: 0.5rem 1rem;
+  }
+  
+  /* Improve mobile menu positioning */
+  .mobile-menu {
+    top: 4rem;
+    right: 0;
+    width: 90%;
+    max-width: 300px;
+  }
+}
+
+/* Music player mobile adjustments */
+@media (max-width: 768px) {
+  /* Ensure the music player doesn't overlap with navbar */
+  .music-player-container {
+    top: 70px;
+    right: 12px;
+  }
+  
+  /* Make the progress bar more touch-friendly */
+  .progress-bar {
+    height: 8px;
+  }
+}

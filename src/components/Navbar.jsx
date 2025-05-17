@@ -78,11 +78,11 @@ const Navbar = () => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`${styles.paddingX} w-full flex items-center py-5 fixed top-0 z-20 transition-all duration-300 ${scrolled ? "bg-black bg-opacity-70 backdrop-blur-md shadow-[0_4px_15px_rgba(0,0,0,0.5)]" : "bg-transparent"}`}
+      className={`${styles.paddingX} w-full flex items-center py-3 sm:py-5 fixed top-0 z-20 transition-all duration-300 ${scrolled ? "bg-black bg-opacity-70 backdrop-blur-md shadow-[0_4px_15px_rgba(0,0,0,0.5)]" : "bg-transparent"}`}
     >
       <div className='w-full flex justify-between items-center max-w-7xl mx-auto'>
         <motion.div 
-          className="flex items-center justify-between w-full px-8 py-3 rounded-full border border-gray-700 bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm navbar-glow relative overflow-hidden"
+          className="flex items-center justify-between w-full px-4 sm:px-8 py-2 sm:py-3 rounded-full border border-gray-700 bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm navbar-glow relative overflow-hidden"
           whileHover={{ boxShadow: "0 0 15px rgba(0, 0, 0, 0.7)" }}
           transition={{ duration: 0.3 }}
         >
@@ -97,7 +97,7 @@ const Navbar = () => {
           <div className="absolute top-1/3 left-2/3 w-[1px] h-[1px] bg-purple-400 rounded-full opacity-20" style={{animation: 'space-dust 12s linear infinite', animationDelay: '2s'}}></div>
           {/* Left section - Logo and Name */}
           <div
-            className='flex items-center gap-2 group cursor-pointer'
+            className='flex items-center gap-1 sm:gap-2 group cursor-pointer'
             onClick={() => {
               setActive("");
               window.scrollTo(0, 0);
@@ -106,12 +106,12 @@ const Navbar = () => {
             <motion.img 
               src="/favicon.ico" 
               alt='logo' 
-              className='w-9 h-9 object-contain'
+              className='w-7 h-7 sm:w-9 sm:h-9 object-contain'
               whileHover={{ rotate: 360 }}
               transition={{ duration: 0.5 }}
             />
-            <p className='text-[18px] font-bold cursor-pointer flex transition-all duration-300'>
-              <span className="text-[#e8e0cf] group-hover:text-[#f0e9db] drop-shadow-[0_0_3px_rgba(232,224,207,0.3)]">Bepo</span> <span className="ml-1"><span className="text-[#e8e0cf] opacity-70 group-hover:opacity-80">|</span> <span className="text-[#e8e0cf] group-hover:text-[#f0e9db] drop-shadow-[0_0_3px_rgba(232,224,207,0.3)]">Portfolio</span></span>
+            <p className='text-[16px] sm:text-[18px] font-bold cursor-pointer flex transition-all duration-300'>
+              <span className="text-[#e8e0cf] group-hover:text-[#f0e9db] drop-shadow-[0_0_3px_rgba(232,224,207,0.3)]">Bepo</span> <span className="ml-1"><span className="text-[#e8e0cf] opacity-70 group-hover:opacity-80">|</span> <span className="hidden xs:inline text-[#e8e0cf] group-hover:text-[#f0e9db] drop-shadow-[0_0_3px_rgba(232,224,207,0.3)]">Portfolio</span></span>
             </p>
           </div>
 
@@ -167,14 +167,18 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <div className='sm:hidden flex items-center'>
-            <motion.img
-              src={toggle ? close : menu}
-              alt='menu'
-              className='w-[28px] h-[28px] object-contain cursor-pointer'
+            <motion.button
+              className='w-[36px] h-[36px] flex items-center justify-center bg-white/10 rounded-full'
               onClick={() => setToggle(!toggle)}
-              whileHover={{ scale: 1.1 }}
+              whileHover={{ scale: 1.1, backgroundColor: 'rgba(255, 255, 255, 0.15)' }}
               whileTap={{ scale: 0.9 }}
-            />
+            >
+              <img
+                src={toggle ? close : menu}
+                alt='menu'
+                className='w-[20px] h-[20px] object-contain'
+              />
+            </motion.button>
           </div>
         </motion.div>
 
@@ -183,7 +187,7 @@ const Navbar = () => {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: toggle ? 1 : 0, scale: toggle ? 1 : 0.8 }}
           transition={{ duration: 0.2 }}
-          className={`${!toggle ? "hidden" : "flex"} p-6 bg-black bg-opacity-80 absolute top-20 right-4 mx-4 my-2 min-w-[200px] z-10 rounded-xl backdrop-blur-sm border border-gray-700 shadow-[0_4px_20px_rgba(0,0,0,0.5)] relative overflow-hidden w-[80%] max-w-[300px]`}
+          className={`${!toggle ? "hidden" : "flex"} p-4 sm:p-6 bg-black bg-opacity-80 absolute top-16 sm:top-20 right-0 sm:right-4 mx-2 sm:mx-4 my-2 min-w-[200px] z-10 rounded-xl backdrop-blur-sm border border-gray-700 shadow-[0_4px_20px_rgba(0,0,0,0.5)] relative overflow-hidden w-[90%] sm:w-[80%] max-w-[300px]`}
         >
           {/* Decorative stars for mobile menu */}
           <div className="absolute top-1/4 right-[10%] w-1 h-1 bg-white rounded-full opacity-70 star-twinkle"></div>
