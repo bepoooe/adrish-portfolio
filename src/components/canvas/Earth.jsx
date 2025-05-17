@@ -67,7 +67,7 @@ const Earth = () => {
       </group>
       
       {/* Planet from GLTF model */}
-      <group ref={planetRef} scale={[2.5, 2.5, 2.5]} position={[0, 0, 0]}>
+      <group ref={planetRef} scale={[3.2, 3.2, 3.2]} position={[0, 0, 0]}>
         <primitive object={planetModel} />
       </group>
 

@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import emailjs from "@emailjs/browser";
+import { useInView } from "framer-motion";
 
 import { styles } from "../styles";
 import { EarthCanvas } from "./canvas";
@@ -9,6 +10,12 @@ import { slideIn } from "../utils/motion";
 
 const Contact = () => {
   const formRef = useRef();
+  const leftRef = useRef(null);
+  const rightRef = useRef(null);
+  
+  const leftInView = useInView(leftRef, { once: false, amount: 0.2 });
+  const rightInView = useInView(rightRef, { once: false, amount: 0.2 });
+  
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -74,7 +81,8 @@ const Contact = () => {
 
   return (
     <div
-      className={`xl:mt-12 flex xl:flex-row flex-col-reverse gap-10 overflow-visible relative`}
+      className={`flex xl:flex-row flex-col-reverse xl:gap-4 gap-10 overflow-visible relative w-full justify-between items-center`}
+      style={{ background: 'none', boxShadow: 'none', border: 'none' }}
     >
       <AnimatePresence>
         {showSuccess && (
@@ -82,7 +90,7 @@ const Contact = () => {
             initial={{ opacity: 0, y: -50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.8 }}
-            transition={{ type: "spring", damping: 12 }}
+            transition={{ type: "spring", damping: 18, stiffness: 100 }}
             className="fixed top-24 left-0 right-0 mx-auto w-80 z-50 bg-gradient-to-r from-[#202942] to-[#151729] p-4 rounded-xl shadow-lg border border-[#3a7bd5]/30 flex items-center justify-center"
             style={{
               boxShadow: '0 10px 40px -5px rgba(63, 81, 181, 0.4)',
@@ -102,72 +110,85 @@ const Contact = () => {
       </AnimatePresence>
 
       <motion.div
-        variants={slideIn("left", "tween", 0.2, 1)}
-        className='flex-[0.75] bg-gradient-to-b from-[#151729] to-[#0d1321] p-8 rounded-2xl shadow-lg transition-all duration-300 hover:shadow-[0_0_20px_rgba(99,130,255,0.3)]'
+        ref={leftRef}
+        initial={{ x: -50, opacity: 0 }}
+        animate={leftInView ? { x: 0, opacity: 1 } : { x: -50, opacity: 0 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        className='xl:w-[38%] lg:w-[40%] md:w-[45%] w-full bg-[#1e1836] p-5 rounded-lg transition-all duration-300'
         style={{
           boxShadow: '0 8px 32px -5px rgba(63, 81, 181, 0.3)',
           border: '1px solid rgba(99, 130, 255, 0.15)',
           backdropFilter: 'blur(4px)'
         }}
       >
-        <p className='text-[#8892b0] font-medium uppercase tracking-wider text-sm'>Get in touch</p>
-        <h3 className='text-white font-black md:text-[60px] sm:text-[50px] xs:text-[40px] text-[30px] mt-2 bg-gradient-to-r from-[#3a7bd5] to-[#3f51b5] bg-clip-text text-transparent'>Contact.</h3>
+        <div>
+          <p className='text-gray-400 font-medium uppercase tracking-wider text-sm mb-1'>GET IN TOUCH</p>
+          <h3 className='text-white font-black md:text-[58px] sm:text-[48px] xs:text-[42px] text-[36px] mb-6 leading-tight'>Contact.</h3>
+        </div>
 
         <form
           ref={formRef}
           onSubmit={handleSubmit}
-          className='mt-12 flex flex-col gap-8'
+          className='mt-3 flex flex-col gap-3'
         >
           <label className='flex flex-col'>
-            <span className='text-[#a8b2d1] font-medium mb-4'>Your Name</span>
+            <span className='text-white font-medium mb-2'>Your Name</span>
             <input
               type='text'
               name='name'
               value={form.name}
               onChange={handleChange}
-              placeholder="What's your name?"
-              className='bg-[#1b2238] py-4 px-6 placeholder:text-[#546188] text-white rounded-lg outline-none border-none font-medium transition-all duration-300 focus:ring-2 focus:ring-[#3968d3] shadow-inner hover:bg-[#202942] hover:shadow-[0_0_5px_rgba(63,81,181,0.5)_inset]'
+              placeholder="What's your good name?"
+              className='bg-[#261f3b] py-3 px-4 placeholder:text-[#6e6a7d] text-white rounded-lg outline-none border-none font-medium transition-all duration-300 focus:ring-1 focus:ring-purple-500 hover:bg-[#2a2240]'
             />
           </label>
           <label className='flex flex-col'>
-            <span className='text-[#a8b2d1] font-medium mb-4'>Your Email</span>
+            <span className='text-white font-medium mb-2'>Your email</span>
             <input
               type='email'
               name='email'
               value={form.email}
               onChange={handleChange}
-              placeholder="What's your email address?"
-              className='bg-[#1b2238] py-4 px-6 placeholder:text-[#546188] text-white rounded-lg outline-none border-none font-medium transition-all duration-300 focus:ring-2 focus:ring-[#3968d3] shadow-inner hover:bg-[#202942] hover:shadow-[0_0_5px_rgba(63,81,181,0.5)_inset]'
+              placeholder="What's your web address?"
+              className='bg-[#261f3b] py-3 px-4 placeholder:text-[#6e6a7d] text-white rounded-lg outline-none border-none font-medium transition-all duration-300 focus:ring-1 focus:ring-purple-500 hover:bg-[#2a2240]'
             />
           </label>
           <label className='flex flex-col'>
-            <span className='text-[#a8b2d1] font-medium mb-4'>Your Message</span>
+            <span className='text-white font-medium mb-2'>Your Message</span>
             <textarea
-              rows={7}
+              rows={4}
               name='message'
               value={form.message}
               onChange={handleChange}
-              placeholder='What would you like to say?'
-              className='bg-[#1b2238] py-4 px-6 placeholder:text-[#546188] text-white rounded-lg outline-none border-none font-medium transition-all duration-300 focus:ring-2 focus:ring-[#3968d3] shadow-inner resize-none hover:bg-[#202942] hover:shadow-[0_0_5px_rgba(63,81,181,0.5)_inset]'
+              placeholder='What you want to say?'
+              className='bg-[#261f3b] py-3 px-4 placeholder:text-[#6e6a7d] text-white rounded-lg outline-none border-none font-medium transition-all duration-300 focus:ring-1 focus:ring-purple-500 resize-none hover:bg-[#2a2240]'
             />
           </label>
 
-          <button
-            type='submit'
-            className='relative bg-gradient-to-r from-[#3a7bd5] to-[#3f51b5] py-3 px-8 rounded-xl outline-none w-fit text-white font-bold shadow-md transition-all duration-300 hover:shadow-[0_0_15px_rgba(63,81,181,0.6)] hover:scale-105 active:scale-95 overflow-hidden group'
-            style={{
-              boxShadow: '0 4px 15px -3px rgba(63, 81, 181, 0.4)'
-            }}
-          >
-            <span className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-[rgba(255,255,255,0.2)] to-transparent -translate-x-full group-hover:animate-shimmer"></span>
-            {loading ? "Sending..." : "Send Message"}
-          </button>
+          <div className="mt-4">
+            <button
+              type='submit'
+              className='relative bg-blue-500 py-2 px-5 rounded-lg outline-none w-fit text-white font-medium transition-all duration-300 hover:bg-blue-600 active:bg-blue-700'
+            >
+              {loading ? "Sending..." : "Send Message"}
+            </button>
+          </div>
         </form>
       </motion.div>
 
       <motion.div
-        variants={slideIn("right", "tween", 0.2, 1)}
-        className='xl:flex-1 xl:h-auto md:h-[550px] h-[350px] flex items-center justify-center overflow-hidden'
+        ref={rightRef}
+        initial={{ x: 50, opacity: 0 }}
+        animate={rightInView ? { x: 0, opacity: 1 } : { x: 50, opacity: 0 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        className='xl:w-[60%] lg:w-[58%] md:w-[55%] w-full h-[500px] flex items-center justify-center overflow-visible'
+        style={{ 
+          background: 'transparent',
+          boxShadow: 'none',
+          border: 'none',
+          outline: 'none',
+          overflow: 'visible'
+        }}
       >
         <EarthCanvas />
       </motion.div>
