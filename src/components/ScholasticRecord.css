@@ -51,6 +51,34 @@
   transition: all 0.3s ease-out;
 }
 
+/* Icon container styles */
+.mobile-icon-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background: radial-gradient(circle, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.95) 100%);
+  box-shadow: inset 0 0 10px rgba(59, 130, 246, 0.2);
+}
+
+.mobile-icon-inner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.5);
+  border-radius: 50%;
+  width: 85%;
+  height: 85%;
+  box-shadow: inset 0 0 8px rgba(59, 130, 246, 0.15);
+}
+
+.mobile-icon-img {
+  object-fit: contain;
+  max-width: 100%;
+  max-height: 100%;
+  filter: brightness(1.2) contrast(1.15) drop-shadow(0 0 4px rgba(59, 130, 246, 0.6));
+}
+
 /* Responsive adjustments */
 @media only screen and (max-width: 1169px) {
   .vertical-timeline-element-content {
@@ -58,36 +86,64 @@
     margin-right: 0 !important;
     padding: 1.5rem !important;
     border-radius: 12px !important;
+    width: calc(100% - 70px) !important; /* Ensure content doesn't overlap with icon */
+    margin-left: 70px !important; /* Create space for the larger icon */
   }
   
   .vertical-timeline::before {
-    left: 18px;
+    left: 22px;
     /* Enhanced visibility for mobile */
     width: 3px;
     box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+    background: linear-gradient(to bottom, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.5), rgba(59, 130, 246, 0.1));
   }
   
+  /* Fix content arrow position and visibility */
   .vertical-timeline-element-content-arrow {
-    top: 15px;
+    top: 25px;
+    left: -7px !important;
+    right: auto !important;
+    border-right: 7px solid rgba(23, 23, 54, 0.8) !important;
+    border-left: none !important;
   }
   
-  /* Adjust icon sizes for mobile */
+  /* Adjust icon sizes and position for mobile */
   .vertical-timeline-element-icon {
-    width: 40px !important;
-    height: 40px !important;
+    width: 45px !important;
+    height: 45px !important;
     margin-left: 0 !important;
     margin-top: 0 !important;
-    box-shadow: 0 0 10px rgba(59, 130, 246, 0.4) !important;
+    left: 0 !important;
+    top: 20px !important;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.5) !important;
+    z-index: 10 !important; /* Ensure icon is above the line */
+    border: 2px solid rgba(59, 130, 246, 0.3) !important;
+  }
+  
+  /* Adjust the icon content size */
+  .vertical-timeline-element-icon img {
+    width: 90% !important;
+    height: 90% !important;
+    padding: 2px !important;
+    filter: brightness(1.2) contrast(1.15) drop-shadow(0 0 4px rgba(59, 130, 246, 0.6)) !important;
+  }
+  
+  /* Improve the icon container appearance */
+  .vertical-timeline-element-icon .mobile-icon-container {
+    border-width: 2px !important;
+    background: radial-gradient(circle, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.95) 100%) !important;
   }
   
   /* Improve spacing between elements */
   .vertical-timeline-element {
-    margin: 2rem 0 !important;
+    margin: 2.5rem 0 !important;
   }
   
   /* Font size adjustments */
   .vertical-timeline-element h3 {
     font-size: 1.25rem !important;
+    line-height: 1.3 !important;
+    margin-top: 0 !important;
   }
   
   .vertical-timeline-element p {
@@ -103,26 +159,145 @@
     border-radius: 4px;
     display: inline-block !important;
     color: white !important;
+    position: relative !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: 0 !important;
+    opacity: 1 !important;
+    text-align: left !important;
   }
   
   /* Smoother animations for mobile */
   .vertical-timeline-element {
     transition: transform 0.3s ease-out, opacity 0.3s ease-out !important;
   }
+  
+  /* Fix for both left and right cards on mobile */
+  .left-card, .right-card {
+    transform-origin: left center !important;
+  }
+  
+  /* Ensure list items are properly spaced and sized */
+  .vertical-timeline-element ul {
+    margin-top: 0.75rem !important;
+    padding-left: 1rem !important;
+  }
+  
+  .vertical-timeline-element li {
+    font-size: 0.85rem !important;
+    margin-bottom: 0.5rem !important;
+    line-height: 1.4 !important;
+  }
 }
 
 /* Small mobile adjustments */
 @media only screen and (max-width: 480px) {
+  /* Ensure the timeline container has proper width */
+  .vertical-timeline {
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
   .vertical-timeline-element-content {
     padding: 1rem !important;
+    width: calc(100% - 60px) !important; /* Narrower content area */
+    margin-left: 60px !important; /* Space for icon */
   }
   
   .vertical-timeline-element-icon {
-    width: 35px !important;
-    height: 35px !important;
+    width: 38px !important;
+    height: 38px !important;
+    left: 0 !important;
+    top: 22px !important;
+    border-width: 1.5px !important;
+  }
+  
+  /* Smaller icon container for very small screens */
+  .vertical-timeline-element-icon > div {
+    border-width: 1px !important;
+  }
+  
+  /* Adjust the icon content size */
+  .vertical-timeline-element-icon img {
+    width: 75% !important;
+    height: 75% !important;
+    padding: 1px !important;
+  }
+  
+  /* Fix content arrow position for small screens */
+  .vertical-timeline-element-content-arrow {
+    top: 22px;
+    border-width: 6px !important;
+  }
+  
+  /* Adjust typography for small screens */
+  .vertical-timeline-element h3 {
+    font-size: 1rem !important;
+    line-height: 1.25 !important;
+  }
+  
+  .vertical-timeline-element p {
+    font-size: 0.85rem !important;
+    margin-top: 0.25rem !important;
+  }
+  
+  .vertical-timeline-element li {
+    font-size: 0.8rem !important;
+    margin-bottom: 0.4rem !important;
+  }
+  
+  /* Adjust vertical line position */
+  .vertical-timeline::before {
+    left: 19px;
+  }
+  
+  /* Improve spacing between elements */
+  .vertical-timeline-element {
+    margin: 2rem 0 !important;
+  }
+  
+  /* Make date more compact */
+  .vertical-timeline-element-date {
+    font-size: 0.75rem !important;
+    padding: 0.4rem !important;
+    margin: 0.4rem 0 !important;
+  }
+}
+
+/* Extra small mobile adjustments */
+@media only screen and (max-width: 360px) {
+  .vertical-timeline-element-content {
+    padding: 0.8rem !important;
+    width: calc(100% - 50px) !important;
+    margin-left: 50px !important;
+  }
+  
+  .vertical-timeline-element-icon {
+    width: 32px !important;
+    height: 32px !important;
+    left: 0 !important;
+    top: 22px !important;
+  }
+  
+  .vertical-timeline::before {
+    left: 16px;
   }
   
   .vertical-timeline-element h3 {
-    font-size: 1.1rem !important;
+    font-size: 0.9rem !important;
+  }
+  
+  .vertical-timeline-element p {
+    font-size: 0.8rem !important;
+  }
+  
+  .vertical-timeline-element li {
+    font-size: 0.75rem !important;
+    line-height: 1.3 !important;
+  }
+  
+  .vertical-timeline-element ul {
+    margin-top: 0.5rem !important;
+    padding-left: 0.8rem !important;
   }
 }

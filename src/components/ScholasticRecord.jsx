@@ -58,7 +58,9 @@ const ExperienceCard = ({ experience, index }) => {
             borderLeft: index % 2 === 0 ? 'none' : "7px solid rgba(23, 23, 54, 0.8)",
             right: index % 2 === 0 ? 'auto' : '-7px',
             left: index % 2 === 0 ? '-7px' : 'auto',
-            transition: "all 0.3s ease-out"
+            transition: "all 0.3s ease-out",
+            // The following will be overridden by CSS media queries for mobile
+            position: 'absolute'
           }}
           position={index % 2 === 0 ? 'right' : 'left'}
           date={experience.date}
@@ -73,18 +75,26 @@ const ExperienceCard = ({ experience, index }) => {
           }}
           icon={
             <motion.div 
-              className='flex justify-center items-center w-full h-full bg-gradient-to-b from-slate-800/80 to-slate-900/90 rounded-full border-2 border-blue-500/30'
+              className='flex justify-center items-center w-full h-full bg-gradient-to-b from-slate-800/80 to-slate-900/90 rounded-full border-2 border-blue-500/30 mobile-icon-container'
               whileHover={{ scale: 1.1, rotate: 5 }}
+              whileTap={{ scale: 1.1 }} // Add tap animation for mobile
               transition={{ type: "spring", stiffness: 200, damping: 10 }}
             >
-              <div className="relative w-[85%] h-[85%] flex items-center justify-center overflow-hidden rounded-full">
+              <div className="relative w-[85%] h-[85%] flex items-center justify-center overflow-hidden rounded-full mobile-icon-inner">
                 <div className="absolute inset-0 bg-white/5 backdrop-blur-sm rounded-full"></div>
-                <img
-                  src={experience.icon}
-                  alt={experience.company_name}
-                  className='relative z-10 w-[95%] h-[95%] object-contain p-1'
-                  style={{ filter: 'brightness(1.2) contrast(1.15) drop-shadow(0 0 4px rgba(59, 130, 246, 0.6))' }}
-                />
+                <div className="relative z-10 w-[95%] h-[95%] flex items-center justify-center">
+                  <img
+                    src={experience.icon}
+                    alt={experience.company_name}
+                    className='mobile-icon-img object-contain p-1'
+                    style={{ 
+                      width: '90%', 
+                      height: '90%',
+                      filter: 'brightness(1.2) contrast(1.15) drop-shadow(0 0 4px rgba(59, 130, 246, 0.6))'
+                    }}
+                    loading="lazy" // Add lazy loading for better performance
+                  />
+                </div>
               </div>
             </motion.div>
           }
