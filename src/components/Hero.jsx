@@ -102,9 +102,9 @@ const Hero = () => {
       
 
 
-      {/* Book-themed decorative elements */}
+      {/* Book-themed decorative elements - with mobile-friendly positioning */}
       <motion.div 
-        className="absolute w-24 h-24 bg-[#6382ff]/10 filter blur-md"
+        className="absolute w-24 h-24 bg-[#6382ff]/10 filter blur-md hidden md:block"
         animate={{
           x: [0, 20, 0],
           y: [0, 15, 0],
@@ -123,7 +123,7 @@ const Hero = () => {
         }}
       />
       <motion.div 
-        className="absolute w-32 h-40 bg-[#4d7eff]/10 filter blur-md"
+        className="absolute w-32 h-40 bg-[#4d7eff]/10 filter blur-md hidden md:block"
         animate={{
           x: [0, -15, 0],
           y: [0, -10, 0],
@@ -142,7 +142,7 @@ const Hero = () => {
         }}
       />
       <motion.div 
-        className="absolute w-20 h-28 bg-[#ff4d7e]/10 filter blur-md"
+        className="absolute w-20 h-28 bg-[#ff4d7e]/10 filter blur-md hidden md:block"
         animate={{
           x: [0, 10, 0],
           y: [0, -5, 0],
@@ -161,9 +161,49 @@ const Hero = () => {
         }}
       />
       
-      {/* Floating paper elements */}
+      {/* Mobile-specific decorative elements - smaller and better positioned */}
+      <motion.div 
+        className="absolute w-16 h-16 bg-[#6382ff]/10 filter blur-sm md:hidden"
+        animate={{
+          x: [0, 10, 0],
+          y: [0, 8, 0],
+          rotate: [0, 3, 0]
+        }}
+        transition={{
+          duration: 6,
+          repeat: Infinity,
+          repeatType: "reverse",
+        }}
+        style={{
+          top: '15%',
+          left: '15%',
+          borderRadius: '5px',
+          transform: 'rotate(10deg)'
+        }}
+      />
+      <motion.div 
+        className="absolute w-20 h-24 bg-[#4d7eff]/10 filter blur-sm md:hidden"
+        animate={{
+          x: [0, -8, 0],
+          y: [0, -5, 0],
+          rotate: [0, -2, 0]
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          repeatType: "reverse",
+        }}
+        style={{
+          top: '25%',
+          right: '15%',
+          borderRadius: '5px',
+          transform: 'rotate(-5deg)'
+        }}
+      />
+      
+      {/* Floating paper elements - desktop */}
       <motion.div
-        className="absolute w-10 h-14 bg-white/5 backdrop-blur-sm"
+        className="absolute w-10 h-14 bg-white/5 backdrop-blur-sm hidden md:block"
         animate={{
           y: [-10, 10, -10],
           rotate: [0, 5, 0]
@@ -181,7 +221,7 @@ const Hero = () => {
         }}
       />
       <motion.div
-        className="absolute w-8 h-12 bg-white/5 backdrop-blur-sm"
+        className="absolute w-8 h-12 bg-white/5 backdrop-blur-sm hidden md:block"
         animate={{
           y: [5, -5, 5],
           rotate: [0, -3, 0]
@@ -196,6 +236,44 @@ const Hero = () => {
           left: '55%',
           borderRadius: '2px',
           transform: 'rotate(-5deg)'
+        }}
+      />
+      
+      {/* Floating paper elements - mobile */}
+      <motion.div
+        className="absolute w-8 h-10 bg-white/5 backdrop-blur-sm md:hidden"
+        animate={{
+          y: [-5, 5, -5],
+          rotate: [0, 3, 0]
+        }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          repeatType: "reverse",
+        }}
+        style={{
+          top: '20%',
+          left: '25%',
+          borderRadius: '2px',
+          transform: 'rotate(5deg)'
+        }}
+      />
+      <motion.div
+        className="absolute w-6 h-9 bg-white/5 backdrop-blur-sm md:hidden"
+        animate={{
+          y: [3, -3, 3],
+          rotate: [0, -2, 0]
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          repeatType: "reverse",
+        }}
+        style={{
+          top: '40%',
+          left: '65%',
+          borderRadius: '2px',
+          transform: 'rotate(-3deg)'
         }}
       />
     </motion.section>

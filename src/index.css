@@ -133,8 +133,17 @@
     left: 0;
     width: 100%;
     transform: none;
-    margin: 2rem auto;
-    height: 50vh;
+    margin: 1.5rem auto 2.5rem;
+    height: 45vh; /* Slightly smaller height on mobile */
+    min-height: 300px; /* Ensure minimum height */
+    max-height: 400px; /* Limit maximum height */
+  }
+  
+  /* Small mobile adjustments */
+  @media (max-width: 480px) {
+    margin: 1rem auto 2rem;
+    height: 40vh;
+    min-height: 250px;
   }
 }
 
@@ -146,9 +155,9 @@
   border-radius: 16px;
   background: rgba(16, 16, 34, 0.25);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px); /* For Safari */
   box-shadow: 0 8px 20px -5px rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(99, 130, 255, 0.25);
-  backdrop-filter: blur(4px);
   overflow: hidden;
   position: relative;
   z-index: 10;
@@ -156,10 +165,20 @@
   
   /* Mobile sizing */
   @media (max-width: 768px) {
-    width: 90%;
+    width: 85%;
     max-width: 400px;
     aspect-ratio: 16/12;
     margin: 0 auto;
+    border-radius: 12px;
+    background: rgba(16, 16, 34, 0.35); /* Slightly darker for better contrast */
+  }
+  
+  /* Small mobile adjustments */
+  @media (max-width: 480px) {
+    width: 90%;
+    max-width: 320px;
+    aspect-ratio: 16/13;
+    border-radius: 10px;
   }
 }
 
@@ -210,6 +229,25 @@
   position: relative;
   z-index: 10;
   transition: all 0.5s ease-in-out;
+  background: transparent !important;
+  
+  /* Fix for the blur spot issue */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+    z-index: -1;
+  }
+  
+  /* Mobile optimizations */
+  @media (max-width: 768px) {
+    overflow: hidden;
+    border-radius: inherit;
+  }
 }
 
 body {

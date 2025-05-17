@@ -65,10 +65,10 @@ export const UI = () => {
       >
         <div className="flex-grow"></div>
         <div className="w-full overflow-auto pointer-events-auto flex justify-center mb-8">
-          <div className="overflow-auto flex items-center gap-3 max-w-full p-5 bg-black/70 backdrop-blur-md rounded-xl shadow-2xl border border-white/10">
+          <div className="overflow-auto flex flex-wrap items-center justify-center gap-2 md:gap-3 max-w-full p-3 md:p-5 bg-black/70 backdrop-blur-md rounded-xl shadow-2xl border border-white/10">
             {/* Cover */}
             <button
-              className={`border border-white/30 hover:border-white hover:shadow-glow transition-all duration-300 px-5 py-3 rounded-full text-sm md:text-base font-semibold uppercase shrink-0 ${
+              className={`border border-white/30 hover:border-white hover:shadow-glow transition-all duration-300 px-3 md:px-5 py-2 md:py-3 rounded-full text-xs md:text-base font-semibold uppercase shrink-0 ${
                 page === 0 ? "bg-white/90 text-black" : "bg-black/80 text-white"
               }`}
               onClick={() => setPage(0)}
@@ -78,7 +78,7 @@ export const UI = () => {
             
             {/* Page 1 */}
             <button
-              className={`border border-white/30 hover:border-white hover:shadow-glow transition-all duration-300 px-5 py-3 rounded-full text-sm md:text-base font-semibold uppercase shrink-0 ${
+              className={`border border-white/30 hover:border-white hover:shadow-glow transition-all duration-300 px-3 md:px-5 py-2 md:py-3 rounded-full text-xs md:text-base font-semibold uppercase shrink-0 ${
                 page === 1 ? "bg-white/90 text-black" : "bg-black/80 text-white"
               }`}
               onClick={() => setPage(1)}
@@ -86,32 +86,30 @@ export const UI = () => {
               Page 1
             </button>
             
-
-            
             {/* Back Cover */}
             <button
-              className={`border border-white/30 hover:border-white hover:shadow-glow transition-all duration-300 px-5 py-3 rounded-full text-sm md:text-base font-semibold uppercase shrink-0 ${
+              className={`border border-white/30 hover:border-white hover:shadow-glow transition-all duration-300 px-3 md:px-5 py-2 md:py-3 rounded-full text-xs md:text-base font-semibold uppercase shrink-0 ${
                 page === pages.length ? "bg-white/90 text-black" : "bg-black/80 text-white"
               }`}
               onClick={() => setPage(pages.length)}
             >
-              Back Cover
+              Back
             </button>
             
-            {/* Divider */}
-            <div className="h-8 border-l border-white/30 mx-1"></div>
+            {/* Divider - hidden on small mobile */}
+            <div className="h-8 border-l border-white/30 mx-1 hidden sm:block"></div>
             
             {/* Download Resume Button */}
             <a
               href="/Resume-Adrish.pdf"
               download
-              className="border border-white/30 hover:border-white hover:shadow-glow transition-all duration-300 px-5 py-3 rounded-full text-sm md:text-base font-semibold uppercase shrink-0 bg-black/80 text-white flex items-center gap-2"
+              className="border border-white/30 hover:border-white hover:shadow-glow transition-all duration-300 px-3 md:px-5 py-2 md:py-3 rounded-full text-xs md:text-base font-semibold uppercase shrink-0 bg-black/80 text-white flex items-center gap-1 md:gap-2"
               onClick={(e) => e.stopPropagation()}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
-              Resume
+              <span>Resume</span>
             </a>
           </div>
         </div>
