@@ -116,6 +116,42 @@
     font-size: 0.95rem; /* Smaller text on mobile */
     line-height: 1.5;
   }
+  
+  .project-card-wrapper {
+    width: 100% !important;
+    max-width: 350px !important;
+    padding: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .project-card {
+    min-height: 320px;
+  }
+}
+
+@media (max-width: 480px) {
+  .infinite-scroll-item .project-card {
+    max-width: 300px;
+  }
+  
+  .project-card h3 {
+    font-size: 1.2rem;
+    margin-top: 0.8rem;
+  }
+  
+  .project-card p {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+  
+  .project-card-wrapper {
+    max-width: 280px !important;
+  }
+  
+  .project-card .flex-wrap p {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.5rem;
+  }
 }
 
 /* Adding a special adjustment for very large screens */

@@ -115,7 +115,7 @@ const Contact = () => {
         initial={{ x: -50, opacity: 0 }}
         animate={leftInView ? { x: 0, opacity: 1 } : { x: -50, opacity: 0 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className='xl:w-[38%] lg:w-[40%] md:w-[45%] w-full bg-[#0c0a1d] p-5 rounded-lg transition-all duration-300 relative overflow-hidden'
+        className='xl:w-[38%] lg:w-[40%] md:w-[45%] w-full bg-[#0c0a1d] p-5 md:p-5 p-4 rounded-lg transition-all duration-300 relative overflow-hidden contact-form-container'
         style={{
           boxShadow: '0 8px 32px -5px rgba(63, 81, 181, 0.4)',
           border: '1px solid rgba(99, 130, 255, 0.2)',
@@ -201,7 +201,7 @@ const Contact = () => {
         initial={{ x: 50, opacity: 0 }}
         animate={rightInView ? { x: 0, opacity: 1 } : { x: 50, opacity: 0 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className='xl:w-[60%] lg:w-[58%] md:w-[55%] w-full h-[500px] flex items-center justify-center overflow-visible'
+        className='xl:w-[60%] lg:w-[58%] md:w-[55%] w-full h-[500px] md:h-[500px] sm:h-[400px] h-[350px] flex items-center justify-center overflow-visible earth-canvas-container'
         style={{ 
           background: 'transparent',
           boxShadow: 'none',

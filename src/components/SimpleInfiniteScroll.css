@@ -17,6 +17,19 @@
   transform: rotateX(15deg) rotateZ(15deg) skewX(-15deg);
 }
 
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .simple-infinite-scroll {
+    max-width: 100%;
+    perspective: none;
+  }
+  
+  .simple-infinite-scroll.tilted-left,
+  .simple-infinite-scroll.tilted-right {
+    transform: none;
+  }
+}
+
 .scroll-container {
   height: 100%;
   overflow-y: scroll;
