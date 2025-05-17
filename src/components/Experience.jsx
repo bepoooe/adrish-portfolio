@@ -28,11 +28,33 @@ export const Experience = () => {
     
     useEffect(() => {
       if (isMobile) {
-        // Adjust camera position for mobile
-        camera.position.set(-0.5, 1.2, 4.5);
-        camera.fov = 50;
+        // Adjust camera position for mobile - moved further back for better initial view
+        camera.position.set(-0.5, 1.2, 6);
+        camera.fov = 50; // Wider FOV for mobile
+        camera.near = 0.1; // Closer near clipping plane
+        camera.far = 2000; // Far clipping plane for zooming out
+        camera.updateProjectionMatrix();
+      } else {
+        // Ensure desktop camera is properly positioned
+        camera.position.set(-0.5, 1, 4.5);
+        camera.fov = 40;
+        camera.far = 2000; // Far clipping plane for zooming out
         camera.updateProjectionMatrix();
       }
+    }, [camera, isMobile]);
+    
+    // Handle resize events to update camera on orientation changes
+    useEffect(() => {
+      const handleResize = () => {
+        if (isMobile) {
+          camera.position.set(-0.5, 1.2, 6);
+          camera.fov = window.innerWidth < 380 ? 55 : 50; // Even wider FOV for very small screens
+          camera.updateProjectionMatrix();
+        }
+      };
+      
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
     }, [camera, isMobile]);
     
     return null;
@@ -42,20 +64,27 @@ export const Experience = () => {
     <>
       <CameraAdjuster />
       <Float
-        rotation-x={-Math.PI / 4}
-        floatIntensity={isMobile ? 0.5 : 1} // Reduce float intensity on mobile
-        speed={isMobile ? 1.5 : 2} // Slightly slower on mobile
-        rotationIntensity={isMobile ? 1 : 2} // Less rotation on mobile
+        rotation-x={isMobile ? -Math.PI / 5 : -Math.PI / 4} // Less tilt on mobile
+        floatIntensity={isMobile ? 0.3 : 1} // Significantly reduce float intensity on mobile
+        speed={isMobile ? 1 : 2} // Slower on mobile for better performance
+        rotationIntensity={isMobile ? 0.5 : 2} // Much less rotation on mobile
       >
         <Book />
       </Float>
       <Particles count={isMobile ? 1000 : 2000} /> {/* Fewer particles on mobile */}
       <OrbitControls 
-        enableZoom={false} // Disable zoom for better mobile experience
-        enablePan={false} // Disable panning for better mobile experience
-        rotateSpeed={0.5} // Slower rotation for better control
+        enableZoom={true} // Enable zoom functionality
+        zoomSpeed={isMobile ? 1.2 : 0.8} // Faster zoom speed on mobile
+        minDistance={isMobile ? 2 : 1} // Prevent zooming in too close on mobile
+        maxDistance={isMobile ? 10 : 15} // Limit zoom out on mobile for better performance
+        enablePan={false} // Disable panning for better experience
+        rotateSpeed={isMobile ? 0.7 : 0.5} // Slightly faster rotation on mobile
         maxPolarAngle={Math.PI / 1.5} // Limit rotation
         minPolarAngle={Math.PI / 3} // Limit rotation
+        enableDamping={true} // Add smooth damping
+        dampingFactor={0.1} // Control damping speed
+        touchAction="none" // Prevent default touch actions
+        screenSpacePanning={false} // Use more intuitive panning mode
       />
       <Environment preset="city" intensity={0.5}></Environment>
       <directionalLight

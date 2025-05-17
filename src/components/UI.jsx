@@ -63,6 +63,7 @@ export const UI = () => {
           showControls ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
       >
+
         <div className="flex-grow"></div>
         <div className="w-full overflow-auto pointer-events-auto flex justify-center mb-8">
           <div className="overflow-auto flex flex-wrap items-center justify-center gap-2 md:gap-3 max-w-full p-3 md:p-5 bg-black/70 backdrop-blur-md rounded-xl shadow-2xl border border-white/10">
