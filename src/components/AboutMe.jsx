@@ -28,6 +28,32 @@ const CardContainer = styled.div`
   
   @media (max-width: 480px) {
     min-height: 50vh;
+    padding: 0.5rem 0 2rem;
+    touch-action: pan-y; /* Allow vertical scrolling but handle horizontal swipes */
+  }
+  
+  /* Add a hint for mobile users to swipe */
+  &::after {
+    content: 'Swipe to explore';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
+    
+    @media (max-width: 768px) {
+      opacity: 1;
+    }
+    
+    @media (max-width: 480px) {
+      bottom: -5px;
+      font-size: 0.65rem;
+    }
   }
 `;
 
@@ -100,12 +126,31 @@ const RotatingInner = styled.div`
     --w: 340px;
     --h: 300px;
     --translateZ: 500px;
+    --perspective: 2000px;
+    --rotateX: 5deg; /* Slight tilt for better mobile viewing */
   }
   
   @media (max-width: 480px) {
     --w: 300px;
     --h: 280px;
     --translateZ: 400px;
+    --perspective: 1800px;
+    --rotateX: 8deg; /* More tilt for smaller screens */
+    
+    @keyframes autoRotate {
+      from {
+        transform: perspective(var(--perspective)) rotateX(var(--rotateX)) rotateY(0deg);
+      }
+      to {
+        transform: perspective(var(--perspective)) rotateX(var(--rotateX)) rotateY(360deg);
+      }
+    }
+  }
+  
+  /* Prevent animation during page load for better performance */
+  @media (prefers-reduced-motion: reduce) {
+    animation-duration: 0s !important;
+    transition-duration: 0s !important;
   }
 `;
 
@@ -138,6 +183,31 @@ const GlassCard = styled.div`
     transform: rotateY(calc((360deg / var(--quantity, 10)) * var(--index, 0)))
       translateZ(calc(var(--translateZ) + 100px));
     z-index: 20;
+  }
+  
+  @media (max-width: 768px) {
+    width: 85%;
+    height: 90%;
+    left: 7.5%;
+    top: 5%;
+    padding: 10px 8px;
+    
+    /* Ensure the hover effect works on touch devices */
+    &:active {
+      transform: rotateY(calc((360deg / var(--quantity, 10)) * var(--index, 0)))
+        translateZ(calc(var(--translateZ) + 50px));
+      z-index: 20;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    width: 88%;
+    height: 92%;
+    left: 6%;
+    top: 4%;
+    border-width: 1px;
+    box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.5),
+                inset 0 0 15px rgba(var(--color-card, '59, 130, 246'), 0.15);
   }
 `;
 
@@ -178,6 +248,30 @@ const IconContainer = styled.div`
     0% { transform: scale(0.8); opacity: 0.1; }
     50% { transform: scale(1.2); opacity: 0.2; }
     100% { transform: scale(0.8); opacity: 0.1; }
+  }
+  
+  @media (max-width: 768px) {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 10px;
+    border-width: 1.5px;
+    
+    span {
+      font-size: 1.7rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    width: 45px;
+    height: 45px;
+    margin-bottom: 8px;
+    border-width: 1px;
+    box-shadow: 0 0 15px rgba(var(--color-card, '59, 130, 246'), 0.5),
+                inset 0 0 10px rgba(var(--color-card, '59, 130, 246'), 0.3);
+    
+    span {
+      font-size: 1.5rem;
+    }
   }
 `;
 
@@ -237,26 +331,31 @@ const CardDescription = styled.p`
   line-height: 1.25;
   margin-bottom: 10px;
   max-width: 95%;
-  overflow-y: visible;
-  padding: 0;
+  overflow-y: auto;
+  padding: 0 2px;
   font-weight: 500;
+  max-height: 120px; /* Allow scrolling for longer descriptions */
   
   @media (max-width: 768px) {
-    font-size: 0.8rem;
-    line-height: 1.2;
-    margin-bottom: 10px;
-    max-height: 100px;
-  }
-  
-  @media (max-width: 480px) {
     font-size: 0.75rem;
     line-height: 1.2;
     margin-bottom: 8px;
-    max-height: 80px;
+    max-height: 90px;
+    padding: 0 4px;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
   }
   
+  @media (max-width: 480px) {
+    font-size: 0.7rem;
+    line-height: 1.15;
+    margin-bottom: 6px;
+    max-height: 70px;
+    max-width: 98%;
+  }
+  
+  /* Custom scrollbar styling */
   &::-webkit-scrollbar {
-    width: 6px;
+    width: 4px;
   }
   
   &::-webkit-scrollbar-track {
@@ -268,6 +367,15 @@ const CardDescription = styled.p`
     background: rgba(var(--color-card, '59, 130, 246'), 0.3);
     border-radius: 10px;
   }
+  
+  /* Hide scrollbar for mobile but keep functionality */
+  @media (max-width: 480px) {
+    scrollbar-width: thin;
+    
+    &::-webkit-scrollbar {
+      width: 2px;
+    }
+  }
 `;
 
 const SkillsContainer = styled.div`
@@ -278,6 +386,18 @@ const SkillsContainer = styled.div`
   margin-top: 8px;
   max-width: 95%;
   overflow: visible;
+  
+  @media (max-width: 768px) {
+    gap: 3px;
+    margin-top: 6px;
+    max-width: 98%;
+  }
+  
+  @media (max-width: 480px) {
+    gap: 2px;
+    margin-top: 4px;
+    max-width: 100%;
+  }
 `;
 
 const SkillTag = styled.span`
@@ -292,6 +412,20 @@ const SkillTag = styled.span`
   margin: 1px;
   text-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
   white-space: nowrap;
+  
+  @media (max-width: 768px) {
+    padding: 1px 5px;
+    font-size: 0.62rem;
+    border-radius: 8px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 1px 4px;
+    font-size: 0.58rem;
+    border-radius: 6px;
+    margin: 0.5px;
+    box-shadow: 0 1px 2px rgba(var(--color-card, '59, 130, 246'), 0.3);
+  }
 `;
 
 const NavButton = styled.button`
@@ -385,7 +519,11 @@ const Indicators = styled.div`
   
   @media (max-width: 480px) {
     bottom: -30px;
-    gap: 10px;
+    gap: 8px;
+    padding: 5px 10px;
+    background: rgba(15, 23, 42, 0.3);
+    border-radius: 20px;
+    backdrop-filter: blur(4px);
   }
 `;
 
@@ -410,9 +548,21 @@ const IndicatorDot = styled.button`
   }
   
   @media (max-width: 480px) {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border-width: 1px;
+    
+    /* Make tap target larger than visual size for better touch interaction */
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: -8px;
+      right: -8px;
+      bottom: -8px;
+    }
   }
 `;
 
@@ -480,7 +630,84 @@ const AboutMe = () => {
     return () => clearInterval(interval);
   }, [activeIndex]);
   
-  // No cleanup needed for auto-rotation
+  // Function to rotate to a specific card
+  const rotateToCard = (index) => {
+    if (!rotatingRef.current) return;
+    
+    // Temporarily pause auto-rotation
+    rotatingRef.current.classList.remove('auto-rotating');
+    
+    // Calculate the rotation angle to show the selected card
+    const angle = -(360 / aboutTimeline.length) * index;
+    
+    // Apply the rotation
+    rotatingRef.current.style.transform = `perspective(var(--perspective)) rotateX(var(--rotateX)) rotateY(${angle}deg)`;
+    
+    // Update active index
+    setActiveIndex(index);
+    
+    // Resume auto-rotation after a delay
+    setTimeout(() => {
+      if (rotatingRef.current) {
+        rotatingRef.current.style.transform = '';
+        rotatingRef.current.classList.add('auto-rotating');
+      }
+    }, 3000);
+  };
+  
+  // Add touch event handling for mobile
+  useEffect(() => {
+    const handleTouchStart = (e) => {
+      // Store the initial touch position
+      const touchStartX = e.touches[0].clientX;
+      const touchStartY = e.touches[0].clientY;
+      
+      const handleTouchMove = (e) => {
+        // Prevent default to avoid scrolling while swiping
+        e.preventDefault();
+      };
+      
+      const handleTouchEnd = (e) => {
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+        
+        // Calculate the swipe distance
+        const deltaX = touchEndX - touchStartX;
+        const deltaY = touchEndY - touchStartY;
+        
+        // Only consider horizontal swipes
+        if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+          if (deltaX > 0) {
+            // Swipe right - go to previous card
+            const prevIndex = (activeIndex - 1 + aboutTimeline.length) % aboutTimeline.length;
+            rotateToCard(prevIndex);
+          } else {
+            // Swipe left - go to next card
+            const nextIndex = (activeIndex + 1) % aboutTimeline.length;
+            rotateToCard(nextIndex);
+          }
+        }
+      };
+      
+      document.addEventListener('touchmove', handleTouchMove, { passive: false });
+      document.addEventListener('touchend', handleTouchEnd);
+      
+      return () => {
+        document.removeEventListener('touchmove', handleTouchMove);
+        document.removeEventListener('touchend', handleTouchEnd);
+      };
+    };
+    
+    // Add touch event listeners to the rotating container
+    const container = rotatingRef.current;
+    if (container) {
+      container.addEventListener('touchstart', handleTouchStart);
+      
+      return () => {
+        container.removeEventListener('touchstart', handleTouchStart);
+      };
+    }
+  }, [activeIndex]);
   
   // Animation for initial load
   useEffect(() => {
