@@ -154,11 +154,6 @@
 
 /* Navbar mobile adjustments */
 @media (max-width: 640px) {
-  /* Add xs breakpoint for Tailwind compatibility */
-  .xs\:inline {
-    display: inline;
-  }
-  
   /* Ensure the navbar is properly sized */
   .navbar-glow {
     padding: 0.5rem 1rem;

@@ -82,7 +82,7 @@ const Navbar = () => {
     >
       <div className='w-full flex justify-between items-center max-w-7xl mx-auto'>
         <motion.div 
-          className="flex items-center justify-between w-full px-4 sm:px-8 py-2 sm:py-3 rounded-full border border-gray-700 bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm navbar-glow relative overflow-hidden"
+          className="flex items-center justify-between w-full px-5 sm:px-8 py-2 sm:py-3 rounded-full border border-gray-700 bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm navbar-glow relative overflow-hidden"
           whileHover={{ boxShadow: "0 0 15px rgba(0, 0, 0, 0.7)" }}
           transition={{ duration: 0.3 }}
         >
@@ -110,8 +110,8 @@ const Navbar = () => {
               whileHover={{ rotate: 360 }}
               transition={{ duration: 0.5 }}
             />
-            <p className='text-[16px] sm:text-[18px] font-bold cursor-pointer flex transition-all duration-300'>
-              <span className="text-[#e8e0cf] group-hover:text-[#f0e9db] drop-shadow-[0_0_3px_rgba(232,224,207,0.3)]">Bepo</span> <span className="ml-1"><span className="text-[#e8e0cf] opacity-70 group-hover:opacity-80">|</span> <span className="hidden xs:inline text-[#e8e0cf] group-hover:text-[#f0e9db] drop-shadow-[0_0_3px_rgba(232,224,207,0.3)]">Portfolio</span></span>
+            <p className='text-[15px] sm:text-[18px] font-bold cursor-pointer flex transition-all duration-300'>
+              <span className="text-[#e8e0cf] group-hover:text-[#f0e9db] drop-shadow-[0_0_3px_rgba(232,224,207,0.3)]">Bepo</span> <span className="ml-1"><span className="text-[#e8e0cf] opacity-70 group-hover:opacity-80">|</span> <span className="text-[#e8e0cf] group-hover:text-[#f0e9db] drop-shadow-[0_0_3px_rgba(232,224,207,0.3)]">Portfolio</span></span>
             </p>
           </div>
 
