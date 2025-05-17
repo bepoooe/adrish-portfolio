@@ -363,41 +363,31 @@ class App {
     })
   }
   createMedias(items, bend = 1, textColor, borderRadius, font) {
-    const defaultItems = [
-      { image: `https://picsum.photos/seed/1/800/600?grayscale`, text: 'Bridge' },
-      { image: `https://picsum.photos/seed/2/800/600?grayscale`, text: 'Desk Setup' },
-      { image: `https://picsum.photos/seed/3/800/600?grayscale`, text: 'Waterfall' },
-      { image: `https://picsum.photos/seed/4/800/600?grayscale`, text: 'Strawberries' },
-      { image: `https://picsum.photos/seed/5/800/600?grayscale`, text: 'Deep Diving' },
-      { image: `https://picsum.photos/seed/16/800/600?grayscale`, text: 'Train Track' },
-      { image: `https://picsum.photos/seed/17/800/600?grayscale`, text: 'Santorini' },
-      { image: `https://picsum.photos/seed/8/800/600?grayscale`, text: 'Blurry Lights' },
-      { image: `https://picsum.photos/seed/9/800/600?grayscale`, text: 'New York' },
-      { image: `https://picsum.photos/seed/10/800/600?grayscale`, text: 'Good Boy' },
-      { image: `https://picsum.photos/seed/21/800/600?grayscale`, text: 'Coastline' },
-      { image: `https://picsum.photos/seed/12/800/600?grayscale`, text: "Palm Trees" }
-    ]
-    const galleryItems = items && items.length ? items : defaultItems
-    this.mediaParams = {
-      geometry: this.planeGeometry,
-      gl: this.gl,
-      scene: this.scene,
-      screen: this.screen,
-      viewport: this.viewport,
-      bend,
-      textColor,
-      borderRadius,
-      font,
-      preserveAspectRatio: true
-    }
+    this.items = items
+    const { gl, scene, screen, viewport } = this
+    
+    const geometry = this.planeGeometry
 
+    const galleryItems = items && items.length ? items : []
+
+    // Create media objects for each item
     this.medias = galleryItems.map((item, index) => {
       const media = new Media({
-        ...this.mediaParams,
-        ...item,
+        geometry,
+        gl,
+        image: item.image,
         index,
         length: galleryItems.length,
-        renderer: this.renderer
+        renderer: this.renderer,
+        scene,
+        screen,
+        text: item.text,
+        viewport,
+        bend,
+        textColor,
+        borderRadius,
+        font,
+        preserveAspectRatio: true
       })
       return media
     })
@@ -406,6 +396,7 @@ class App {
     this.isDown = true
     this.scroll.position = this.scroll.current
     this.start = e.touches ? e.touches[0].clientX : e.clientX
+    // Record position when user starts interacting
   }
   onTouchMove(e) {
     if (!this.isDown) return
@@ -416,6 +407,8 @@ class App {
   onTouchUp() {
     this.isDown = false
     this.onCheck()
+    // Reset auto-scroll timer when user stops interacting
+    this.lastAutoScrollTime = Date.now()
   }
   onWheel() {
     this.scroll.target += 2
@@ -448,6 +441,11 @@ class App {
     }
   }
   update() {
+    // Simple auto-scrolling implementation
+    if (!this.isDown) {
+      this.scroll.target += 0.3; // Constant speed scrolling
+    }
+    
     this.scroll.current = lerp(
       this.scroll.current,
       this.scroll.target,

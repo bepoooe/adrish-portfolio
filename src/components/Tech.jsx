@@ -162,7 +162,8 @@ const Tech = () => {
       </motion.div>
 
       {/* Circular Gallery */}
-      <div className="w-full h-[400px] mt-8 relative">
+      <div className="w-full max-w-5xl mx-auto h-[300px] sm:h-[350px] md:h-[400px] mt-4 sm:mt-6 relative">
+        <div className="px-2 sm:px-4 w-full h-full">
         {loading ? (
           <div className="w-full h-full flex justify-center items-center">
             <div className="w-16 h-16 border-t-4 border-b-4 border-blue-500 rounded-full animate-spin"></div>
@@ -173,7 +174,7 @@ const Tech = () => {
             bend={-1.8}
             textColor="#f0f0ff"
             borderRadius={0}
-            font="bold 16px DM Sans"
+            font="bold 14px DM Sans sm:bold 16px DM Sans"
             preserveAspectRatio={true}
           />
         ) : (
@@ -181,6 +182,7 @@ const Tech = () => {
             Could not load technology icons
           </div>
         )}
+        </div>
       </div>
     </div>
   );
