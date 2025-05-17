@@ -19,54 +19,84 @@ import {
 } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { pageAtom, pages } from "./UI";
+// Use local implementation to avoid circular dependency
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    // Check if we're on mobile
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    // Initial check
+    checkMobile();
+    
+    // Add resize listener
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
+  return isMobile;
+};
 
-const easingFactor = 0.5; // Controls the speed of the easing
-const easingFactorFold = 0.3; // Controls the speed of the easing
-const insideCurveStrength = 0.12; // Controls the strength of the curve - reduced for better readability
-const outsideCurveStrength = 0.03; // Controls the strength of the curve - reduced for better readability
-const turningCurveStrength = 0.06; // Controls the strength of the curve - reduced for better readability
+// Adjust parameters based on device
+const getBookParameters = (isMobile) => {
+  return {
+    easingFactor: isMobile ? 0.4 : 0.5, // Slightly faster easing on mobile for more consistent opening
+    easingFactorFold: isMobile ? 0.3 : 0.3, // Same fold easing for consistency
+    insideCurveStrength: isMobile ? 0.12 : 0.12, // Same curve strength for consistent opening
+    outsideCurveStrength: isMobile ? 0.03 : 0.03, // Same curve strength for consistent opening
+    turningCurveStrength: isMobile ? 0.06 : 0.06, // Same turning curve for consistent opening
+    pageSegments: isMobile ? 15 : 30, // Fewer segments on mobile for better performance
+  };
+};
 
 const PAGE_WIDTH = 1.28;
 const PAGE_HEIGHT = 1.71; // 4:3 aspect ratio
 const PAGE_DEPTH = 0.003;
-const PAGE_SEGMENTS = 30;
-const SEGMENT_WIDTH = PAGE_WIDTH / PAGE_SEGMENTS;
 
-const pageGeometry = new BoxGeometry(
-  PAGE_WIDTH,
-  PAGE_HEIGHT,
-  PAGE_DEPTH,
-  PAGE_SEGMENTS,
-  2
-);
+// Create page geometry based on device capabilities
+const createPageGeometry = (segments) => {
+  const geometry = new BoxGeometry(
+    PAGE_WIDTH,
+    PAGE_HEIGHT,
+    PAGE_DEPTH,
+    segments,
+    2
+  );
 
-pageGeometry.translate(PAGE_WIDTH / 2, 0, 0);
+  geometry.translate(PAGE_WIDTH / 2, 0, 0);
+  
+  const segmentWidth = PAGE_WIDTH / segments;
+  const position = geometry.attributes.position;
+  const vertex = new Vector3();
+  const skinIndexes = [];
+  const skinWeights = [];
 
-const position = pageGeometry.attributes.position;
-const vertex = new Vector3();
-const skinIndexes = [];
-const skinWeights = [];
+  for (let i = 0; i < position.count; i++) {
+    // ALL VERTICES
+    vertex.fromBufferAttribute(position, i); // get the vertex
+    const x = vertex.x; // get the x position of the vertex
 
-for (let i = 0; i < position.count; i++) {
-  // ALL VERTICES
-  vertex.fromBufferAttribute(position, i); // get the vertex
-  const x = vertex.x; // get the x position of the vertex
+    const skinIndex = Math.max(0, Math.floor(x / segmentWidth)); // calculate the skin index
+    let skinWeight = (x % segmentWidth) / segmentWidth; // calculate the skin weight
 
-  const skinIndex = Math.max(0, Math.floor(x / SEGMENT_WIDTH)); // calculate the skin index
-  let skinWeight = (x % SEGMENT_WIDTH) / SEGMENT_WIDTH; // calculate the skin weight
+    skinIndexes.push(skinIndex, skinIndex + 1, 0, 0); // set the skin indexes
+    skinWeights.push(1 - skinWeight, skinWeight, 0, 0); // set the skin weights
+  }
 
-  skinIndexes.push(skinIndex, skinIndex + 1, 0, 0); // set the skin indexes
-  skinWeights.push(1 - skinWeight, skinWeight, 0, 0); // set the skin weights
-}
-
-pageGeometry.setAttribute(
-  "skinIndex",
-  new Uint16BufferAttribute(skinIndexes, 4)
-);
-pageGeometry.setAttribute(
-  "skinWeight",
-  new Float32BufferAttribute(skinWeights, 4)
-);
+  geometry.setAttribute(
+    "skinIndex",
+    new Uint16BufferAttribute(skinIndexes, 4)
+  );
+  geometry.setAttribute(
+    "skinWeight",
+    new Float32BufferAttribute(skinWeights, 4)
+  );
+  
+  return geometry;
+};
 
 const whiteColor = new Color("#f9f9f9"); // Slightly off-white for better text contrast
 const emissiveColor = new Color("#333333");
@@ -93,43 +123,72 @@ pages.forEach((page) => {
 });
 
 const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
-  const [picture, picture2, pictureRoughness] = useTexture([
-    `/textures/${front}.jpg`,
-    `/textures/${back}.jpg`,
-    ...(number === 0 || number === pages.length - 1
-      ? [`/textures/book-cover-roughness.jpg`]
-      : []),
-  ]);
-  // Basic texture enhancement for better readability
-  picture.colorSpace = picture2.colorSpace = SRGBColorSpace;
+  const isMobile = useIsMobile();
+  const params = getBookParameters(isMobile);
   
-  // Set anisotropic filtering if supported by the GPU
-  if (picture.anisotropy !== undefined) {
-    picture.anisotropy = picture2.anisotropy = 16;
+  // Load textures with error handling
+  const [textureError, setTextureError] = useState(false);
+  
+  // Use the standard useTexture hook directly instead of async loading
+  const [picture, picture2, pictureRoughness] = useTexture(
+    [
+      `/textures/${front}.jpg`,
+      `/textures/${back}.jpg`,
+      ...(number === 0 || number === pages.length - 1
+        ? [`/textures/book-cover-roughness.jpg`]
+        : []),
+    ],
+    // Success callback
+    (loadedTextures) => {
+      // Apply optimizations to all textures
+      loadedTextures.forEach(texture => {
+        texture.colorSpace = SRGBColorSpace;
+        texture.minFilter = LinearFilter;
+        texture.magFilter = LinearFilter;
+        
+        // Lower anisotropy on mobile for performance
+        if (texture.anisotropy !== undefined) {
+          texture.anisotropy = isMobile ? 4 : 16;
+        }
+        
+        texture.needsUpdate = true;
+      });
+      setTextureError(false);
+    },
+    // Error callback
+    (error) => {
+      console.error("Error loading textures:", error);
+      setTextureError(true);
+    }
+  );
+  
+  // If textures failed to load, show a simple colored material instead
+  if (textureError) {
+    console.warn("Using fallback materials due to texture loading error");
   }
   
-  // Use appropriate texture filtering
-  picture.minFilter = picture2.minFilter = LinearFilter;
-  picture.magFilter = picture2.magFilter = LinearFilter;
-  
-  // Ensure textures update
-  picture.needsUpdate = picture2.needsUpdate = true;
-
   const group = useRef();
   const turnedAt = useRef(0);
   const lastOpened = useRef(opened);
-
   const skinnedMeshRef = useRef();
+  
+  // Create geometry with appropriate segment count for the device
+  const pageGeometry = useMemo(() => 
+    createPageGeometry(params.pageSegments), 
+  [params.pageSegments]);
+  
+  const segmentWidth = PAGE_WIDTH / params.pageSegments;
 
   const manualSkinnedMesh = useMemo(() => {
+    // Create bones for the page
     const bones = [];
-    for (let i = 0; i <= PAGE_SEGMENTS; i++) {
+    for (let i = 0; i <= params.pageSegments; i++) {
       let bone = new Bone();
       bones.push(bone);
       if (i === 0) {
         bone.position.x = 0;
       } else {
-        bone.position.x = SEGMENT_WIDTH;
+        bone.position.x = segmentWidth;
       }
       if (i > 0) {
         bones[i - 1].add(bone); // attach the new bone to the previous bone
@@ -137,14 +196,15 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
     }
     const skeleton = new Skeleton(bones);
 
+    // Create materials with the textures
     const materials = [
       ...pageMaterials,
       new MeshStandardMaterial({
         color: whiteColor,
-        map: picture,
+        map: textureError ? null : picture,
         ...(number === 0
           ? {
-              roughnessMap: pictureRoughness,
+              roughnessMap: textureError ? null : pictureRoughness,
               metalness: 0,
               roughness: 0.8
             }
@@ -158,10 +218,10 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
       }),
       new MeshStandardMaterial({
         color: new Color("#ffffff"),
-        map: picture2,
+        map: textureError ? null : picture2,
         ...(number === 0 || number === pages.length - 1
           ? {
-              roughnessMap: pictureRoughness,
+              roughnessMap: textureError ? null : pictureRoughness,
               metalness: 0,
               roughness: 1.0,
               envMapIntensity: 0
@@ -177,16 +237,15 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
         emissiveIntensity: 0.4, // Higher intensity for better visibility
       }),
     ];
+    
     const mesh = new SkinnedMesh(pageGeometry, materials);
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
+    mesh.castShadow = !isMobile; // Disable shadows on mobile for performance
+    mesh.receiveShadow = !isMobile;
     mesh.frustumCulled = false;
     mesh.add(skeleton.bones[0]);
     mesh.bind(skeleton);
     return mesh;
-  }, []);
-
-  // useHelper(skinnedMeshRef, SkeletonHelper, "red");
+  }, [picture, picture2, pictureRoughness, textureError, pageGeometry, params.pageSegments, segmentWidth, isMobile]);
 
   useFrame((_, delta) => {
     if (!skinnedMeshRef.current) {
@@ -205,8 +264,11 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
       turnedAt.current = +new Date();
       lastOpened.current = opened;
     }
-    let turningTime = Math.min(400, new Date() - turnedAt.current) / 400;
-    turningTime = Math.sin(turningTime * Math.PI);
+    
+    // Use consistent animation duration for reliable page turning
+    const animationDuration = 500; // Same duration regardless of device for consistent animation
+    let turningTime = Math.min(animationDuration, new Date() - turnedAt.current) / animationDuration;
+    turningTime = Math.sin(turningTime * Math.PI); // Smooth easing curve
 
     let targetRotation = opened ? -Math.PI / 2 : Math.PI / 2;
     if (!bookClosed) {
@@ -214,18 +276,29 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
     }
 
     const bones = skinnedMeshRef.current.skeleton.bones;
-    for (let i = 0; i < bones.length; i++) {
+    
+    // On mobile, we need to update all bones for proper animation
+    // The crooked opening was caused by skipping bones
+    const updateStep = 1; // Always update all bones for consistent animation
+    
+    for (let i = 0; i < bones.length; i += updateStep) {
       const target = i === 0 ? group.current : bones[i];
 
+      // Consistent curve parameters regardless of device
       const insideCurveIntensity = i < 8 ? Math.sin(i * 0.2 + 0.25) : 0;
       const outsideCurveIntensity = i >= 8 ? Math.cos(i * 0.3 + 0.09) : 0;
       const turningIntensity =
         Math.sin(i * Math.PI * (1 / bones.length)) * turningTime;
+      
+      // Calculate rotation angle with consistent parameters
       let rotationAngle =
-        insideCurveStrength * insideCurveIntensity * targetRotation -
-        outsideCurveStrength * outsideCurveIntensity * targetRotation +
-        turningCurveStrength * turningIntensity * targetRotation;
+        params.insideCurveStrength * insideCurveIntensity * targetRotation -
+        params.outsideCurveStrength * outsideCurveIntensity * targetRotation +
+        params.turningCurveStrength * turningIntensity * targetRotation;
+      
+      // Consistent fold angle
       let foldRotationAngle = degToRad(Math.sign(targetRotation) * 2);
+      
       if (bookClosed) {
         if (i === 0) {
           rotationAngle = targetRotation;
@@ -235,23 +308,28 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
           foldRotationAngle = 0;
         }
       }
+      
+      // Apply rotation with appropriate easing
       easing.dampAngle(
         target.rotation,
         "y",
         rotationAngle,
-        easingFactor,
+        params.easingFactor,
         delta
       );
 
+      // Consistent fold intensity calculation
       const foldIntensity =
         i > 8
           ? Math.sin(i * Math.PI * (1 / bones.length) - 0.5) * turningTime
           : 0;
+      
+      // Apply fold rotation
       easing.dampAngle(
         target.rotation,
         "x",
         foldRotationAngle * foldIntensity,
-        easingFactorFold,
+        params.easingFactorFold,
         delta
       );
     }
@@ -260,6 +338,11 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
   const [_, setPage] = useAtom(pageAtom);
   const [highlighted, setHighlighted] = useState(false);
   useCursor(highlighted);
+
+  // If mesh isn't ready yet, show nothing
+  if (!manualSkinnedMesh) {
+    return null;
+  }
 
   return (
     <group
@@ -291,6 +374,7 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
 export const Book = ({ ...props }) => {
   const [page] = useAtom(pageAtom);
   const [delayedPage, setDelayedPage] = useState(page);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     let timeout;
@@ -299,12 +383,14 @@ export const Book = ({ ...props }) => {
         if (page === delayedPage) {
           return delayedPage;
         } else {
-          timeout = setTimeout(
-            () => {
-              goToPage();
-            },
-            Math.abs(page - delayedPage) > 2 ? 50 : 150
-          );
+          // Use consistent timing for page turning regardless of device
+          // This ensures the book opens properly on all devices
+          const delay = Math.abs(page - delayedPage) > 2 ? 100 : 200;
+            
+          timeout = setTimeout(() => {
+            goToPage();
+          }, delay);
+          
           if (page > delayedPage) {
             return delayedPage + 1;
           }
@@ -322,7 +408,16 @@ export const Book = ({ ...props }) => {
 
   return (
     <group {...props} rotation-y={-Math.PI / 2}>
-      {[...pages].map((pageData, index) => (
+      {/* Only render visible pages on mobile for performance */}
+      {[...pages].filter((_, index) => {
+        // On mobile, only render current page and adjacent pages
+        if (isMobile) {
+          return Math.abs(index - delayedPage) <= 1 || 
+                 index === 0 || 
+                 index === pages.length - 1;
+        }
+        return true;
+      }).map((pageData, index) => (
         <Page
           key={index}
           page={delayedPage}

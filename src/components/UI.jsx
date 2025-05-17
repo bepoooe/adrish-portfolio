@@ -2,6 +2,7 @@ import { atom, useAtom } from "jotai";
 import { useEffect, useState } from "react";
 
 // Array of image names to use for book pages
+// These must match exactly with filenames in public/textures
 const pictures = [
   "DSC00680",
   "DSC00933",

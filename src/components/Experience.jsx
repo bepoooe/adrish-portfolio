@@ -1,11 +1,11 @@
-import { Environment, Float, OrbitControls } from "@react-three/drei";
+import { Environment, Float, OrbitControls, useDetectGPU } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Book } from "./Book";
 import { Particles } from "./Particles";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 
-export const Experience = () => {
-  // Detect if we're on mobile for responsive adjustments
+// Shared mobile detection hook to ensure consistency across components
+export const useIsMobile = () => {
   const [isMobile, setIsMobile] = useState(false);
   
   useEffect(() => {
@@ -21,6 +21,27 @@ export const Experience = () => {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+  
+  return isMobile;
+};
+
+// Simple fallback component while book is loading
+const BookFallback = () => {
+  return (
+    <mesh>
+      <boxGeometry args={[1.28, 1.71, 0.1]} />
+      <meshStandardMaterial color="#f9f9f9" />
+    </mesh>
+  );
+};
+
+export const Experience = () => {
+  // Use the shared mobile detection hook
+  const isMobile = useIsMobile();
+  
+  // Detect GPU capabilities
+  const gpu = useDetectGPU();
+  const isLowPerformance = gpu.tier < 2 || isMobile;
   
   // Adjust camera for mobile
   const CameraAdjuster = () => {
@@ -65,13 +86,18 @@ export const Experience = () => {
       <CameraAdjuster />
       <Float
         rotation-x={isMobile ? -Math.PI / 5 : -Math.PI / 4} // Less tilt on mobile
-        floatIntensity={isMobile ? 0.3 : 1} // Significantly reduce float intensity on mobile
-        speed={isMobile ? 1 : 2} // Slower on mobile for better performance
-        rotationIntensity={isMobile ? 0.5 : 2} // Much less rotation on mobile
+        floatIntensity={isMobile ? 0.2 : 1} // Significantly reduce float intensity on mobile
+        speed={isMobile ? 0.8 : 2} // Slower on mobile for better performance
+        rotationIntensity={isMobile ? 0.3 : 2} // Much less rotation on mobile
       >
-        <Book />
+        <Suspense fallback={<BookFallback />}>
+          <Book />
+        </Suspense>
       </Float>
-      <Particles count={isMobile ? 1000 : 2000} /> {/* Fewer particles on mobile */}
+      
+      {/* Only show particles on higher-end devices */}
+      {!isLowPerformance && <Particles count={isMobile ? 800 : 2000} />}
+      
       <OrbitControls 
         enableZoom={true} // Enable zoom functionality
         zoomSpeed={isMobile ? 1.2 : 0.8} // Faster zoom speed on mobile
@@ -86,39 +112,57 @@ export const Experience = () => {
         touchAction="none" // Prevent default touch actions
         screenSpacePanning={false} // Use more intuitive panning mode
       />
-      <Environment preset="city" intensity={0.5}></Environment>
-      <directionalLight
-        position={[2, 5, 2]}
-        intensity={4}
-        castShadow
-        shadow-mapSize-width={isMobile ? 1024 : 2048} // Lower resolution shadows on mobile
-        shadow-mapSize-height={isMobile ? 1024 : 2048}
-        shadow-bias={-0.0001}
-      />
-      {/* Add spotlights specifically to illuminate book pages */}
-      <spotLight
-        position={[3, 1, 1]}
-        angle={0.5}
-        penumbra={0.5}
-        intensity={4}
-        color="white"
-        castShadow={!isMobile} // Disable shadow casting on mobile for performance
-        target-position={[0, 0, 0]}
-      />
-      <spotLight
-        position={[-3, 1, 1]}
-        angle={0.5}
-        penumbra={0.5}
-        intensity={4}
-        color="white"
-        castShadow={!isMobile} // Disable shadow casting on mobile for performance
-        target-position={[0, 0, 0]}
-      />
-      <ambientLight intensity={isMobile ? 2 : 1.5} /> {/* Brighter ambient on mobile */}
-      <mesh position-y={-1.5} rotation-x={-Math.PI / 2} receiveShadow>
-        <planeGeometry args={[100, 100]} />
-        <shadowMaterial transparent opacity={isMobile ? 0.15 : 0.2} />
-      </mesh>
+      
+      {/* Simpler environment on mobile */}
+      <Environment preset={isMobile ? "sunset" : "city"} intensity={isMobile ? 0.3 : 0.5} />
+      
+      {/* Simplified lighting for mobile */}
+      {isMobile ? (
+        // Mobile-optimized lighting
+        <>
+          <directionalLight
+            position={[2, 5, 2]}
+            intensity={5}
+            castShadow={false}
+          />
+          <ambientLight intensity={2.5} />
+        </>
+      ) : (
+        // Desktop lighting with full effects
+        <>
+          <directionalLight
+            position={[2, 5, 2]}
+            intensity={4}
+            castShadow
+            shadow-mapSize-width={2048}
+            shadow-mapSize-height={2048}
+            shadow-bias={-0.0001}
+          />
+          <spotLight
+            position={[3, 1, 1]}
+            angle={0.5}
+            penumbra={0.5}
+            intensity={4}
+            color="white"
+            castShadow
+            target-position={[0, 0, 0]}
+          />
+          <spotLight
+            position={[-3, 1, 1]}
+            angle={0.5}
+            penumbra={0.5}
+            intensity={4}
+            color="white"
+            castShadow
+            target-position={[0, 0, 0]}
+          />
+          <ambientLight intensity={1.5} />
+          <mesh position-y={-1.5} rotation-x={-Math.PI / 2} receiveShadow>
+            <planeGeometry args={[100, 100]} />
+            <shadowMaterial transparent opacity={0.2} />
+          </mesh>
+        </>
+      )}
     </>
   );
 };

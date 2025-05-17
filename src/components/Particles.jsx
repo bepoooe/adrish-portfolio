@@ -2,12 +2,12 @@ import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef, useEffect, useState } from "react";
 import * as THREE from "three";
 
-export function Particles({ count = 1000 }) {
-  const points = useRef();
+// Local implementation to avoid circular dependency
+const useIsMobile = () => {
   const [isMobile, setIsMobile] = useState(false);
   
-  // Detect mobile devices for performance optimizations
   useEffect(() => {
+    // Check if we're on mobile
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
@@ -19,6 +19,13 @@ export function Particles({ count = 1000 }) {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+  
+  return isMobile;
+};
+
+export function Particles({ count = 1000 }) {
+  const points = useRef();
+  const isMobile = useIsMobile();
   
   const particlesPosition = useMemo(() => {
     const positions = new Float32Array(count * 3);

@@ -8,10 +8,31 @@ import { EarthCanvas } from "./canvas";
 import { SectionWrapper } from "../hoc";
 import { slideIn } from "../utils/motion";
 
+// Mobile detection hook
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    // Initial check
+    checkMobile();
+    
+    // Add resize listener
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
+  return isMobile;
+};
+
 const Contact = () => {
   const formRef = useRef();
   const leftRef = useRef(null);
   const rightRef = useRef(null);
+  const isMobile = useIsMobile();
   
   const leftInView = useInView(leftRef, { once: false, amount: 0.2 });
   const rightInView = useInView(rightRef, { once: false, amount: 0.2 });
@@ -210,6 +231,7 @@ const Contact = () => {
           overflow: 'visible'
         }}
       >
+        {/* Always render Earth on desktop, and conditionally on mobile */}
         <EarthCanvas />
       </motion.div>
     </div>

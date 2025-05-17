@@ -1,8 +1,28 @@
-import React, { Suspense, useRef } from 'react';
+import React, { Suspense, useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame, useLoader } from '@react-three/fiber';
 import { OrbitControls, Stars, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import CanvasLoader from '../Loader';
+
+// Mobile detection hook
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    // Initial check
+    checkMobile();
+    
+    // Add resize listener
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+  
+  return isMobile;
+};
 
 // Preload the GLTF model to avoid loading issues
 useGLTF.preload('/planet-1/scene.gltf');
@@ -11,6 +31,7 @@ useGLTF.preload('/planet-1/scene.gltf');
 const Earth = () => {
   const planetRef = useRef();
   const glowRef = useRef();
+  const isMobile = useIsMobile();
   
   // Load the GLTF model
   const { scene } = useGLTF('/planet-1/scene.gltf');
@@ -18,22 +39,48 @@ const Earth = () => {
   // Create a copy of the scene to avoid modifying the original
   const planetModel = scene.clone();
   
-  // Rotation animation
+  // Apply mobile optimizations to the model
+  useEffect(() => {
+    if (isMobile && planetModel) {
+      // Simplify materials for mobile
+      planetModel.traverse((child) => {
+        if (child.isMesh) {
+          // Simplify materials for better performance
+          child.material.roughness = 1.0;
+          child.material.metalness = 0.5;
+          
+          // Disable shadows on mobile
+          child.castShadow = false;
+          child.receiveShadow = false;
+          
+          // Reduce polygon count if possible
+          if (child.geometry && child.geometry.attributes.position) {
+            // We'll keep the original geometry but optimize rendering
+            child.frustumCulled = true;
+          }
+        }
+      });
+    }
+  }, [isMobile, planetModel]);
+  
+  // Rotation animation - slower on mobile
   useFrame(({ clock }) => {
     const elapsedTime = clock.getElapsedTime();
+    const rotationSpeed = isMobile ? 0.05 : 0.1;
+    
     if (planetRef.current) {
-      planetRef.current.rotation.y = elapsedTime * 0.1;
+      planetRef.current.rotation.y = elapsedTime * rotationSpeed;
     }
     if (glowRef.current) {
-      glowRef.current.rotation.y = elapsedTime * 0.05;
+      glowRef.current.rotation.y = elapsedTime * (rotationSpeed / 2);
     }
   });
 
   return (
     <group>
-      {/* Subtle static stars matching dark theme */}
+      {/* Subtle static stars matching dark theme - fewer on mobile */}
       <group>
-        {[...Array(300)].map((_, i) => {
+        {[...Array(isMobile ? 100 : 300)].map((_, i) => {
           // Generate random positions in a sphere
           const theta = 2 * Math.PI * Math.random();
           const phi = Math.acos(2 * Math.random() - 1);
@@ -89,45 +136,53 @@ const Earth = () => {
 };
 
 const EarthCanvas = () => {
+  const isMobile = useIsMobile();
+  
   return (
     <Canvas
       frameloop="demand"
-      dpr={[1, 1.5]}
+      dpr={isMobile ? [0.8, 1.2] : [1, 1.5]} // Lower resolution on mobile
       gl={{
-        antialias: true,
+        antialias: !isMobile, // Disable antialiasing on mobile
         alpha: true,
-        powerPreference: 'default'
+        powerPreference: isMobile ? 'low-power' : 'default', // Use low power mode on mobile
+        depth: true,
+        stencil: false, // Disable stencil buffer on mobile
       }}
       camera={{
-        fov: 35,
+        fov: isMobile ? 40 : 35, // Wider FOV on mobile
         near: 0.1,
         far: 1000,
-        position: [0, 0, 12],
+        position: [0, 0, isMobile ? 14 : 12], // Move camera back on mobile
       }}
       style={{ background: 'transparent' }}
     >
-      {/* Lighting */}
-      <ambientLight intensity={0.3} />
+      {/* Simplified lighting for mobile */}
+      <ambientLight intensity={isMobile ? 0.5 : 0.3} />
       <directionalLight 
         position={[5, 5, 5]}
-        intensity={1}
+        intensity={isMobile ? 1.2 : 1}
         color="#ffffff"
+        castShadow={!isMobile} // Disable shadows on mobile
       />
-      <pointLight 
-        position={[-5, -5, -5]}
-        intensity={0.2}
-        color="#2196f3"
-      />
+      {!isMobile && (
+        <pointLight 
+          position={[-5, -5, -5]}
+          intensity={0.2}
+          color="#2196f3"
+        />
+      )}
       
       <Suspense fallback={<CanvasLoader />}>
         <OrbitControls
           autoRotate
-          autoRotateSpeed={0.5}
+          autoRotateSpeed={isMobile ? 0.3 : 0.5} // Slower rotation on mobile
           enableZoom={false}
           enablePan={false}
           maxPolarAngle={Math.PI / 1.7}
           minPolarAngle={Math.PI / 2.3}
           rotateSpeed={0.3}
+          enableDamping={!isMobile} // Disable damping on mobile
         />
         <Earth />
       </Suspense>
