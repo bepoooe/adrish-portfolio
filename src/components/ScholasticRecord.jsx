@@ -94,7 +94,8 @@ const ExperienceCard = ({ experience, index }) => {
                         height: '75%',
                         margin: 'auto',
                         display: 'block',
-                        filter: 'brightness(1.2) contrast(1.15) drop-shadow(0 0 4px rgba(59, 130, 246, 0.6))'
+                        filter: 'brightness(1.2) contrast(1.15) drop-shadow(0 0 4px rgba(59, 130, 246, 0.6))',
+                        borderRadius: experience.company_name === "National English School" ? '5px' : ''
                       }}
                       loading="lazy" // Add lazy loading for better performance
                     />

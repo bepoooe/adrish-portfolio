@@ -85,6 +85,11 @@
   filter: brightness(1.2) contrast(1.15) drop-shadow(0 0 4px rgba(59, 130, 246, 0.6));
 }
 
+/* Add rounded corners for the National English School logo */
+.mobile-icon-img[alt="National English School"] {
+  border-radius: 12px !important;
+}
+
 /* Responsive adjustments */
 @media only screen and (max-width: 1169px) {
   .vertical-timeline-element-content {
@@ -136,6 +141,11 @@
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
     filter: brightness(1.2) contrast(1.15) drop-shadow(0 0 4px rgba(59, 130, 246, 0.6)) !important;
+  }
+  
+  /* Ensure rounded corners for National English School logo on mobile */
+  .vertical-timeline-element-icon img[alt="National English School"] {
+    border-radius: 12px !important;
   }
   
   /* Improve the icon container appearance */
@@ -314,4 +324,10 @@
     margin-top: 0.5rem !important;
     padding-left: 0.8rem !important;
   }
+}
+
+/* Ensure slightly rounded corners for National English School logo across all screen sizes */
+.mobile-icon-img[alt="National English School"],
+.vertical-timeline-element-icon img[alt="National English School"] {
+  border-radius: 5px !important;
 }
