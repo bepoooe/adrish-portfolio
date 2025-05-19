@@ -168,15 +168,27 @@ const Navbar = () => {
           {/* Mobile Menu Button */}
           <div className='sm:hidden flex items-center'>
             <motion.button
-              className='w-[36px] h-[36px] flex items-center justify-center bg-white/10 rounded-full'
+              className='w-[36px] h-[36px] flex items-center justify-center bg-white/10 rounded-full relative overflow-hidden'
               onClick={() => setToggle(!toggle)}
               whileHover={{ scale: 1.1, backgroundColor: 'rgba(255, 255, 255, 0.15)' }}
               whileTap={{ scale: 0.9 }}
+              animate={{
+                boxShadow: toggle 
+                  ? '0 0 8px rgba(255, 255, 255, 0.5)' 
+                  : '0 0 0px rgba(255, 255, 255, 0.2)'
+              }}
+              transition={{ duration: 0.3 }}
             >
-              <img
+              <motion.img
                 src={toggle ? close : menu}
-                alt='menu'
+                alt={toggle ? 'close' : 'menu'}
                 className='w-[20px] h-[20px] object-contain'
+                style={{ filter: 'brightness(1.2) drop-shadow(0 0 2px rgba(255, 255, 255, 0.5))' }}
+                animate={{ 
+                  rotate: toggle ? [0, 90, 0] : 0,
+                  scale: toggle ? [1, 1.2, 1] : 1
+                }}
+                transition={{ duration: 0.3 }}
               />
             </motion.button>
           </div>
