@@ -168,28 +168,32 @@ const Navbar = () => {
           {/* Mobile Menu Button */}
           <div className='sm:hidden flex items-center'>
             <motion.button
-              className='w-[36px] h-[36px] flex items-center justify-center bg-white/10 rounded-full relative overflow-hidden'
+              className='w-[42px] h-[42px] flex items-center justify-center bg-white/15 rounded-full relative overflow-hidden border border-white/20'
               onClick={() => setToggle(!toggle)}
-              whileHover={{ scale: 1.1, backgroundColor: 'rgba(255, 255, 255, 0.15)' }}
+              whileHover={{ scale: 1.1, backgroundColor: 'rgba(255, 255, 255, 0.2)' }}
               whileTap={{ scale: 0.9 }}
               animate={{
                 boxShadow: toggle 
-                  ? '0 0 8px rgba(255, 255, 255, 0.5)' 
-                  : '0 0 0px rgba(255, 255, 255, 0.2)'
+                  ? '0 0 12px rgba(255, 255, 255, 0.6)' 
+                  : '0 0 5px rgba(255, 255, 255, 0.3)'
               }}
               transition={{ duration: 0.3 }}
             >
               <motion.img
                 src={toggle ? close : menu}
                 alt={toggle ? 'close' : 'menu'}
-                className='w-[20px] h-[20px] object-contain'
-                style={{ filter: 'brightness(1.2) drop-shadow(0 0 2px rgba(255, 255, 255, 0.5))' }}
+                className='w-[24px] h-[24px] object-contain'
+                style={{ 
+                  filter: 'brightness(1.3) drop-shadow(0 0 3px rgba(255, 255, 255, 0.7))',
+                }}
                 animate={{ 
                   rotate: toggle ? [0, 90, 0] : 0,
                   scale: toggle ? [1, 1.2, 1] : 1
                 }}
                 transition={{ duration: 0.3 }}
               />
+              {/* Additional glow effect for better visibility */}
+              <div className={`absolute inset-0 rounded-full ${toggle ? 'bg-white/10' : 'bg-transparent'} transition-all duration-300`}></div>
             </motion.button>
           </div>
         </motion.div>
@@ -199,7 +203,7 @@ const Navbar = () => {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: toggle ? 1 : 0, scale: toggle ? 1 : 0.8 }}
           transition={{ duration: 0.2 }}
-          className={`${!toggle ? "hidden" : "flex"} p-4 sm:p-6 bg-black bg-opacity-80 absolute top-16 sm:top-20 right-0 sm:right-4 mx-2 sm:mx-4 my-2 min-w-[200px] z-10 rounded-xl backdrop-blur-sm border border-gray-700 shadow-[0_4px_20px_rgba(0,0,0,0.5)] relative overflow-hidden w-[90%] sm:w-[80%] max-w-[300px]`}
+          className={`${!toggle ? "hidden" : "flex"} p-4 sm:p-6 bg-black bg-opacity-90 absolute top-16 sm:top-20 right-0 sm:right-4 mx-2 sm:mx-4 my-2 min-w-[200px] z-10 rounded-xl backdrop-blur-md border border-gray-600 shadow-[0_4px_25px_rgba(0,0,0,0.7)] relative overflow-hidden w-[90%] sm:w-[80%] max-w-[300px]`}
         >
           {/* Decorative stars for mobile menu */}
           <div className="absolute top-1/4 right-[10%] w-1 h-1 bg-white rounded-full opacity-70 star-twinkle"></div>
