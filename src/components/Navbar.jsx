@@ -82,7 +82,7 @@ const Navbar = () => {
     >
       <div className='w-full flex justify-between items-center max-w-7xl mx-auto'>
         <motion.div 
-          className="flex items-center justify-between w-full px-5 sm:px-8 py-2 sm:py-3 rounded-full border border-gray-700 bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm navbar-glow relative overflow-hidden"
+          className="flex items-center justify-between w-full px-3 sm:px-8 py-2 sm:py-3 rounded-full border border-gray-700 bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm navbar-glow relative overflow-visible"
           whileHover={{ boxShadow: "0 0 15px rgba(0, 0, 0, 0.7)" }}
           transition={{ duration: 0.3 }}
         >
@@ -166,9 +166,9 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className='sm:hidden flex items-center'>
+          <div className='sm:hidden flex items-center mr-1'>
             <motion.button
-              className='w-[42px] h-[42px] flex items-center justify-center bg-white/15 rounded-full relative overflow-hidden border border-white/20'
+              className='w-[38px] h-[38px] flex items-center justify-center bg-white/15 rounded-full relative border border-white/20 z-20'
               onClick={() => setToggle(!toggle)}
               whileHover={{ scale: 1.1, backgroundColor: 'rgba(255, 255, 255, 0.2)' }}
               whileTap={{ scale: 0.9 }}
@@ -182,7 +182,7 @@ const Navbar = () => {
               <motion.img
                 src={toggle ? close : menu}
                 alt={toggle ? 'close' : 'menu'}
-                className='w-[24px] h-[24px] object-contain'
+                className='w-[22px] h-[22px] object-contain'
                 style={{ 
                   filter: 'brightness(1.3) drop-shadow(0 0 3px rgba(255, 255, 255, 0.7))',
                 }}
@@ -203,7 +203,7 @@ const Navbar = () => {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: toggle ? 1 : 0, scale: toggle ? 1 : 0.8 }}
           transition={{ duration: 0.2 }}
-          className={`${!toggle ? "hidden" : "flex"} p-4 sm:p-6 bg-black bg-opacity-90 absolute top-16 sm:top-20 right-0 sm:right-4 mx-2 sm:mx-4 my-2 min-w-[200px] z-10 rounded-xl backdrop-blur-md border border-gray-600 shadow-[0_4px_25px_rgba(0,0,0,0.7)] relative overflow-hidden w-[90%] sm:w-[80%] max-w-[300px]`}
+          className={`${!toggle ? "hidden" : "flex"} p-4 sm:p-6 bg-black bg-opacity-90 absolute top-16 sm:top-20 right-4 mx-0 sm:mx-4 my-2 min-w-[200px] z-10 rounded-xl backdrop-blur-md border border-gray-600 shadow-[0_4px_25px_rgba(0,0,0,0.7)] overflow-hidden w-[85%] sm:w-[80%] max-w-[300px]`}
         >
           {/* Decorative stars for mobile menu */}
           <div className="absolute top-1/4 right-[10%] w-1 h-1 bg-white rounded-full opacity-70 star-twinkle"></div>
