@@ -212,49 +212,7 @@ const mobileTechStyles = `
     to { transform: rotate(360deg); }
   }
   
-  /* Scroll hint animation */
-  @keyframes scrollHint {
-    0% { transform: translateX(0) translateY(-50%); opacity: 0.5; }
-    50% { transform: translateX(8px) translateY(-50%); opacity: 0.8; }
-    100% { transform: translateX(0) translateY(-50%); opacity: 0.5; }
-  }
-  
-  @keyframes pulse {
-    0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
-    70% { box-shadow: 0 0 0 8px rgba(59, 130, 246, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
-  }
-  
-  .scroll-hint {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 20px;
-    animation: scrollHint 1.8s ease-in-out infinite;
-    pointer-events: none;
-    z-index: 10;
-    text-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
-    background: rgba(59, 130, 246, 0.08);
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    border: 1px solid rgba(59, 130, 246, 0.15);
-    backdrop-filter: blur(4px);
-  }
-  
-  .scroll-hint::after {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    animation: pulse 2.5s infinite;
-  }
+
   
   /* Gradient fade effect on edges */
   .mobile-tech-carousel::before,
@@ -482,7 +440,7 @@ const Tech = () => {
       nextjs: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg',
       nodejs: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg',
       threejs: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/threejs/threejs-original.svg',
-      tailwind: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-plain.svg',
+      tailwind: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-original.svg',
       render: 'https://cdn.simpleicons.org/render/46E3B7',
       flask: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg',
       numpy: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/numpy/numpy-original.svg',
@@ -678,8 +636,7 @@ const Tech = () => {
             ))}
           </div>
           
-          {/* Scroll hint indicator */}
-          <div className="scroll-hint">→</div>
+
         </div>
       </>
     );
