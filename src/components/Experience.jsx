@@ -31,9 +31,9 @@ const CameraAdjuster = ({ isMobile }) => {
 
   useEffect(() => {
     if (isMobile) {
-      // Simplified camera settings for mobile
-      camera.position.set(-0.5, 1.2, 6);
-      camera.fov = 50;
+      // Enhanced camera settings for more prominent mobile view
+      camera.position.set(-0.5, 1.0, 5.2); // Closer Z position for larger appearance
+      camera.fov = 45; // Narrower FOV for larger appearance
       camera.near = 0.1;
       camera.far = 1000; // Reduced far plane for better performance
       camera.updateProjectionMatrix();
@@ -62,7 +62,8 @@ const CameraAdjuster = ({ isMobile }) => {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
         if (isMobile) {
-          camera.fov = window.innerWidth < 380 ? 55 : 50;
+          // Adjust FOV based on screen width for optimal book visibility
+          camera.fov = window.innerWidth < 380 ? 48 : 45;
           camera.updateProjectionMatrix();
         }
       }, 200); // Debounce resize events
@@ -78,31 +79,24 @@ const CameraAdjuster = ({ isMobile }) => {
   return null;
 };
 
-// Optimized lighting component to reduce re-renders
-const OptimizedLighting = ({ isMobile }) => {
-  return isMobile ? (
-    // Ultra-simplified lighting for mobile
+// Basic lighting component that works on all devices
+const OptimizedLighting = () => {
+  return (
     <>
-      <directionalLight position={[2, 5, 2]} intensity={3} />
-      <ambientLight intensity={2} />
-    </>
-  ) : (
-    // Simplified desktop lighting
-    <>
+      {/* Simple lighting setup that works on all devices */}
       <directionalLight
         position={[2, 5, 2]}
-        intensity={3}
-        castShadow
-        shadow-mapSize-width={512} // Further reduced shadow map size
-        shadow-mapSize-height={512}
-        shadow-bias={-0.0001}
+        intensity={3.5}
+        castShadow={false}
       />
-      <ambientLight intensity={1.5} />
-      {/* Simplified shadow receiver with smaller geometry */}
-      <mesh position-y={-1.5} rotation-x={-Math.PI / 2} receiveShadow>
-        <planeGeometry args={[20, 20]} /> {/* Much smaller plane */}
-        <shadowMaterial transparent opacity={0.15} />
-      </mesh>
+      <ambientLight intensity={2.5} />
+
+      {/* Add extra light for better texture visibility */}
+      <pointLight
+        position={[0, 0, 5]}
+        intensity={1.5}
+        color="#ffffff"
+      />
     </>
   );
 };
@@ -134,12 +128,12 @@ export const Experience = () => {
     <>
       <CameraAdjuster isMobile={isMobile} />
 
-      {/* Optimized Float component with reduced animation */}
+      {/* Enhanced Float component for more prominent mobile appearance */}
       <Float
-        rotation-x={isMobile ? -Math.PI / 5 : -Math.PI / 4}
-        floatIntensity={isMobile ? 0.1 : 0.5} // Further reduced float intensity
-        speed={isMobile ? 0.5 : 1} // Further reduced speed
-        rotationIntensity={isMobile ? 0.2 : 1} // Further reduced rotation
+        rotation-x={isMobile ? -Math.PI / 6 : -Math.PI / 4} // Adjusted angle for better mobile view
+        floatIntensity={isMobile ? 0.3 : 0.5} // Increased from 0.1 for more noticeable movement
+        speed={isMobile ? 0.8 : 1} // Increased from 0.5 for more noticeable animation
+        rotationIntensity={isMobile ? 0.4 : 1} // Increased from 0.2 for more noticeable rotation
       >
         <Suspense fallback={<BookFallback />}>
           <Book />
@@ -167,14 +161,20 @@ export const Experience = () => {
         dampingFactor={0.05} // Reduced damping factor
       />
 
-      {/* Simplified environment with lower intensity */}
-      <Environment
-        preset={isMobile ? "sunset" : "city"}
-        intensity={isMobile ? 0.2 : 0.3} // Reduced intensity
-      />
+      {/* Simplified environment for better mobile performance */}
+      {isMobile ? (
+        // Use a simpler environment setup for mobile
+        <color attach="background" args={['#000000']} />
+      ) : (
+        // Full environment for desktop
+        <Environment
+          preset="city"
+          intensity={0.3}
+        />
+      )}
 
-      {/* Use optimized lighting component */}
-      <OptimizedLighting isMobile={isMobile} />
+      {/* Use basic lighting component */}
+      <OptimizedLighting />
     </>
   );
 };

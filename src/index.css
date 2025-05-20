@@ -22,7 +22,7 @@
   position: relative;
   z-index: 5;
   overflow: visible; /* Allow book card to overflow */
-  
+
   /* Mobile height adjustment */
   @media (max-width: 768px) {
     height: auto;
@@ -52,7 +52,7 @@
   margin: 0 auto;
   padding-top: 40px;
   position: relative;
-  
+
   /* Mobile responsive grid */
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
@@ -73,7 +73,7 @@
   margin-right: 0;
   position: relative;
   z-index: 15;
-  
+
   /* Mobile adjustments */
   @media (max-width: 768px) {
     padding: 1.5rem;
@@ -94,7 +94,7 @@
   text-align: left;
   position: relative;
   z-index: 20; /* Ensure text is always on top */
-  
+
   /* Mobile-specific enhancements */
   @media (max-width: 768px) {
     background: rgba(0, 0, 0, 0.2); /* Subtle background for better readability */
@@ -113,7 +113,7 @@
   line-height: 1;
   font-size: 3.8rem;
   font-weight: bold;
-  
+
   /* Responsive font size */
   @media (max-width: 768px) {
     font-size: 2.5rem;
@@ -142,25 +142,26 @@
   justify-content: center;
   z-index: 15;
   pointer-events: auto;
-  
-  /* Mobile responsive adjustments */
+
+  /* Mobile responsive adjustments - enhanced prominence */
   @media (max-width: 768px) {
     position: relative;
     top: 0;
     left: 0;
     width: 100%;
     transform: none;
-    margin: 1.5rem auto 2.5rem;
-    height: 45vh; /* Slightly smaller height on mobile */
-    min-height: 300px; /* Ensure minimum height */
-    max-height: 400px; /* Limit maximum height */
+    margin: 0.5rem auto 2rem;
+    height: 50vh; /* Increased height for more prominence */
+    min-height: 350px; /* Increased minimum height */
+    max-height: 450px; /* Increased maximum height */
+    z-index: 20; /* Higher z-index for better prominence */
   }
-  
+
   /* Small mobile adjustments */
   @media (max-width: 480px) {
-    margin: 1rem auto 2rem;
-    height: 40vh;
-    min-height: 250px;
+    margin: 0.5rem auto 1.5rem;
+    height: 45vh; /* Increased from 40vh */
+    min-height: 300px; /* Increased from 250px */
   }
 }
 
@@ -179,23 +180,27 @@
   position: relative;
   z-index: 10;
   transition: all 0.4s ease;
-  
-  /* Mobile sizing */
+
+  /* Mobile sizing - enhanced for prominence */
   @media (max-width: 768px) {
-    width: 85%;
-    max-width: 400px;
-    aspect-ratio: 16/12;
+    width: 90%; /* Increased from 85% */
+    max-width: 450px; /* Increased from 400px */
+    aspect-ratio: 16/11; /* Adjusted for better proportions */
     margin: 0 auto;
-    border-radius: 12px;
-    background: rgba(16, 16, 34, 0.35); /* Slightly darker for better contrast */
+    border-radius: 14px; /* Increased from 12px */
+    background: rgba(16, 16, 34, 0.3); /* Slightly darker for better contrast */
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4),
+                0 0 15px rgba(99, 130, 255, 0.2); /* Enhanced shadow */
+    border: 1.5px solid rgba(99, 130, 255, 0.35); /* More visible border */
+    transform: translateZ(0); /* Force hardware acceleration */
   }
-  
+
   /* Small mobile adjustments */
   @media (max-width: 480px) {
-    width: 90%;
-    max-width: 320px;
-    aspect-ratio: 16/13;
-    border-radius: 10px;
+    width: 92%; /* Increased from 90% */
+    max-width: 350px; /* Increased from 320px */
+    aspect-ratio: 16/12; /* Adjusted from 16/13 */
+    border-radius: 12px;
   }
 }
 
@@ -250,12 +255,12 @@
   touch-action: none; /* Prevent default touch actions */
   -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
   user-select: none; /* Prevent text selection */
-  
+
   /* Improve mobile touch experience */
   @media (max-width: 768px) {
     overscroll-behavior: none; /* Prevent overscroll effects */
   }
-  
+
   /* Fix for the blur spot issue */
   &::before {
     content: '';
@@ -267,7 +272,7 @@
     background: transparent;
     z-index: -1;
   }
-  
+
   /* Mobile optimizations */
   @media (max-width: 768px) {
     overflow: hidden;
@@ -407,11 +412,11 @@ body {
 }
 
 .stars-small {
-  background-image: radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)), 
-                    radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)), 
-                    radial-gradient(1px 1px at 50px 160px, #fff, rgba(0,0,0,0)), 
-                    radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)), 
-                    radial-gradient(1px 1px at 130px 80px, #fff, rgba(0,0,0,0)), 
+  background-image: radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)),
+                    radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
+                    radial-gradient(1px 1px at 50px 160px, #fff, rgba(0,0,0,0)),
+                    radial-gradient(1px 1px at 90px 40px, #fff, rgba(0,0,0,0)),
+                    radial-gradient(1px 1px at 130px 80px, #fff, rgba(0,0,0,0)),
                     radial-gradient(1px 1px at 160px 120px, #fff, rgba(0,0,0,0));
   background-repeat: repeat;
   background-size: 200px 200px;
@@ -420,11 +425,11 @@ body {
 }
 
 .stars-medium {
-  background-image: radial-gradient(1.5px 1.5px at 50px 80px, #fff, rgba(0,0,0,0)), 
-                    radial-gradient(1.5px 1.5px at 100px 50px, #fff, rgba(0,0,0,0)), 
-                    radial-gradient(1.5px 1.5px at 160px 130px, #fff, rgba(0,0,0,0)), 
-                    radial-gradient(1.5px 1.5px at 30px 180px, #fff, rgba(0,0,0,0)), 
-                    radial-gradient(1.5px 1.5px at 110px 210px, #fff, rgba(0,0,0,0)), 
+  background-image: radial-gradient(1.5px 1.5px at 50px 80px, #fff, rgba(0,0,0,0)),
+                    radial-gradient(1.5px 1.5px at 100px 50px, #fff, rgba(0,0,0,0)),
+                    radial-gradient(1.5px 1.5px at 160px 130px, #fff, rgba(0,0,0,0)),
+                    radial-gradient(1.5px 1.5px at 30px 180px, #fff, rgba(0,0,0,0)),
+                    radial-gradient(1.5px 1.5px at 110px 210px, #fff, rgba(0,0,0,0)),
                     radial-gradient(1.5px 1.5px at 200px 60px, #fff, rgba(0,0,0,0));
   background-repeat: repeat;
   background-size: 300px 300px;
@@ -433,11 +438,11 @@ body {
 }
 
 .stars-large {
-  background-image: radial-gradient(2px 2px at 100px 50px, #fff, rgba(0,0,0,0)), 
-                    radial-gradient(2px 2px at 200px 150px, #fff, rgba(0,0,0,0)), 
-                    radial-gradient(2px 2px at 300px 250px, #fff, rgba(0,0,0,0)), 
-                    radial-gradient(2px 2px at 400px 350px, #fff, rgba(0,0,0,0)), 
-                    radial-gradient(2px 2px at 500px 100px, #fff, rgba(0,0,0,0)), 
+  background-image: radial-gradient(2px 2px at 100px 50px, #fff, rgba(0,0,0,0)),
+                    radial-gradient(2px 2px at 200px 150px, #fff, rgba(0,0,0,0)),
+                    radial-gradient(2px 2px at 300px 250px, #fff, rgba(0,0,0,0)),
+                    radial-gradient(2px 2px at 400px 350px, #fff, rgba(0,0,0,0)),
+                    radial-gradient(2px 2px at 500px 100px, #fff, rgba(0,0,0,0)),
                     radial-gradient(2px 2px at 50px 300px, #fff, rgba(0,0,0,0));
   background-repeat: repeat;
   background-size: 500px 500px;
@@ -952,51 +957,51 @@ body {
     padding-left: 1rem;
     padding-right: 1rem;
   }
-  
+
   .floating-element {
     display: none;
   }
-  
+
   /* Additional mobile adjustments */
   .glass-details {
     padding: 0 20px;
   }
-  
+
   .glass-details h3 {
     font-size: 2rem;
   }
-  
+
   .canvas-container {
     height: 100%;
     width: 100%;
   }
-  
+
   /* Adjust card layouts for mobile */
   .project-card, .about-card, .education-card {
     min-height: auto;
     margin-bottom: 1.5rem;
   }
-  
+
   /* Smaller margins and paddings on mobile */
   .section-margin {
     margin-top: 3rem;
     margin-bottom: 3rem;
   }
-  
+
   /* Tech stack and skills sections */
   .tech-container {
     grid-template-columns: repeat(3, 1fr);
   }
-  
+
   .tech-item {
     padding: 0.5rem;
   }
-  
+
   /* Timeline adjustments */
   .timeline-container {
     flex-direction: column;
   }
-  
+
   .timeline-card {
     width: 100%;
     margin-bottom: 1rem;
@@ -1030,23 +1035,42 @@ body {
   animation: horizontal-scroll-2 20s linear infinite;
 }
 
-/* Mobile-specific adjustments for 3D book */
+/* Mobile-specific adjustments for 3D book - enhanced for prominence */
 @media (max-width: 768px) {
   /* Improve book container for mobile */
   .book-card {
     touch-action: none;
     -webkit-overflow-scrolling: auto;
+    animation: subtle-float 6s ease-in-out infinite; /* Add subtle floating animation */
   }
-  
+
   /* Ensure canvas takes full height on mobile */
   .canvas-container {
     height: 100% !important;
-    min-height: 300px;
+    min-height: 320px; /* Increased from 300px */
   }
-  
-  /* Add subtle visual feedback for touch interactions */
+
+  /* Enhanced visual feedback for touch interactions */
   .book-card:active::before {
+    opacity: 0.8; /* Increased from 0.7 */
+    background: radial-gradient(circle at center, rgba(99,130,255,0.15) 0%, transparent 70%);
+  }
+
+  /* Add a subtle glow to the book card by default */
+  .book-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: 0 0 15px rgba(99, 130, 255, 0.3);
     opacity: 0.7;
-    background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* Add subtle floating animation */
+  @keyframes subtle-float {
+    0%, 100% { transform: translateY(0) translateZ(0); }
+    50% { transform: translateY(-5px) translateZ(0); }
   }
 }

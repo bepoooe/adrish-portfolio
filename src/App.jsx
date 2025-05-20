@@ -9,32 +9,37 @@ import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import { useDevice } from "./context/DeviceContext";
 import { optimizeRenderer } from "./utils/memoryOptimizer";
+import * as THREE from "three";
 
 // Memory-optimized Canvas component
 const OptimizedCanvas = ({ children }) => {
   const { isMobile, isLowPerformance } = useDevice();
   const [rendererInstance, setRendererInstance] = useState(null);
 
-  // Apply memory optimizations when renderer is created
-  const handleCreated = ({ gl, scene }) => {
-    // Apply memory-saving optimizations
-    optimizeRenderer(gl);
-
+  // Basic renderer setup that works on all devices
+  const handleCreated = ({ gl, scene, camera }) => {
     // Store renderer instance for cleanup
     setRendererInstance(gl);
 
-    // Set pixel ratio based on device capability
-    const maxPixelRatio = isMobile ? 1 : isLowPerformance ? 1.5 : 2;
-    gl.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
+    // Set standard pixel ratio
+    gl.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Disable automatic clearing to improve performance
-    gl.autoClear = false;
+    // Basic renderer settings
+    gl.outputColorSpace = THREE.SRGBColorSpace;
 
-    // Optimize scene
-    scene.matrixAutoUpdate = false;
+    // Enable texture extensions for better compatibility
+    gl.getContext().getExtension('OES_texture_float');
+    gl.getContext().getExtension('OES_texture_half_float');
 
-    // Disable frustum culling for better performance
-    scene.frustumCulled = false;
+    // Basic scene settings
+    scene.matrixAutoUpdate = true;
+
+    // Basic camera settings
+    if (camera) {
+      camera.near = 0.1;
+      camera.far = 1000;
+      camera.updateProjectionMatrix();
+    }
   };
 
   // Clean up renderer when component unmounts
@@ -54,19 +59,20 @@ const OptimizedCanvas = ({ children }) => {
 
   return (
     <Canvas
-      shadows={!isMobile && !isLowPerformance} // Disable shadows on mobile/low-end devices
-      frameloop={isLowPerformance ? "demand" : "always"} // Use demand-based rendering for low-end devices
-      dpr={[0.8, 1.5]} // Lower DPR range for better performance
+      shadows={false} // Disable shadows for all devices
+      frameloop="always" // Use always frameloop for better compatibility
+      dpr={[1, 2]} // Standard DPR range
       gl={{
-        antialias: !isLowPerformance, // Disable antialiasing on low-end devices
+        antialias: true, // Enable antialiasing for better texture rendering
         alpha: true,
-        powerPreference: "high-performance",
+        powerPreference: "default", // Use default power preference for better compatibility
         depth: true,
         stencil: false, // Disable stencil buffer to save memory
-        precision: isLowPerformance ? "lowp" : "mediump" // Use lower precision on low-end devices
+        precision: "mediump", // Use medium precision for better compatibility
+        failIfMajorPerformanceCaveat: false, // Don't fail on performance issues
       }}
       onCreated={handleCreated}
-      performance={{ min: 0.5 }} // Allow ThreeJS to reduce quality for better performance
+      performance={{ min: 0.5 }} // Standard performance setting
     >
       {children}
     </Canvas>

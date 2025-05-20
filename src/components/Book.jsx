@@ -16,7 +16,10 @@ import {
   SRGBColorSpace,
   Uint16BufferAttribute,
   Vector3,
+  ClampToEdgeWrapping,
+  RGBFormat
 } from "three";
+import * as THREE from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { pageAtom, pages } from "./UI";
 import { useDevice } from "../context/DeviceContext";
@@ -69,7 +72,7 @@ const createPageGeometry = (segments) => {
   if (geometryCache.has(cacheKey)) {
     return geometryCache.get(cacheKey);
   }
-  
+
   // Create new geometry with optimized settings
   const geometry = new BoxGeometry(
     PAGE_WIDTH,
@@ -80,11 +83,11 @@ const createPageGeometry = (segments) => {
   );
 
   geometry.translate(PAGE_WIDTH / 2, 0, 0);
-  
+
   const segmentWidth = PAGE_WIDTH / segments;
   const position = geometry.attributes.position;
   const vertex = new Vector3();
-  
+
   // Pre-allocate typed arrays for better performance
   const skinIndexes = new Uint16Array(position.count * 4);
   const skinWeights = new Float32Array(position.count * 4);
@@ -103,7 +106,7 @@ const createPageGeometry = (segments) => {
     skinIndexes[idx + 1] = skinIndex + 1;
     skinIndexes[idx + 2] = 0;
     skinIndexes[idx + 3] = 0;
-    
+
     skinWeights[idx] = 1 - skinWeight;
     skinWeights[idx + 1] = skinWeight;
     skinWeights[idx + 2] = 0;
@@ -113,7 +116,7 @@ const createPageGeometry = (segments) => {
   // Use optimized buffer attributes
   geometry.setAttribute("skinIndex", new Uint16BufferAttribute(skinIndexes, 4));
   geometry.setAttribute("skinWeight", new Float32BufferAttribute(skinWeights, 4));
-  
+
   // Register for proper disposal and store in cache
   registerDisposable(geometry);
   geometryCache.set(cacheKey, geometry);
@@ -133,38 +136,42 @@ const pageMaterials = [
   createSharedMaterial('standard', { color: whiteColor, roughness: 0.5 }),
 ];
 
-// Preload all textures at initialization for better performance
-const textureUrls = [];
-pages.forEach((page) => {
-  textureUrls.push(`/textures/${page.front}.jpg`);
-  textureUrls.push(`/textures/${page.back}.jpg`);
-});
-textureUrls.push(`/textures/book-cover-roughness.jpg`);
+// Simplified texture preloading to fix black textures
+const allTextures = [];
 
-// Batch preload textures with lower priority
-useTexture.preload(textureUrls);
+// Collect all texture paths
+pages.forEach((page) => {
+  allTextures.push(`/textures/${page.front}.jpg`);
+  allTextures.push(`/textures/${page.back}.jpg`);
+});
+
+// Add roughness map
+allTextures.push(`/textures/book-cover-roughness.jpg`);
+
+// Preload all textures at once
+useTexture.preload(allTextures);
 
 // Optimized Page component with better performance
 const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
   const isMobile = useIsMobile();
   const params = getBookParameters(isMobile);
-  
+
   // Refs for performance optimization
   const group = useRef();
   const turnedAt = useRef(0);
   const lastOpened = useRef(opened);
   const skinnedMeshRef = useRef();
-  const animationRef = useRef({ 
+  const animationRef = useRef({
     emissiveIntensity: 0,
     lastTime: 0,
     turningTime: 0
   });
-  
+
   // State management
   const [highlighted, setHighlighted] = useState(false);
   const [_, setPage] = useAtom(pageAtom);
   const [textureError, setTextureError] = useState(false);
-  
+
   // Optimize texture loading with memoization
   const texturePaths = useMemo(() => [
     `/textures/${front}.jpg`,
@@ -173,23 +180,20 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
       ? [`/textures/book-cover-roughness.jpg`]
       : []),
   ], [front, back, number]);
-  
-  // Load textures with optimized settings
+
+  // Simplified texture loading to fix black textures
   const [picture, picture2, pictureRoughness] = useTexture(
     texturePaths,
     (loadedTextures) => {
       loadedTextures.forEach(texture => {
-        // Apply optimized texture settings
+        // Basic texture settings that work on all devices
         texture.colorSpace = SRGBColorSpace;
         texture.minFilter = LinearFilter;
         texture.magFilter = LinearFilter;
+        texture.generateMipmaps = false;
+
+        // Force texture update
         texture.needsUpdate = true;
-        
-        // Optimize memory usage
-        if (isMobile) {
-          texture.anisotropy = 1;
-          texture.generateMipmaps = false;
-        }
       });
       setTextureError(false);
     },
@@ -198,57 +202,59 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
       setTextureError(true);
     }
   );
-  
+
   // Create optimized geometry with proper caching
-  const pageGeometry = useMemo(() => 
-    createPageGeometry(params.pageSegments), 
+  const pageGeometry = useMemo(() =>
+    createPageGeometry(params.pageSegments),
   [params.pageSegments]);
-  
-  const segmentWidth = useMemo(() => 
+
+  const segmentWidth = useMemo(() =>
     PAGE_WIDTH / params.pageSegments,
   [params.pageSegments]);
 
-  // Create optimized materials with shared properties
+  // Simplified material creation to fix black textures
   const pageFrontMaterial = useMemo(() => {
-    // Use shared material properties
+    // Basic material properties that work on all devices
     const materialProps = {
       color: whiteColor,
       map: textureError ? null : picture,
       emissive: emissiveColor,
       emissiveIntensity: 0,
+      roughness: 0.5,
     };
-    
-    // Add specific properties based on page type
-    if (number === 0) {
-      materialProps.roughnessMap = textureError ? null : pictureRoughness;
-    } else {
-      materialProps.roughness = 0.1;
+
+    // Only add roughness map for cover
+    if (number === 0 && !textureError && pictureRoughness) {
+      materialProps.roughnessMap = pictureRoughness;
     }
-    
-    // Create and register material
+
+    // Create basic material that works on all devices
     const material = new MeshStandardMaterial(materialProps);
+
+    // Register for proper disposal
     registerDisposable(material);
     return material;
   }, [picture, pictureRoughness, textureError, number]);
-  
+
   const pageBackMaterial = useMemo(() => {
-    // Use shared material properties
+    // Basic material properties that work on all devices
     const materialProps = {
       color: whiteColor,
       map: textureError ? null : picture2,
       emissive: emissiveColor,
       emissiveIntensity: 0,
+      roughness: 0.5,
     };
-    
-    // Add specific properties based on page type
-    if (number === pages.length - 1) {
-      materialProps.roughnessMap = textureError ? null : pictureRoughness;
-    } else {
-      materialProps.roughness = 0.1;
+
+    // Only add roughness map for back cover
+    if (number === pages.length - 1 && !textureError && pictureRoughness) {
+      materialProps.roughnessMap = pictureRoughness;
     }
-    
-    // Create and register material
+
+    // Create basic material that works on all devices
     const material = new MeshStandardMaterial(materialProps);
+
+    // Register for proper disposal
     registerDisposable(material);
     return material;
   }, [picture2, pictureRoughness, textureError, number]);
@@ -260,16 +266,16 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
     for (let i = 0; i <= params.pageSegments; i++) {
       const bone = new Bone();
       bones.push(bone);
-      
+
       // Set bone position
       bone.position.x = i === 0 ? 0 : segmentWidth;
-      
+
       // Connect bones in a chain
       if (i > 0) {
         bones[i - 1].add(bone);
       }
     }
-    
+
     // Create skeleton once
     const skeleton = new Skeleton(bones);
 
@@ -279,19 +285,20 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
       pageFrontMaterial,
       pageBackMaterial,
     ];
-    
-    // Create optimized mesh
+
+    // Create simplified mesh that works on all devices
     const mesh = new SkinnedMesh(pageGeometry, materials);
-    
-    // Apply consistent settings
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
+
+    // Basic settings that work on all devices
+    mesh.castShadow = false;
+    mesh.receiveShadow = false;
     mesh.frustumCulled = false;
-    
+    mesh.matrixAutoUpdate = true; // Enable automatic matrix updates for compatibility
+
     // Connect skeleton
     mesh.add(skeleton.bones[0]);
     mesh.bind(skeleton);
-    
+
     // Register for proper disposal
     registerDisposable(mesh);
     return mesh;
@@ -300,20 +307,20 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
   // Pre-calculate bone animation parameters for better performance
   const boneCalculations = useMemo(() => {
     if (!manualSkinnedMesh) return null;
-    
+
     const bones = manualSkinnedMesh.skeleton.bones;
     const calculations = [];
-    
+
     // Pre-calculate all animation parameters
     for (let i = 0; i < bones.length; i++) {
       const boneIndex = i / bones.length;
-      
+
       // Optimized curve calculations
       const insideCurveIntensity = i < 8 ? Math.sin(i * 0.2 + 0.25) : 0;
       const outsideCurveIntensity = i >= 8 ? Math.cos(i * 0.3 + 0.09) : 0;
       const sinValue = Math.sin(i * Math.PI * boneIndex);
       const foldSinValue = i > 8 ? Math.sin(i * Math.PI * boneIndex - 0.5) : 0;
-      
+
       calculations.push({
         insideCurveIntensity,
         outsideCurveIntensity,
@@ -322,7 +329,7 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
         index: i
       });
     }
-    
+
     return calculations;
   }, [manualSkinnedMesh]);
 
@@ -335,8 +342,8 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
     // Moderate frame skipping for better performance without visual issues
     const now = performance.now();
     const frameSkip = isMobile ? 1 : 0; // Less aggressive frame skipping
-    
-    if (frameSkip > 0 && animationRef.current.lastTime && 
+
+    if (frameSkip > 0 && animationRef.current.lastTime &&
         now - animationRef.current.lastTime < 16.7 * frameSkip) {
       return;
     }
@@ -346,14 +353,14 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
     if (skinnedMeshRef.current.material[4] && skinnedMeshRef.current.material[5]) {
       const [material4, material5] = [skinnedMeshRef.current.material[4], skinnedMeshRef.current.material[5]];
       const targetEmissive = highlighted ? 0.22 : 0.0;
-      
+
       // Balanced lerp speed
       animationRef.current.emissiveIntensity = MathUtils.lerp(
         animationRef.current.emissiveIntensity,
         targetEmissive,
         0.15 // Moderate transition speed
       );
-      
+
       // Apply emissive intensity
       material4.emissiveIntensity = material5.emissiveIntensity = animationRef.current.emissiveIntensity;
     }
@@ -363,12 +370,12 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
       turnedAt.current = now;
       lastOpened.current = opened;
     }
-    
+
     // Calculate turning time with balanced animation speed
     const animationDuration = 350; // Balanced animation speed
     const elapsedTime = Math.min(animationDuration, now - turnedAt.current);
     let turningTime = elapsedTime / animationDuration;
-    
+
     // Apply smooth easing curve
     turningTime = Math.sin(turningTime * Math.PI);
     animationRef.current.turningTime = turningTime;
@@ -381,18 +388,18 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
 
     // Get bones for animation
     const bones = skinnedMeshRef.current.skeleton.bones;
-    
+
     // Always update all bones to ensure proper visual appearance
     for (let i = 0; i < bones.length; i++) {
       const calc = boneCalculations[i];
       if (!calc) continue;
-      
+
       const target = i === 0 ? group.current : bones[i];
       if (!target) continue;
-      
+
       // Calculate rotation with balanced approach
       let rotationAngle = 0;
-      
+
       if (bookClosed && i === 0) {
         // Special case for first bone when book is closed
         rotationAngle = targetRotation;
@@ -403,7 +410,7 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
           params.outsideCurveStrength * calc.outsideCurveIntensity * targetRotation +
           params.turningCurveStrength * calc.sinValue * turningTime * targetRotation;
       }
-      
+
       // Apply y-rotation with balanced damping
       easing.dampAngle(
         target.rotation,
@@ -418,7 +425,7 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
         // Calculate fold parameters
         const foldRotationAngle = degToRad(Math.sign(targetRotation) * 2);
         const foldIntensity = calc.foldSinValue * turningTime;
-        
+
         // Apply x-rotation for fold effect
         easing.dampAngle(
           target.rotation,
@@ -452,21 +459,21 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
   const clickTimeRef = useRef(0);
   const handleClick = useCallback((e) => {
     e.stopPropagation();
-    
+
     // Prevent click spamming with a moderate debounce
     const now = performance.now();
     if (now - clickTimeRef.current < 400) {
       return; // Ignore clicks that are too close together
     }
-    
+
     clickTimeRef.current = now;
-    
+
     // Immediate visual feedback
     setHighlighted(false);
-    
+
     // Calculate the target page with bounds checking
     const targetPage = opened ? number : number + 1;
-    
+
     // Safety check to prevent invalid page numbers
     if (targetPage >= 0 && targetPage <= pages.length) {
       // Use setTimeout instead of requestAnimationFrame for more reliable execution
@@ -475,7 +482,7 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
       }, 0);
     }
   }, [opened, number, setPage]);
-  
+
   return (
     <group
       {...props}
@@ -505,11 +512,11 @@ export const Book = ({ ...props }) => {
   const [page] = useAtom(pageAtom);
   const [delayedPage, setDelayedPage] = useState(page);
   const isMobile = useIsMobile();
-  
+
   // Refs for performance optimization
   const timeoutRef = useRef(null);
   const animationFrameRef = useRef(null);
-  
+
   // Clean up resources when component unmounts
   useEffect(() => {
     return () => {
@@ -517,12 +524,12 @@ export const Book = ({ ...props }) => {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
-      
+
       // Clear any pending timeouts
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
-      
+
       // Clean up geometry cache
       if (geometryCache) {
         geometryCache.forEach(geometry => {
@@ -530,7 +537,7 @@ export const Book = ({ ...props }) => {
         });
         geometryCache.clear();
       }
-      
+
       // Clean up material cache
       if (window._materialCache) {
         window._materialCache.forEach(material => {
@@ -551,34 +558,34 @@ export const Book = ({ ...props }) => {
       if (page === prevPage) {
         return prevPage;
       }
-      
+
       // Clear any existing timeout
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
-      
+
       // Calculate page distance
       const pageDistance = Math.abs(page - prevPage);
-      
+
       // For large jumps, move at most 2 pages at once
       // This prevents skipping too many pages which can cause visual issues
       if (pageDistance > 2) {
         const jumpSize = 2; // Fixed jump size for stability
-        const newPage = page > prevPage 
+        const newPage = page > prevPage
           ? Math.min(prevPage + jumpSize, page)
           : Math.max(prevPage - jumpSize, page);
-          
+
         // Moderate delay for stability
         timeoutRef.current = setTimeout(() => goToPage(), 50);
         return newPage;
       }
-      
+
       // For smaller jumps, move one page at a time
       const delay = 80; // Balanced animation speed
-      
+
       // Schedule next update
       timeoutRef.current = setTimeout(() => goToPage(), delay);
-      
+
       // Move one page at a time in the right direction
       if (page > prevPage) {
         return prevPage + 1;
@@ -593,7 +600,7 @@ export const Book = ({ ...props }) => {
   // Trigger page turning animation when page changes
   useEffect(() => {
     goToPage();
-    
+
     // Clean up on unmount or page change
     return () => {
       if (timeoutRef.current) {
@@ -616,7 +623,7 @@ export const Book = ({ ...props }) => {
   }, []);
 
   // Optimize book closed state calculation
-  const isBookClosed = useMemo(() => 
+  const isBookClosed = useMemo(() =>
     delayedPage === 0 || delayedPage === pages.length,
   [delayedPage]);
 
@@ -625,7 +632,7 @@ export const Book = ({ ...props }) => {
       {visiblePages.map((pageData) => {
         // Use the stored original index
         const pageNumber = pageData._index;
-        
+
         return (
           <Page
             key={pageNumber}
