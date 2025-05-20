@@ -28,8 +28,8 @@ const CardContainer = styled.div`
   
   @media (max-width: 480px) {
     min-height: 50vh;
-    padding: 0.5rem 0 8rem; /* Increased bottom padding to accommodate repositioned controls */
-    margin-bottom: 2rem; /* Added margin for better spacing */
+    padding: 0.5rem 0 6rem; /* Adjusted bottom padding for better spacing */
+    margin-bottom: 1.5rem; /* Adjusted margin for better spacing */
     /* Don't restrict touch actions at the container level */
     /* Let the individual elements handle their own touch behavior */
   }
@@ -82,9 +82,11 @@ const RotatingInner = styled.div`
   transform-style: preserve-3d;
   transform: perspective(var(--perspective)) rotateX(var(--rotateX));
   z-index: 5;
+  will-change: transform; /* Hint to browser to optimize transform animations */
   
   &.auto-rotating {
     animation: autoRotate var(--rotation-duration) linear infinite;
+    animation-fill-mode: forwards; /* Prevent flicker at animation end */
   }
   
   &.paused {
@@ -121,15 +123,7 @@ const RotatingInner = styled.div`
     --translateZ: 400px;
     --perspective: 1800px;
     --rotateX: 8deg; /* More tilt for smaller screens */
-    
-    @keyframes autoRotate {
-      from {
-        transform: perspective(var(--perspective)) rotateX(var(--rotateX)) rotateY(0deg);
-      }
-      to {
-        transform: perspective(var(--perspective)) rotateX(var(--rotateX)) rotateY(360deg);
-      }
-    }
+    --rotation-duration: 50s; /* Slightly slower on mobile for better performance */
   }
   
   /* Prevent animation during page load for better performance */
@@ -162,7 +156,8 @@ const GlassCard = styled.div`
   overflow: visible; /* Changed from hidden to visible to allow content to be scrollable */
   transform-style: preserve-3d;
   z-index: calc(10 - (var(--index, 0) % 10));
-  transition: transform 0.5s ease, box-shadow 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.215, 0.61, 0.355, 1), box-shadow 0.3s ease;
+  will-change: transform, box-shadow; /* Hint to browser to optimize these properties */
   
   /* Active card styling */
   &.active-card {
@@ -209,6 +204,9 @@ const GlassCard = styled.div`
                 inset 0 0 15px rgba(var(--color-card, '59, 130, 246'), 0.15);
     /* Allow all touch actions within the card */
     touch-action: auto;
+    /* Simplify backdrop filter on mobile for better performance */
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     
     &.active-card {
       box-shadow: 0 8px 30px 0 rgba(0, 0, 0, 0.7),
@@ -510,12 +508,12 @@ const NavButton = styled.button`
   }
   
   @media (max-width: 480px) {
-    width: 40px;
-    height: 40px;
-    background: rgba(15, 23, 42, 0.85); /* Darker for better visibility */
-    border: 2px solid rgba(59, 130, 246, 0.8); /* More visible border */
+    width: 42px;
+    height: 42px;
+    background: rgba(15, 23, 42, 0.9); /* Darker for better visibility */
+    border: 2px solid rgba(59, 130, 246, 0.9); /* More visible border */
     top: auto; /* Reset top positioning */
-    bottom: -90px; /* Position below the carousel */
+    bottom: -70px; /* Position closer to the carousel */
     transform: none; /* Reset transform */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), 0 0 10px rgba(59, 130, 246, 0.5);
     
@@ -523,13 +521,15 @@ const NavButton = styled.button`
     &::after {
       content: ${props => props.className === 'prev' ? '"Slower"' : '"Faster"'};
       position: absolute;
-      bottom: -25px;
+      bottom: -22px;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.8);
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.9);
       white-space: nowrap;
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+      letter-spacing: 0.5px;
     }
   }
   
@@ -618,13 +618,13 @@ const Indicators = styled.div`
   }
   
   @media (max-width: 480px) {
-    bottom: -140px; /* Moved further down to avoid overlap with buttons */
-    gap: 12px; /* Adjusted for better fit */
-    padding: 8px 16px; /* Increased padding for better visibility and tap area */
-    background: rgba(15, 23, 42, 0.7); /* Increased opacity for better visibility */
-    border-radius: 30px;
+    bottom: -120px; /* Adjusted position to be closer to buttons but not overlapping */
+    gap: 10px; /* Slightly reduced gap for better fit */
+    padding: 6px 14px; /* Adjusted padding for better visibility and tap area */
+    background: rgba(15, 23, 42, 0.8); /* Increased opacity for better visibility */
+    border-radius: 20px;
     backdrop-filter: blur(4px);
-    border: 1px solid rgba(59, 130, 246, 0.3);
+    border: 1px solid rgba(59, 130, 246, 0.4);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
 `;
@@ -789,6 +789,10 @@ const AboutMe = () => {
   const rotateToCard = (index) => {
     if (!rotatingRef.current) return;
     
+    // Debounce function to prevent multiple rapid calls
+    if (rotatingRef.current.isRotating) return;
+    rotatingRef.current.isRotating = true;
+    
     // Remove active class from all cards
     cardRefs.current.forEach(card => {
       if (card) card.classList.remove('active-card');
@@ -801,25 +805,30 @@ const AboutMe = () => {
     const angle = -(360 / aboutTimeline.length) * index;
     
     // Apply the rotation with a smooth transition
-    rotatingRef.current.style.transition = 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+    // Using a more performant cubic-bezier curve
+    rotatingRef.current.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1)';
     rotatingRef.current.style.transform = `perspective(var(--perspective)) rotateX(var(--rotateX)) rotateY(${angle}deg)`;
     
     // Update active index
     setActiveIndex(index);
     
-    // Add active class to the selected card
-    setTimeout(() => {
-      if (cardRefs.current[index]) {
-        cardRefs.current[index].classList.add('active-card');
-      }
-    }, 100);
+    // Add active class to the selected card after a short delay
+    // This helps with performance by separating the transform and class change
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        if (cardRefs.current[index]) {
+          cardRefs.current[index].classList.add('active-card');
+        }
+      }, 50);
+    });
     
     // Reset transition after animation completes
     setTimeout(() => {
       if (rotatingRef.current) {
         rotatingRef.current.style.transition = '';
+        rotatingRef.current.isRotating = false; // Reset the rotation flag
       }
-    }, 600);
+    }, 500);
   };
   
   // Add touch event handling for mobile
