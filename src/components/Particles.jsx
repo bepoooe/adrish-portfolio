@@ -9,80 +9,129 @@ let sharedFireflyTexture = null;
 
 const createFireflyTexture = () => {
   if (sharedFireflyTexture) return sharedFireflyTexture;
-  
+
+  // Reduced texture size for better performance
   const canvas = document.createElement('canvas');
-  canvas.width = 32;
-  canvas.height = 32;
+  canvas.width = 16; // Reduced from 32
+  canvas.height = 16; // Reduced from 32
   const ctx = canvas.getContext('2d');
-  
-  const gradient = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+
+  const gradient = ctx.createRadialGradient(8, 8, 0, 8, 8, 8); // Adjusted center points
   gradient.addColorStop(0, 'rgba(255, 252, 187, 1)');
   gradient.addColorStop(0.4, 'rgba(255, 252, 187, 0.5)');
   gradient.addColorStop(1, 'rgba(255, 252, 187, 0)');
-  
+
   ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, 32, 32);
-  
+  ctx.fillRect(0, 0, 16, 16); // Adjusted size
+
   const texture = new THREE.Texture(canvas);
   texture.needsUpdate = true;
-  
+  texture.generateMipmaps = false; // Disable mipmaps to save memory
+  texture.minFilter = THREE.LinearFilter; // Use simple filtering
+  texture.magFilter = THREE.LinearFilter;
+
   // Store for reuse
   sharedFireflyTexture = texture;
+  registerDisposable(texture); // Register for proper cleanup
   return texture;
 };
 
 export function Particles({ count = 1000 }) {
+  // Significantly reduce particle count for better performance
+  const actualCount = Math.min(count, 300); // Cap at 300 particles maximum
+
   const points = useRef();
-  const { isMobile } = useDevice();
-  
+  const { isMobile, isLowPerformance } = useDevice();
+  const frameSkipRef = useRef(0); // For skipping frames
+
+  // Further reduce count based on device capability
+  const finalCount = useMemo(() => {
+    return isMobile ? Math.floor(actualCount * 0.5) :
+           isLowPerformance ? Math.floor(actualCount * 0.7) :
+           actualCount;
+  }, [actualCount, isMobile, isLowPerformance]);
+
+  // Create particle positions with optimized memory usage
   const particlesPosition = useMemo(() => {
-    const positions = new Float32Array(count * 3);
-    const boundSize = isMobile ? 8 : 10; // Smaller bounds for mobile
-    
-    for (let i = 0; i < count; i++) {
+    const positions = new Float32Array(finalCount * 3);
+    const boundSize = isMobile ? 6 : 8; // Smaller bounds for all devices
+
+    for (let i = 0; i < finalCount; i++) {
       positions[i * 3] = (Math.random() - 0.5) * boundSize;
       positions[i * 3 + 1] = (Math.random() - 0.5) * boundSize;
       positions[i * 3 + 2] = (Math.random() - 0.5) * boundSize;
     }
     return positions;
-  }, [count, isMobile]);
+  }, [finalCount, isMobile]);
 
   // Use shared texture for all particles
   const firefliesTexture = useMemo(() => {
     return createFireflyTexture();
   }, []);
 
+  // Create additional attributes for optimized animation
+  const particleSpeeds = useMemo(() => {
+    const speeds = new Float32Array(finalCount * 3);
+    for (let i = 0; i < finalCount; i++) {
+      // Randomize movement speeds for more natural motion
+      speeds[i * 3] = 0.2 + Math.random() * 0.3;
+      speeds[i * 3 + 1] = 0.2 + Math.random() * 0.3;
+      speeds[i * 3 + 2] = 0.2 + Math.random() * 0.3;
+    }
+    return speeds;
+  }, [finalCount]);
+
+  // Optimize animation with frame skipping and batched updates
   useFrame((state) => {
     if (!points.current) return;
-    
+
+    // Skip frames based on device capability
+    frameSkipRef.current += 1;
+    const frameSkip = isMobile ? 3 : isLowPerformance ? 2 : 1;
+    if (frameSkipRef.current % frameSkip !== 0) return;
+
     const time = state.clock.getElapsedTime();
-    // Optimize for mobile - update fewer particles per frame
-    const updateStep = isMobile ? 2 : 1; // Update every other particle on mobile
-    const movementFactor = isMobile ? 0.001 : 0.002; // Slower movement on mobile
-    const boundSize = isMobile ? 4 : 5; // Smaller bounds for mobile
-    
-    for (let i = 0; i < count; i += updateStep) {
+    const positionArray = points.current.geometry.attributes.position.array;
+
+    // Batch size for processing - process fewer particles per frame
+    const batchSize = isMobile ? 10 : 20;
+    const startIndex = (frameSkipRef.current * batchSize) % finalCount;
+    const endIndex = Math.min(startIndex + batchSize, finalCount);
+
+    const movementFactor = isMobile ? 0.0005 : 0.001; // Reduced movement factor
+    const boundSize = isMobile ? 3 : 4; // Smaller bounds for better performance
+
+    // Only update a subset of particles each frame
+    for (let i = startIndex; i < endIndex; i++) {
       const i3 = i * 3;
-      // More organic movement with varying speeds
-      points.current.geometry.attributes.position.array[i3] += Math.sin(time * 0.5 + i * 0.3) * movementFactor;
-      points.current.geometry.attributes.position.array[i3 + 1] += Math.cos(time * 0.4 + i * 0.2) * movementFactor;
-      points.current.geometry.attributes.position.array[i3 + 2] += Math.sin(time * 0.3 + i * 0.1) * movementFactor;
-      
-      // Keep fireflies within bounds
-      const x = points.current.geometry.attributes.position.array[i3];
-      const y = points.current.geometry.attributes.position.array[i3 + 1];
-      const z = points.current.geometry.attributes.position.array[i3 + 2];
-      
-      if (Math.abs(x) > boundSize) points.current.geometry.attributes.position.array[i3] *= -0.95;
-      if (Math.abs(y) > boundSize) points.current.geometry.attributes.position.array[i3 + 1] *= -0.95;
-      if (Math.abs(z) > boundSize) points.current.geometry.attributes.position.array[i3 + 2] *= -0.95;
+
+      // Use pre-calculated speeds for more efficient animation
+      positionArray[i3] += Math.sin(time * particleSpeeds[i3] + i * 0.1) * movementFactor;
+      positionArray[i3 + 1] += Math.cos(time * particleSpeeds[i3 + 1] + i * 0.1) * movementFactor;
+      positionArray[i3 + 2] += Math.sin(time * particleSpeeds[i3 + 2] + i * 0.1) * movementFactor;
+
+      // Simplified boundary check with fewer calculations
+      if (Math.abs(positionArray[i3]) > boundSize) positionArray[i3] *= -0.9;
+      if (Math.abs(positionArray[i3 + 1]) > boundSize) positionArray[i3 + 1] *= -0.9;
+      if (Math.abs(positionArray[i3 + 2]) > boundSize) positionArray[i3 + 2] *= -0.9;
     }
+
+    // Only mark as needing update when we've actually changed something
     points.current.geometry.attributes.position.needsUpdate = true;
   });
 
-  // Particle size based on device
-  const particleSize = isMobile ? 0.045 : 0.035;
-  const particleOpacity = isMobile ? 0.6 : 0.7;
+  // Optimize particle appearance for better performance
+  const particleSize = isMobile ? 0.06 : 0.05; // Slightly larger to compensate for fewer particles
+  const particleOpacity = isMobile ? 0.5 : 0.6; // Slightly reduced opacity
+
+  // Clean up resources when component unmounts
+  useEffect(() => {
+    return () => {
+      if (points.current && points.current.geometry) {
+        points.current.geometry.dispose();
+      }
+    };
+  }, []);
 
   return (
     <points ref={points}>
@@ -103,6 +152,7 @@ export function Particles({ count = 1000 }) {
         depthWrite={false}
         sizeAttenuation={true}
         color="#fffcbb"
+        alphaTest={0.01} // Add alpha test to improve rendering performance
       />
     </points>
   );

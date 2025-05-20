@@ -2,8 +2,9 @@ import { Environment, Float, OrbitControls } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Book } from "./Book";
 import { Particles } from "./Particles";
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState, lazy } from "react";
 import { useDevice } from "../context/DeviceContext";
+import { cleanupResources } from "../utils/memoryOptimizer";
 
 // Export the useDevice hook for other components
 export const useIsMobile = () => {
@@ -21,123 +22,159 @@ const BookFallback = () => {
   );
 };
 
+// Lazy load particles to reduce initial memory usage
+const LazyParticles = lazy(() => import('./Particles').then(module => ({ default: module.Particles })));
+
+// Camera adjuster component extracted for better organization
+const CameraAdjuster = ({ isMobile }) => {
+  const { camera } = useThree();
+
+  useEffect(() => {
+    if (isMobile) {
+      // Simplified camera settings for mobile
+      camera.position.set(-0.5, 1.2, 6);
+      camera.fov = 50;
+      camera.near = 0.1;
+      camera.far = 1000; // Reduced far plane for better performance
+      camera.updateProjectionMatrix();
+    } else {
+      // Desktop camera with optimized settings
+      camera.position.set(-0.5, 1, 4.5);
+      camera.fov = 40;
+      camera.far = 1000; // Reduced far plane
+      camera.updateProjectionMatrix();
+    }
+
+    // Cleanup function
+    return () => {
+      // Reset camera to default state when unmounting
+      camera.position.set(0, 0, 0);
+      camera.rotation.set(0, 0, 0);
+      camera.updateProjectionMatrix();
+    };
+  }, [camera, isMobile]);
+
+  // Simplified resize handler with debounce
+  useEffect(() => {
+    let resizeTimeout;
+
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        if (isMobile) {
+          camera.fov = window.innerWidth < 380 ? 55 : 50;
+          camera.updateProjectionMatrix();
+        }
+      }, 200); // Debounce resize events
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => {
+      clearTimeout(resizeTimeout);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [camera, isMobile]);
+
+  return null;
+};
+
+// Optimized lighting component to reduce re-renders
+const OptimizedLighting = ({ isMobile }) => {
+  return isMobile ? (
+    // Ultra-simplified lighting for mobile
+    <>
+      <directionalLight position={[2, 5, 2]} intensity={3} />
+      <ambientLight intensity={2} />
+    </>
+  ) : (
+    // Simplified desktop lighting
+    <>
+      <directionalLight
+        position={[2, 5, 2]}
+        intensity={3}
+        castShadow
+        shadow-mapSize-width={512} // Further reduced shadow map size
+        shadow-mapSize-height={512}
+        shadow-bias={-0.0001}
+      />
+      <ambientLight intensity={1.5} />
+      {/* Simplified shadow receiver with smaller geometry */}
+      <mesh position-y={-1.5} rotation-x={-Math.PI / 2} receiveShadow>
+        <planeGeometry args={[20, 20]} /> {/* Much smaller plane */}
+        <shadowMaterial transparent opacity={0.15} />
+      </mesh>
+    </>
+  );
+};
+
 export const Experience = () => {
   // Use the shared device context
   const { isMobile, isLowPerformance } = useDevice();
-  
-  // Adjust camera for mobile
-  const CameraAdjuster = () => {
-    const { camera } = useThree();
-    
-    useEffect(() => {
-      if (isMobile) {
-        // Adjust camera position for mobile - moved further back for better initial view
-        camera.position.set(-0.5, 1.2, 6);
-        camera.fov = 50; // Wider FOV for mobile
-        camera.near = 0.1; // Closer near clipping plane
-        camera.far = 2000; // Far clipping plane for zooming out
-        camera.updateProjectionMatrix();
-      } else {
-        // Ensure desktop camera is properly positioned
-        camera.position.set(-0.5, 1, 4.5);
-        camera.fov = 40;
-        camera.far = 2000; // Far clipping plane for zooming out
-        camera.updateProjectionMatrix();
+
+  // State to control when to show particles (delayed loading)
+  const [showParticles, setShowParticles] = useState(false);
+
+  // Delay particle loading to improve initial render performance
+  useEffect(() => {
+    // Only show particles after initial render is complete
+    const timer = setTimeout(() => {
+      if (!isLowPerformance) {
+        setShowParticles(true);
       }
-    }, [camera, isMobile]);
-    
-    // Handle resize events to update camera on orientation changes
-    useEffect(() => {
-      const handleResize = () => {
-        if (isMobile) {
-          camera.position.set(-0.5, 1.2, 6);
-          camera.fov = window.innerWidth < 380 ? 55 : 50; // Even wider FOV for very small screens
-          camera.updateProjectionMatrix();
-        }
-      };
-      
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
-    }, [camera, isMobile]);
-    
-    return null;
-  };
-  
+    }, 1000); // 1 second delay
+
+    // Clean up resources when component unmounts
+    return () => {
+      clearTimeout(timer);
+      cleanupResources(); // Force cleanup when unmounting
+    };
+  }, [isLowPerformance]);
+
   return (
     <>
-      <CameraAdjuster />
+      <CameraAdjuster isMobile={isMobile} />
+
+      {/* Optimized Float component with reduced animation */}
       <Float
-        rotation-x={isMobile ? -Math.PI / 5 : -Math.PI / 4} // Less tilt on mobile
-        floatIntensity={isMobile ? 0.2 : 1} // Significantly reduce float intensity on mobile
-        speed={isMobile ? 0.8 : 2} // Slower on mobile for better performance
-        rotationIntensity={isMobile ? 0.3 : 2} // Much less rotation on mobile
+        rotation-x={isMobile ? -Math.PI / 5 : -Math.PI / 4}
+        floatIntensity={isMobile ? 0.1 : 0.5} // Further reduced float intensity
+        speed={isMobile ? 0.5 : 1} // Further reduced speed
+        rotationIntensity={isMobile ? 0.2 : 1} // Further reduced rotation
       >
         <Suspense fallback={<BookFallback />}>
           <Book />
         </Suspense>
       </Float>
-      
-      {/* Only show particles on higher-end devices */}
-      {!isLowPerformance && <Particles count={isMobile ? 400 : 1000} />}
-      
-      <OrbitControls 
-        enableZoom={true} // Enable zoom functionality
-        zoomSpeed={isMobile ? 1.2 : 0.8} // Faster zoom speed on mobile
-        minDistance={isMobile ? 2 : 1} // Prevent zooming in too close on mobile
-        maxDistance={isMobile ? 10 : 15} // Limit zoom out on mobile for better performance
-        enablePan={false} // Disable panning for better experience
-        rotateSpeed={isMobile ? 0.7 : 0.5} // Slightly faster rotation on mobile
-        maxPolarAngle={Math.PI / 1.5} // Limit rotation
-        minPolarAngle={Math.PI / 3} // Limit rotation
-        enableDamping={true} // Add smooth damping
-        dampingFactor={0.1} // Control damping speed
-        touchAction="none" // Prevent default touch actions
-        screenSpacePanning={false} // Use more intuitive panning mode
-      />
-      
-      {/* Simpler environment on mobile */}
-      <Environment preset={isMobile ? "sunset" : "city"} intensity={isMobile ? 0.3 : 0.5} />
-      
-      {/* Optimized lighting for all devices */}
-      {isMobile ? (
-        // Mobile-optimized lighting - minimal for better performance
-        <>
-          <directionalLight
-            position={[2, 5, 2]}
-            intensity={3}
-            castShadow={false}
-          />
-          <ambientLight intensity={2} />
-        </>
-      ) : (
-        // Desktop lighting with optimized effects
-        <>
-          <directionalLight
-            position={[2, 5, 2]}
-            intensity={3}
-            castShadow
-            shadow-mapSize-width={1024} // Reduced shadow map size
-            shadow-mapSize-height={1024}
-            shadow-bias={-0.0001}
-          />
-          {/* Removed one spotlight for better performance */}
-          <spotLight
-            position={[3, 1, 1]}
-            angle={0.5}
-            penumbra={0.5}
-            intensity={3}
-            color="white"
-            castShadow={false} // Disable shadow casting for better performance
-            target-position={[0, 0, 0]}
-          />
-          <ambientLight intensity={1.5} />
-          {/* Simplified shadow receiver */}
-          <mesh position-y={-1.5} rotation-x={-Math.PI / 2} receiveShadow>
-            <planeGeometry args={[50, 50]} /> {/* Smaller plane */}
-            <shadowMaterial transparent opacity={0.15} />
-          </mesh>
-        </>
+
+      {/* Lazy-loaded particles with delayed rendering */}
+      {showParticles && (
+        <Suspense fallback={null}>
+          <LazyParticles count={isMobile ? 150 : 300} /> {/* Further reduced particle count */}
+        </Suspense>
       )}
+
+      {/* Optimized OrbitControls with simplified settings */}
+      <OrbitControls
+        enableZoom={true}
+        zoomSpeed={0.8}
+        minDistance={isMobile ? 2 : 1}
+        maxDistance={isMobile ? 8 : 10} // Reduced max distance
+        enablePan={false}
+        rotateSpeed={0.5}
+        maxPolarAngle={Math.PI / 1.5}
+        minPolarAngle={Math.PI / 3}
+        enableDamping={!isMobile} // Disable damping on mobile
+        dampingFactor={0.05} // Reduced damping factor
+      />
+
+      {/* Simplified environment with lower intensity */}
+      <Environment
+        preset={isMobile ? "sunset" : "city"}
+        intensity={isMobile ? 0.2 : 0.3} // Reduced intensity
+      />
+
+      {/* Use optimized lighting component */}
+      <OptimizedLighting isMobile={isMobile} />
     </>
   );
 };
