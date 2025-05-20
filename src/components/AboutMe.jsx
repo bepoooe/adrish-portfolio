@@ -107,7 +107,7 @@ const RotatingInner = styled.div`
     --translateZ: 500px;
     --perspective: 2000px;
     --rotateX: 5deg; /* Slight tilt for better mobile viewing */
-    touch-action: none; /* Handle touch events only in this component */
+    touch-action: pan-x; /* Allow horizontal swiping but not interfere with vertical scrolling */
   }
   
   @media (max-width: 480px) {
@@ -188,6 +188,9 @@ const GlassCard = styled.div`
     border-width: 1px;
     box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.5),
                 inset 0 0 15px rgba(var(--color-card, '59, 130, 246'), 0.15);
+    /* Allow vertical scrolling within the card */
+    touch-action: pan-y;
+    overflow-y: visible;
   }
 `;
 
@@ -315,6 +318,7 @@ const CardDescription = styled.p`
   padding: 0 2px;
   font-weight: 500;
   max-height: 120px; /* Allow scrolling for longer descriptions */
+  touch-action: pan-y; /* Explicitly allow vertical touch scrolling */
   
   @media (max-width: 768px) {
     font-size: 0.75rem;
@@ -323,14 +327,16 @@ const CardDescription = styled.p`
     max-height: 90px;
     padding: 0 4px;
     -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    overscroll-behavior: contain; /* Prevent scroll chaining */
   }
   
   @media (max-width: 480px) {
     font-size: 0.7rem;
     line-height: 1.15;
     margin-bottom: 6px;
-    max-height: 70px;
+    max-height: 80px; /* Increased from 70px for more visible scrollable area */
     max-width: 98%;
+    padding: 2px 4px; /* Added more padding for better touch area */
   }
   
   /* Custom scrollbar styling */
@@ -348,12 +354,16 @@ const CardDescription = styled.p`
     border-radius: 10px;
   }
   
-  /* Hide scrollbar for mobile but keep functionality */
+  /* Improve scrollbar for mobile but keep functionality */
   @media (max-width: 480px) {
     scrollbar-width: thin;
     
     &::-webkit-scrollbar {
-      width: 2px;
+      width: 3px; /* Slightly wider for better touch */
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: rgba(var(--color-card, '59, 130, 246'), 0.5); /* More visible */
     }
   }
 `;
@@ -663,6 +673,15 @@ const AboutMe = () => {
       const deltaX = touchCurrentX - touchStartX;
       const deltaY = touchCurrentY - touchStartY;
       
+      // Check if the touch is on a card description (scrollable element)
+      const target = e.target;
+      const isCardDescription = target.closest('.card-description');
+      
+      // If we're in a card description and trying to scroll vertically, allow it
+      if (isCardDescription && Math.abs(deltaY) > Math.abs(deltaX)) {
+        return; // Allow default behavior for vertical scrolling in descriptions
+      }
+      
       // Only prevent default for horizontal swipes on the card container
       // This allows normal scrolling elsewhere on the page
       if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 20) {
@@ -703,8 +722,14 @@ const AboutMe = () => {
     // Add touch event listeners only to the rotating container
     const container = rotatingRef.current;
     if (container) {
+      // Use passive: true for touchstart to improve performance
       container.addEventListener('touchstart', handleTouchStart, { passive: true });
+      
+      // Use passive: false only for touchmove to allow preventDefault() when needed
+      // This is important for controlling horizontal swipes without affecting vertical scrolling
       container.addEventListener('touchmove', handleTouchMove, { passive: false });
+      
+      // Use passive: true for touchend since we don't need to prevent default
       container.addEventListener('touchend', handleTouchEnd, { passive: true });
       
       return () => {
@@ -832,7 +857,7 @@ const AboutMe = () => {
                   
                   <CardTitle>{card.title}</CardTitle>
                   <CardPeriod>{card.period}</CardPeriod>
-                  <CardDescription>{card.description}</CardDescription>
+                  <CardDescription className="card-description">{card.description}</CardDescription>
                   
                   {card.skills && (
                     <SkillsContainer>
