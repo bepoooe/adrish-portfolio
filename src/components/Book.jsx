@@ -19,39 +19,17 @@ import {
 } from "three";
 import { degToRad } from "three/src/math/MathUtils.js";
 import { pageAtom, pages } from "./UI";
+import { useDevice } from "../context/DeviceContext";
 
-// Cache for geometries to avoid recreating them
-const geometryCache = new Map();
-
-// Use local implementation to avoid circular dependency
+// Use the shared device context
 const useIsMobile = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  
-  useEffect(() => {
-    // Check if we're on mobile
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    
-    // Initial check
-    checkMobile();
-    
-    // Use debounced resize handler for better performance
-    let resizeTimer;
-    const handleResize = () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(checkMobile, 100);
-    };
-    
-    window.addEventListener('resize', handleResize);
-    return () => {
-      clearTimeout(resizeTimer);
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
-  
+  const { isMobile } = useDevice();
   return isMobile;
 };
+
+// Import memory optimization utilities
+import { createOptimizedGeometry, createSharedMaterial, registerDisposable } from '../utils/memoryOptimizer';
+import { preloadTextures, getTextureFromCache } from '../utils/textureManager';
 
 // Use the same parameters for both mobile and desktop to ensure consistency
 const getBookParameters = (isMobile) => {
@@ -73,8 +51,9 @@ const PAGE_DEPTH = 0.003;
 const createPageGeometry = (segments) => {
   // Check if we already have this geometry in cache
   const cacheKey = `geometry-${segments}`;
-  if (geometryCache.has(cacheKey)) {
-    return geometryCache.get(cacheKey);
+  if (!window._geometryCache) window._geometryCache = new Map();
+  if (window._geometryCache.has(cacheKey)) {
+    return window._geometryCache.get(cacheKey);
   }
   
   // Create new geometry if not in cache
@@ -127,32 +106,21 @@ const createPageGeometry = (segments) => {
   );
   
   // Store in cache for reuse
-  geometryCache.set(cacheKey, geometry);
+  window._geometryCache.set(cacheKey, geometry);
   return geometry;
 };
-
-// Cache for materials to avoid recreating them
-const materialCache = new Map();
 
 // Pre-create shared colors to avoid creating new instances
 const whiteColor = new Color("white");
 const emissiveColor = new Color("orange");
 const blackColor = new Color("#111");
 
-// Create shared materials that don't need to be recreated for each page
+// Create shared materials using our optimized material creator
 const pageMaterials = [
-  new MeshStandardMaterial({
-    color: whiteColor,
-  }),
-  new MeshStandardMaterial({
-    color: blackColor,
-  }),
-  new MeshStandardMaterial({
-    color: whiteColor,
-  }),
-  new MeshStandardMaterial({
-    color: whiteColor,
-  }),
+  createSharedMaterial('standard', { color: whiteColor }),
+  createSharedMaterial('standard', { color: blackColor }),
+  createSharedMaterial('standard', { color: whiteColor }),
+  createSharedMaterial('standard', { color: whiteColor }),
 ];
 
 // Preload textures once at component initialization
@@ -232,11 +200,6 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
 
   // Create materials with simplified properties for better performance
   const pageFrontMaterial = useMemo(() => {
-    const materialKey = `front-${number}-${textureError}`;
-    if (materialCache.has(materialKey)) {
-      return materialCache.get(materialKey);
-    }
-    
     const material = new MeshStandardMaterial({
       color: whiteColor,
       map: textureError ? null : picture,
@@ -251,16 +214,10 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
       emissiveIntensity: 0,
     });
     
-    materialCache.set(materialKey, material);
     return material;
   }, [picture, pictureRoughness, textureError, number]);
   
   const pageBackMaterial = useMemo(() => {
-    const materialKey = `back-${number}-${textureError}`;
-    if (materialCache.has(materialKey)) {
-      return materialCache.get(materialKey);
-    }
-    
     const material = new MeshStandardMaterial({
       color: whiteColor,
       map: textureError ? null : picture2,
@@ -275,7 +232,6 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
       emissiveIntensity: 0,
     });
     
-    materialCache.set(materialKey, material);
     return material;
   }, [picture2, pictureRoughness, textureError, number]);
 
@@ -313,7 +269,7 @@ const Page = ({ number, front, back, page, opened, bookClosed, ...props }) => {
     mesh.add(skeleton.bones[0]);
     mesh.bind(skeleton);
     return mesh;
-  }, [pageGeometry, params.pageSegments, segmentWidth, isMobile, pageFrontMaterial, pageBackMaterial]);
+  }, [pageGeometry, params.pageSegments, segmentWidth, pageFrontMaterial, pageBackMaterial]);
 
   // Memoize bone calculations for animation with improved curve parameters
   const boneCalculations = useMemo(() => {
@@ -476,6 +432,33 @@ export const Book = ({ ...props }) => {
   const [delayedPage, setDelayedPage] = useState(page);
   const isMobile = useIsMobile();
   const timeoutRef = useRef(null);
+  
+  // Clean up resources when component unmounts
+  useEffect(() => {
+    return () => {
+      // Clear any pending timeouts
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      
+      // Force cleanup of shared resources
+      if (window._geometryCache) {
+        window._geometryCache.forEach(geometry => {
+          geometry.dispose();
+        });
+        window._geometryCache.clear();
+      }
+      
+      if (window._materialCache) {
+        window._materialCache.forEach(material => {
+          if (material.map) material.map.dispose();
+          if (material.roughnessMap) material.roughnessMap.dispose();
+          material.dispose();
+        });
+        window._materialCache.clear();
+      }
+    };
+  }, []);
 
   // Memoize the page turning logic with improved timing
   const goToPage = useCallback(() => {

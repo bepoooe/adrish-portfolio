@@ -1,31 +1,39 @@
 import { useFrame } from "@react-three/fiber";
-import { useMemo, useRef, useEffect, useState } from "react";
+import { useMemo, useRef, useEffect } from "react";
 import * as THREE from "three";
+import { useDevice } from "../context/DeviceContext";
+import { registerDisposable } from "../utils/memoryOptimizer";
 
-// Local implementation to avoid circular dependency
-const useIsMobile = () => {
-  const [isMobile, setIsMobile] = useState(false);
+// Create a shared texture for all particle instances
+let sharedFireflyTexture = null;
+
+const createFireflyTexture = () => {
+  if (sharedFireflyTexture) return sharedFireflyTexture;
   
-  useEffect(() => {
-    // Check if we're on mobile
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    
-    // Initial check
-    checkMobile();
-    
-    // Add resize listener
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
+  const canvas = document.createElement('canvas');
+  canvas.width = 32;
+  canvas.height = 32;
+  const ctx = canvas.getContext('2d');
   
-  return isMobile;
+  const gradient = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+  gradient.addColorStop(0, 'rgba(255, 252, 187, 1)');
+  gradient.addColorStop(0.4, 'rgba(255, 252, 187, 0.5)');
+  gradient.addColorStop(1, 'rgba(255, 252, 187, 0)');
+  
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, 32, 32);
+  
+  const texture = new THREE.Texture(canvas);
+  texture.needsUpdate = true;
+  
+  // Store for reuse
+  sharedFireflyTexture = texture;
+  return texture;
 };
 
 export function Particles({ count = 1000 }) {
   const points = useRef();
-  const isMobile = useIsMobile();
+  const { isMobile } = useDevice();
   
   const particlesPosition = useMemo(() => {
     const positions = new Float32Array(count * 3);
@@ -39,23 +47,9 @@ export function Particles({ count = 1000 }) {
     return positions;
   }, [count, isMobile]);
 
+  // Use shared texture for all particles
   const firefliesTexture = useMemo(() => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 32;
-    canvas.height = 32;
-    const ctx = canvas.getContext('2d');
-    
-    const gradient = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
-    gradient.addColorStop(0, 'rgba(255, 252, 187, 1)');
-    gradient.addColorStop(0.4, 'rgba(255, 252, 187, 0.5)');
-    gradient.addColorStop(1, 'rgba(255, 252, 187, 0)');
-    
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 32, 32);
-    
-    const texture = new THREE.Texture(canvas);
-    texture.needsUpdate = true;
-    return texture;
+    return createFireflyTexture();
   }, []);
 
   useFrame((state) => {

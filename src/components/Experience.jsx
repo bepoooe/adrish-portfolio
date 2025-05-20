@@ -1,27 +1,13 @@
-import { Environment, Float, OrbitControls, useDetectGPU } from "@react-three/drei";
+import { Environment, Float, OrbitControls } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { Book } from "./Book";
 import { Particles } from "./Particles";
-import { useEffect, useState, Suspense } from "react";
+import { Suspense, useEffect } from "react";
+import { useDevice } from "../context/DeviceContext";
 
-// Shared mobile detection hook to ensure consistency across components
+// Export the useDevice hook for other components
 export const useIsMobile = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  
-  useEffect(() => {
-    // Check if we're on mobile
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    
-    // Initial check
-    checkMobile();
-    
-    // Add resize listener
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-  
+  const { isMobile } = useDevice();
   return isMobile;
 };
 
@@ -36,12 +22,8 @@ const BookFallback = () => {
 };
 
 export const Experience = () => {
-  // Use the shared mobile detection hook
-  const isMobile = useIsMobile();
-  
-  // Detect GPU capabilities
-  const gpu = useDetectGPU();
-  const isLowPerformance = gpu.tier < 2 || isMobile;
+  // Use the shared device context
+  const { isMobile, isLowPerformance } = useDevice();
   
   // Adjust camera for mobile
   const CameraAdjuster = () => {
@@ -96,7 +78,7 @@ export const Experience = () => {
       </Float>
       
       {/* Only show particles on higher-end devices */}
-      {!isLowPerformance && <Particles count={isMobile ? 800 : 2000} />}
+      {!isLowPerformance && <Particles count={isMobile ? 400 : 1000} />}
       
       <OrbitControls 
         enableZoom={true} // Enable zoom functionality
@@ -116,50 +98,43 @@ export const Experience = () => {
       {/* Simpler environment on mobile */}
       <Environment preset={isMobile ? "sunset" : "city"} intensity={isMobile ? 0.3 : 0.5} />
       
-      {/* Simplified lighting for mobile */}
+      {/* Optimized lighting for all devices */}
       {isMobile ? (
-        // Mobile-optimized lighting
+        // Mobile-optimized lighting - minimal for better performance
         <>
           <directionalLight
             position={[2, 5, 2]}
-            intensity={5}
+            intensity={3}
             castShadow={false}
           />
-          <ambientLight intensity={2.5} />
+          <ambientLight intensity={2} />
         </>
       ) : (
-        // Desktop lighting with full effects
+        // Desktop lighting with optimized effects
         <>
           <directionalLight
             position={[2, 5, 2]}
-            intensity={4}
+            intensity={3}
             castShadow
-            shadow-mapSize-width={2048}
-            shadow-mapSize-height={2048}
+            shadow-mapSize-width={1024} // Reduced shadow map size
+            shadow-mapSize-height={1024}
             shadow-bias={-0.0001}
           />
+          {/* Removed one spotlight for better performance */}
           <spotLight
             position={[3, 1, 1]}
             angle={0.5}
             penumbra={0.5}
-            intensity={4}
+            intensity={3}
             color="white"
-            castShadow
-            target-position={[0, 0, 0]}
-          />
-          <spotLight
-            position={[-3, 1, 1]}
-            angle={0.5}
-            penumbra={0.5}
-            intensity={4}
-            color="white"
-            castShadow
+            castShadow={false} // Disable shadow casting for better performance
             target-position={[0, 0, 0]}
           />
           <ambientLight intensity={1.5} />
+          {/* Simplified shadow receiver */}
           <mesh position-y={-1.5} rotation-x={-Math.PI / 2} receiveShadow>
-            <planeGeometry args={[100, 100]} />
-            <shadowMaterial transparent opacity={0.2} />
+            <planeGeometry args={[50, 50]} /> {/* Smaller plane */}
+            <shadowMaterial transparent opacity={0.15} />
           </mesh>
         </>
       )}
