@@ -28,7 +28,8 @@ const CardContainer = styled.div`
   
   @media (max-width: 480px) {
     min-height: 50vh;
-    padding: 0.5rem 0 2rem;
+    padding: 0.5rem 0 8rem; /* Increased bottom padding to accommodate repositioned controls */
+    margin-bottom: 2rem; /* Added margin for better spacing */
     /* Don't restrict touch actions at the container level */
     /* Let the individual elements handle their own touch behavior */
   }
@@ -86,6 +87,10 @@ const RotatingInner = styled.div`
     animation: autoRotate var(--rotation-duration) linear infinite;
   }
   
+  &.paused {
+    animation-play-state: paused;
+  }
+  
   @keyframes autoRotate {
     from {
       transform: perspective(var(--perspective)) rotateX(var(--rotateX)) rotateY(0deg);
@@ -107,7 +112,7 @@ const RotatingInner = styled.div`
     --translateZ: 500px;
     --perspective: 2000px;
     --rotateX: 5deg; /* Slight tilt for better mobile viewing */
-    touch-action: pan-x; /* Allow horizontal swiping but not interfere with vertical scrolling */
+    touch-action: manipulation; /* Improved touch handling */
   }
   
   @media (max-width: 480px) {
@@ -154,10 +159,19 @@ const GlassCard = styled.div`
   top: 6.5%;
   transform: rotateY(calc((360deg / var(--quantity, 10)) * var(--index, 0)))
     translateZ(var(--translateZ));
-  overflow: hidden;
+  overflow: visible; /* Changed from hidden to visible to allow content to be scrollable */
   transform-style: preserve-3d;
   z-index: calc(10 - (var(--index, 0) % 10));
-  transition: transform 0.5s ease;
+  transition: transform 0.5s ease, box-shadow 0.3s ease;
+  
+  /* Active card styling */
+  &.active-card {
+    transform: rotateY(calc((360deg / var(--quantity, 10)) * var(--index, 0)))
+      translateZ(calc(var(--translateZ) + 120px));
+    z-index: 30;
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6),
+                inset 0 0 40px rgba(var(--color-card, '59, 130, 246'), 0.25);
+  }
   
   &:hover {
     transform: rotateY(calc((360deg / var(--quantity, 10)) * var(--index, 0)))
@@ -178,6 +192,11 @@ const GlassCard = styled.div`
         translateZ(calc(var(--translateZ) + 50px));
       z-index: 20;
     }
+    
+    &.active-card {
+      transform: rotateY(calc((360deg / var(--quantity, 10)) * var(--index, 0)))
+        translateZ(calc(var(--translateZ) + 80px));
+    }
   }
   
   @media (max-width: 480px) {
@@ -188,9 +207,13 @@ const GlassCard = styled.div`
     border-width: 1px;
     box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.5),
                 inset 0 0 15px rgba(var(--color-card, '59, 130, 246'), 0.15);
-    /* Allow vertical scrolling within the card */
-    touch-action: pan-y;
-    overflow-y: visible;
+    /* Allow all touch actions within the card */
+    touch-action: auto;
+    
+    &.active-card {
+      box-shadow: 0 8px 30px 0 rgba(0, 0, 0, 0.7),
+                  inset 0 0 25px rgba(var(--color-card, '59, 130, 246'), 0.3);
+    }
   }
 `;
 
@@ -307,7 +330,7 @@ const CardPeriod = styled.p`
   }
 `;
 
-const CardDescription = styled.p`
+const CardDescription = styled.div`
   font-size: 0.78rem;
   color: rgba(255, 255, 255, 0.9);
   text-align: center;
@@ -318,7 +341,11 @@ const CardDescription = styled.p`
   padding: 0 2px;
   font-weight: 500;
   max-height: 120px; /* Allow scrolling for longer descriptions */
-  touch-action: pan-y; /* Explicitly allow vertical touch scrolling */
+  touch-action: auto; /* Allow all touch actions */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  overscroll-behavior: contain; /* Prevent scroll chaining */
+  position: relative;
+  z-index: 10; /* Ensure it's above other elements for touch events */
   
   @media (max-width: 768px) {
     font-size: 0.75rem;
@@ -326,17 +353,17 @@ const CardDescription = styled.p`
     margin-bottom: 8px;
     max-height: 90px;
     padding: 0 4px;
-    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-    overscroll-behavior: contain; /* Prevent scroll chaining */
   }
   
   @media (max-width: 480px) {
     font-size: 0.7rem;
     line-height: 1.15;
     margin-bottom: 6px;
-    max-height: 80px; /* Increased from 70px for more visible scrollable area */
+    max-height: 85px; /* Increased for more visible scrollable area */
     max-width: 98%;
-    padding: 2px 4px; /* Added more padding for better touch area */
+    padding: 4px 6px; /* Increased padding for better touch area */
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.1); /* Subtle background to indicate scrollable area */
   }
   
   /* Custom scrollbar styling */
@@ -359,11 +386,26 @@ const CardDescription = styled.p`
     scrollbar-width: thin;
     
     &::-webkit-scrollbar {
-      width: 3px; /* Slightly wider for better touch */
+      width: 4px; /* Wider for better touch */
     }
     
     &::-webkit-scrollbar-thumb {
-      background: rgba(var(--color-card, '59, 130, 246'), 0.5); /* More visible */
+      background: rgba(var(--color-card, '59, 130, 246'), 0.7); /* More visible */
+    }
+    
+    /* Add a subtle indicator that content is scrollable */
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 15px;
+      background: linear-gradient(to top, rgba(var(--color-card, '59, 130, 246'), 0.2), transparent);
+      pointer-events: none;
+      opacity: 0.7;
+      border-bottom-left-radius: 6px;
+      border-bottom-right-radius: 6px;
     }
   }
 `;
@@ -432,19 +474,63 @@ const NavButton = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 20;
+  z-index: 30; /* Increased to ensure buttons are always clickable */
   box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
   backdrop-filter: blur(4px);
   transition: all 0.3s ease;
+  outline: none; /* Remove outline for better aesthetics */
+  
+  /* Improved tap target for mobile */
+  &::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border-radius: 50%;
+  }
+  
+  /* Screen reader only text */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
   
   @media (max-width: 768px) {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
   }
   
   @media (max-width: 480px) {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
+    background: rgba(15, 23, 42, 0.85); /* Darker for better visibility */
+    border: 2px solid rgba(59, 130, 246, 0.8); /* More visible border */
+    top: auto; /* Reset top positioning */
+    bottom: -90px; /* Position below the carousel */
+    transform: none; /* Reset transform */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), 0 0 10px rgba(59, 130, 246, 0.5);
+    
+    /* Add label below button on mobile */
+    &::after {
+      content: ${props => props.className === 'prev' ? '"Slower"' : '"Faster"'};
+      position: absolute;
+      bottom: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.8);
+      white-space: nowrap;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    }
   }
   
   svg {
@@ -457,8 +543,8 @@ const NavButton = styled.button`
     }
     
     @media (max-width: 480px) {
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
     }
   }
   
@@ -466,6 +552,19 @@ const NavButton = styled.button`
     background: rgba(59, 130, 246, 0.3);
     box-shadow: 0 4px 25px rgba(59, 130, 246, 0.6);
     transform: translateY(-50%) scale(1.1);
+    
+    @media (max-width: 480px) {
+      transform: scale(1.1); /* Different transform for mobile */
+    }
+  }
+  
+  &:active {
+    transform: translateY(-50%) scale(0.95);
+    background: rgba(59, 130, 246, 0.4);
+    
+    @media (max-width: 480px) {
+      transform: scale(0.95); /* Different transform for mobile */
+    }
   }
   
   &.prev {
@@ -476,7 +575,7 @@ const NavButton = styled.button`
     }
     
     @media (max-width: 480px) {
-      left: 20px; /* Increased from 10px to prevent being cut off */
+      left: calc(50% - 50px); /* Position to the left of center */
     }
   }
   
@@ -488,8 +587,19 @@ const NavButton = styled.button`
     }
     
     @media (max-width: 480px) {
-      right: 20px; /* Increased from 10px to prevent being cut off */
+      right: calc(50% - 50px); /* Position to the right of center */
     }
+  }
+  
+  /* Add a subtle pulse animation to draw attention to the buttons */
+  @keyframes pulse {
+    0% { box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4); }
+    50% { box-shadow: 0 4px 30px rgba(59, 130, 246, 0.7); }
+    100% { box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4); }
+  }
+  
+  &.pulse {
+    animation: pulse 2s infinite ease-in-out;
   }
 `;
 
@@ -500,20 +610,22 @@ const Indicators = styled.div`
   transform: translateX(-50%);
   display: flex;
   gap: 16px;
-  z-index: 20;
+  z-index: 30; /* Increased to ensure indicators are always clickable */
   
   @media (max-width: 768px) {
     bottom: -40px;
-    gap: 12px;
+    gap: 14px;
   }
   
   @media (max-width: 480px) {
-    bottom: -35px; /* Moved up slightly to ensure visibility */
-    gap: 12px; /* Increased from 8px for better tap targets */
-    padding: 6px 12px; /* Increased padding for better visibility */
-    background: rgba(15, 23, 42, 0.5); /* Increased opacity for better visibility */
-    border-radius: 20px;
+    bottom: -140px; /* Moved further down to avoid overlap with buttons */
+    gap: 12px; /* Adjusted for better fit */
+    padding: 8px 16px; /* Increased padding for better visibility and tap area */
+    background: rgba(15, 23, 42, 0.7); /* Increased opacity for better visibility */
+    border-radius: 30px;
     backdrop-filter: blur(4px);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
 `;
 
@@ -526,21 +638,26 @@ const IndicatorDot = styled.button`
   cursor: pointer;
   box-shadow: ${props => props.active ? '0 0 15px rgba(59, 130, 246, 0.7)' : 'none'};
   transition: all 0.3s ease;
+  outline: none; /* Remove outline for better aesthetics */
   
   &:hover {
     transform: scale(1.2);
     border-color: rgba(59, 130, 246, 0.6);
   }
   
+  &:active {
+    transform: scale(0.9);
+  }
+  
   @media (max-width: 768px) {
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
   }
   
   @media (max-width: 480px) {
-    width: 10px; /* Increased from 8px for better visibility */
-    height: 10px; /* Increased from 8px for better visibility */
-    border-width: 1px;
+    width: 12px; /* Increased for better visibility */
+    height: 12px; /* Increased for better visibility */
+    border-width: 1.5px; /* Thicker border for better visibility */
     
     /* Make tap target larger than visual size for better touch interaction */
     position: relative;
@@ -548,11 +665,18 @@ const IndicatorDot = styled.button`
     &::after {
       content: '';
       position: absolute;
-      top: -10px;
-      left: -10px;
-      right: -10px;
-      bottom: -10px;
+      top: -12px;
+      left: -12px;
+      right: -12px;
+      bottom: -12px;
     }
+    
+    /* More pronounced active state for mobile */
+    ${props => props.active && `
+      background: rgba(59, 130, 246, 1);
+      border-color: white;
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.9);
+    `}
   }
 `;
 
@@ -593,27 +717,57 @@ const AboutMe = () => {
   
   // Function to speed up rotation
   const speedUpRotation = () => {
+    // Remove active class from all cards
+    cardRefs.current.forEach(card => {
+      if (card) card.classList.remove('active-card');
+    });
+    
     // Decrease rotation time (faster rotation)
     const newSpeed = Math.max(10, rotationSpeed - 10); // Minimum 10 seconds
     setRotationSpeed(newSpeed);
     
-    // Resume auto-rotation if it was stopped
-    if (rotatingRef.current && !rotatingRef.current.classList.contains('auto-rotating')) {
-      rotatingRef.current.style.transform = '';
-      rotatingRef.current.classList.add('auto-rotating');
+    // Resume auto-rotation with a smooth transition
+    if (rotatingRef.current) {
+      // First reset any existing transform with a transition
+      rotatingRef.current.style.transition = 'transform 0.5s ease-out';
+      rotatingRef.current.style.transform = 'perspective(var(--perspective)) rotateX(var(--rotateX)) rotateY(0deg)';
+      
+      // Then after the transition, add the auto-rotating class
+      setTimeout(() => {
+        if (rotatingRef.current) {
+          rotatingRef.current.style.transition = '';
+          rotatingRef.current.style.transform = '';
+          rotatingRef.current.classList.add('auto-rotating');
+        }
+      }, 500);
     }
   };
   
   // Function to slow down rotation
   const slowDownRotation = () => {
+    // Remove active class from all cards
+    cardRefs.current.forEach(card => {
+      if (card) card.classList.remove('active-card');
+    });
+    
     // Increase rotation time (slower rotation)
     const newSpeed = Math.min(60, rotationSpeed + 10); // Maximum 60 seconds
     setRotationSpeed(newSpeed);
     
-    // Resume auto-rotation if it was stopped
-    if (rotatingRef.current && !rotatingRef.current.classList.contains('auto-rotating')) {
-      rotatingRef.current.style.transform = '';
-      rotatingRef.current.classList.add('auto-rotating');
+    // Resume auto-rotation with a smooth transition
+    if (rotatingRef.current) {
+      // First reset any existing transform with a transition
+      rotatingRef.current.style.transition = 'transform 0.5s ease-out';
+      rotatingRef.current.style.transform = 'perspective(var(--perspective)) rotateX(var(--rotateX)) rotateY(0deg)';
+      
+      // Then after the transition, add the auto-rotating class
+      setTimeout(() => {
+        if (rotatingRef.current) {
+          rotatingRef.current.style.transition = '';
+          rotatingRef.current.style.transform = '';
+          rotatingRef.current.classList.add('auto-rotating');
+        }
+      }, 500);
     }
   };
   
@@ -635,19 +789,37 @@ const AboutMe = () => {
   const rotateToCard = (index) => {
     if (!rotatingRef.current) return;
     
+    // Remove active class from all cards
+    cardRefs.current.forEach(card => {
+      if (card) card.classList.remove('active-card');
+    });
+    
     // Pause auto-rotation
     rotatingRef.current.classList.remove('auto-rotating');
     
     // Calculate the rotation angle to show the selected card
     const angle = -(360 / aboutTimeline.length) * index;
     
-    // Apply the rotation
+    // Apply the rotation with a smooth transition
+    rotatingRef.current.style.transition = 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
     rotatingRef.current.style.transform = `perspective(var(--perspective)) rotateX(var(--rotateX)) rotateY(${angle}deg)`;
     
     // Update active index
     setActiveIndex(index);
     
-    // Don't resume auto-rotation automatically - user can tap another card to see it
+    // Add active class to the selected card
+    setTimeout(() => {
+      if (cardRefs.current[index]) {
+        cardRefs.current[index].classList.add('active-card');
+      }
+    }, 100);
+    
+    // Reset transition after animation completes
+    setTimeout(() => {
+      if (rotatingRef.current) {
+        rotatingRef.current.style.transition = '';
+      }
+    }, 600);
   };
   
   // Add touch event handling for mobile
@@ -678,13 +850,29 @@ const AboutMe = () => {
       const isCardDescription = target.closest('.card-description');
       
       // If we're in a card description and trying to scroll vertically, allow it
-      if (isCardDescription && Math.abs(deltaY) > Math.abs(deltaX)) {
-        return; // Allow default behavior for vertical scrolling in descriptions
+      if (isCardDescription) {
+        // Get the card description element
+        const descriptionElement = target.closest('.card-description');
+        
+        // Check if we're at the top or bottom of the scroll area
+        const isAtTop = descriptionElement.scrollTop <= 0;
+        const isAtBottom = descriptionElement.scrollTop + descriptionElement.clientHeight >= descriptionElement.scrollHeight - 1;
+        
+        // If we're scrolling up and not at the top, or scrolling down and not at the bottom, allow scrolling
+        if ((deltaY > 0 && !isAtTop) || (deltaY < 0 && !isAtBottom)) {
+          // We're in the middle of the content, allow normal scrolling
+          return;
+        }
+        
+        // If we're at the boundaries but still trying to scroll vertically more than horizontally, allow it
+        if (Math.abs(deltaY) > Math.abs(deltaX) * 1.5) {
+          return;
+        }
       }
       
       // Only prevent default for horizontal swipes on the card container
       // This allows normal scrolling elsewhere on the page
-      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 20) {
+      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 15) {
         isSwiping = true;
         e.preventDefault();
       }
@@ -877,6 +1065,7 @@ const AboutMe = () => {
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="8" y1="12" x2="16" y2="12"></line>
             </svg>
+            <span className="sr-only">Slow down</span>
           </NavButton>
           
           <NavButton className="next" onClick={speedUpRotation} title="Speed up & resume rotation">
@@ -885,6 +1074,7 @@ const AboutMe = () => {
               <line x1="12" y1="8" x2="12" y2="16"></line>
               <line x1="8" y1="12" x2="16" y2="12"></line>
             </svg>
+            <span className="sr-only">Speed up</span>
           </NavButton>
           
           {/* Indicator Dots */}
