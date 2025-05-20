@@ -47,7 +47,7 @@ const mobileTechStyles = `
   
   @keyframes scrollTech {
     0% { transform: translateX(0); }
-    100% { transform: translateX(calc(-100px * 12)); }
+    100% { transform: translateX(calc(-100px * 21)); }
   }
   
   .mobile-tech-item {
@@ -214,35 +214,7 @@ const mobileTechStyles = `
   
 
   
-  /* Gradient fade effect on edges */
-  .mobile-tech-carousel::before,
-  .mobile-tech-carousel::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 50px;
-    z-index: 5;
-    pointer-events: none;
-  }
-  
-  .mobile-tech-carousel::before {
-    left: 0;
-    background: linear-gradient(to right, 
-      rgba(4, 7, 20, 0.9), 
-      rgba(4, 7, 20, 0.6), 
-      rgba(4, 7, 20, 0)
-    );
-  }
-  
-  .mobile-tech-carousel::after {
-    right: 0;
-    background: linear-gradient(to left, 
-      rgba(4, 7, 20, 0.9), 
-      rgba(4, 7, 20, 0.6), 
-      rgba(4, 7, 20, 0)
-    );
-  }
+  /* No gradient fade effect on edges */
   
   /* For larger mobile screens */
   @media (min-width: 400px) {
@@ -549,8 +521,8 @@ const Tech = () => {
               </motion.div>
             ))}
             
-            {/* Duplicate the first few items to create a seamless loop effect */}
-            {technologies.slice(0, 8).map((tech, index) => (
+            {/* Duplicate all items to create a seamless loop effect */}
+            {technologies.map((tech, index) => (
               <motion.div 
                 key={`tech-dup-${index}`}
                 className="mobile-tech-item"

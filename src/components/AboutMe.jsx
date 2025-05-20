@@ -29,7 +29,8 @@ const CardContainer = styled.div`
   @media (max-width: 480px) {
     min-height: 50vh;
     padding: 0.5rem 0 2rem;
-    touch-action: pan-y; /* Allow vertical scrolling but handle horizontal swipes */
+    /* Don't restrict touch actions at the container level */
+    /* Let the individual elements handle their own touch behavior */
   }
   
   /* Add a hint for mobile users to swipe */
@@ -128,6 +129,7 @@ const RotatingInner = styled.div`
     --translateZ: 500px;
     --perspective: 2000px;
     --rotateX: 5deg; /* Slight tilt for better mobile viewing */
+    touch-action: none; /* Handle touch events only in this component */
   }
   
   @media (max-width: 480px) {
@@ -657,57 +659,78 @@ const AboutMe = () => {
   
   // Add touch event handling for mobile
   useEffect(() => {
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let isSwiping = false;
+    
     const handleTouchStart = (e) => {
       // Store the initial touch position
-      const touchStartX = e.touches[0].clientX;
-      const touchStartY = e.touches[0].clientY;
-      
-      const handleTouchMove = (e) => {
-        // Prevent default to avoid scrolling while swiping
-        e.preventDefault();
-      };
-      
-      const handleTouchEnd = (e) => {
-        const touchEndX = e.changedTouches[0].clientX;
-        const touchEndY = e.changedTouches[0].clientY;
-        
-        // Calculate the swipe distance
-        const deltaX = touchEndX - touchStartX;
-        const deltaY = touchEndY - touchStartY;
-        
-        // Only consider horizontal swipes
-        if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
-          if (deltaX > 0) {
-            // Swipe right - go to previous card
-            const prevIndex = (activeIndex - 1 + aboutTimeline.length) % aboutTimeline.length;
-            rotateToCard(prevIndex);
-          } else {
-            // Swipe left - go to next card
-            const nextIndex = (activeIndex + 1) % aboutTimeline.length;
-            rotateToCard(nextIndex);
-          }
-        }
-      };
-      
-      document.addEventListener('touchmove', handleTouchMove, { passive: false });
-      document.addEventListener('touchend', handleTouchEnd);
-      
-      return () => {
-        document.removeEventListener('touchmove', handleTouchMove);
-        document.removeEventListener('touchend', handleTouchEnd);
-      };
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      isSwiping = false;
     };
     
-    // Add touch event listeners to the rotating container
+    const handleTouchMove = (e) => {
+      if (!touchStartX || !touchStartY) return;
+      
+      const touchCurrentX = e.touches[0].clientX;
+      const touchCurrentY = e.touches[0].clientY;
+      
+      // Calculate the swipe distance
+      const deltaX = touchCurrentX - touchStartX;
+      const deltaY = touchCurrentY - touchStartY;
+      
+      // Only prevent default for horizontal swipes on the card container
+      // This allows normal scrolling elsewhere on the page
+      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 20) {
+        isSwiping = true;
+        e.preventDefault();
+      }
+    };
+    
+    const handleTouchEnd = (e) => {
+      if (!isSwiping) return;
+      
+      const touchEndX = e.changedTouches[0].clientX;
+      const touchEndY = e.changedTouches[0].clientY;
+      
+      // Calculate the swipe distance
+      const deltaX = touchEndX - touchStartX;
+      const deltaY = touchEndY - touchStartY;
+      
+      // Only consider horizontal swipes
+      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+        if (deltaX > 0) {
+          // Swipe right - go to previous card
+          const prevIndex = (activeIndex - 1 + aboutTimeline.length) % aboutTimeline.length;
+          rotateToCard(prevIndex);
+        } else {
+          // Swipe left - go to next card
+          const nextIndex = (activeIndex + 1) % aboutTimeline.length;
+          rotateToCard(nextIndex);
+        }
+      }
+      
+      // Reset values
+      touchStartX = 0;
+      touchStartY = 0;
+      isSwiping = false;
+    };
+    
+    // Add touch event listeners only to the rotating container
     const container = rotatingRef.current;
     if (container) {
-      container.addEventListener('touchstart', handleTouchStart);
+      container.addEventListener('touchstart', handleTouchStart, { passive: true });
+      container.addEventListener('touchmove', handleTouchMove, { passive: false });
+      container.addEventListener('touchend', handleTouchEnd, { passive: true });
       
       return () => {
         container.removeEventListener('touchstart', handleTouchStart);
+        container.removeEventListener('touchmove', handleTouchMove);
+        container.removeEventListener('touchend', handleTouchEnd);
       };
     }
-  }, [activeIndex]);
+  }, [activeIndex, aboutTimeline.length]);
   
   // Animation for initial load
   useEffect(() => {
@@ -780,7 +803,7 @@ const AboutMe = () => {
   }, []);
   
   return (
-    <div className="overflow-hidden relative">
+    <div className="relative">
       <StarryBackground density={230} />
       <div ref={headerRef}>
         <p className={`${styles.sectionSubText} text-center`}>
