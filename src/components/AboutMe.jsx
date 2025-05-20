@@ -482,11 +482,12 @@ const NavButton = styled.button`
   &::before {
     content: '';
     position: absolute;
-    top: -10px;
-    left: -10px;
-    right: -10px;
-    bottom: -10px;
+    top: -15px;
+    left: -15px;
+    right: -15px;
+    bottom: -15px;
     border-radius: 50%;
+    z-index: -1; /* Ensure it doesn't block clicks */
   }
   
   /* Screen reader only text */
@@ -508,8 +509,8 @@ const NavButton = styled.button`
   }
   
   @media (max-width: 480px) {
-    width: 42px;
-    height: 42px;
+    width: 40px;
+    height: 40px;
     background: rgba(15, 23, 42, 0.9); /* Darker for better visibility */
     border: 2px solid rgba(59, 130, 246, 0.9); /* More visible border */
     top: auto; /* Reset top positioning */
@@ -575,7 +576,7 @@ const NavButton = styled.button`
     }
     
     @media (max-width: 480px) {
-      left: calc(50% - 50px); /* Position to the left of center */
+      left: calc(50% - 60px); /* Increased spacing from center */
     }
   }
   
@@ -587,7 +588,7 @@ const NavButton = styled.button`
     }
     
     @media (max-width: 480px) {
-      right: calc(50% - 50px); /* Position to the right of center */
+      right: calc(50% - 60px); /* Increased spacing from center */
     }
   }
   
@@ -717,58 +718,100 @@ const AboutMe = () => {
   
   // Function to speed up rotation
   const speedUpRotation = () => {
-    // Remove active class from all cards
+    // Prevent rapid button clicks
+    const now = Date.now();
+    if (rotatingRef.current?.lastSpeedChangeTime && now - rotatingRef.current.lastSpeedChangeTime < 300) {
+      return;
+    }
+    rotatingRef.current.lastSpeedChangeTime = now;
+    
+    // Remove active class from all cards for cleaner transition
     cardRefs.current.forEach(card => {
       if (card) card.classList.remove('active-card');
     });
     
-    // Decrease rotation time (faster rotation)
-    const newSpeed = Math.max(10, rotationSpeed - 10); // Minimum 10 seconds
+    // Decrease rotation time (faster rotation) with more granular control
+    const newSpeed = Math.max(10, rotationSpeed - 5); // Minimum 10 seconds, smaller increments
     setRotationSpeed(newSpeed);
     
-    // Resume auto-rotation with a smooth transition
+    // Get current rotation angle to maintain position
+    const currentRotation = getCurrentRotationAngle(rotatingRef.current);
+    
+    // Resume auto-rotation with a smoother transition
     if (rotatingRef.current) {
-      // First reset any existing transform with a transition
-      rotatingRef.current.style.transition = 'transform 0.5s ease-out';
-      rotatingRef.current.style.transform = 'perspective(var(--perspective)) rotateX(var(--rotateX)) rotateY(0deg)';
+      // Apply transition with current angle to prevent jumping
+      rotatingRef.current.style.transition = 'transform 0.3s ease-out';
+      rotatingRef.current.style.transform = `perspective(var(--perspective)) rotateX(var(--rotateX)) rotateY(${currentRotation}deg)`;
       
-      // Then after the transition, add the auto-rotating class
+      // Then after a shorter transition, add the auto-rotating class
       setTimeout(() => {
         if (rotatingRef.current) {
           rotatingRef.current.style.transition = '';
           rotatingRef.current.style.transform = '';
           rotatingRef.current.classList.add('auto-rotating');
+          
+          // Add active class to current card
+          if (cardRefs.current[activeIndex]) {
+            cardRefs.current[activeIndex].classList.add('active-card');
+          }
         }
-      }, 500);
+      }, 300);
     }
   };
   
   // Function to slow down rotation
   const slowDownRotation = () => {
-    // Remove active class from all cards
+    // Prevent rapid button clicks
+    const now = Date.now();
+    if (rotatingRef.current?.lastSpeedChangeTime && now - rotatingRef.current.lastSpeedChangeTime < 300) {
+      return;
+    }
+    rotatingRef.current.lastSpeedChangeTime = now;
+    
+    // Remove active class from all cards for cleaner transition
     cardRefs.current.forEach(card => {
       if (card) card.classList.remove('active-card');
     });
     
-    // Increase rotation time (slower rotation)
-    const newSpeed = Math.min(60, rotationSpeed + 10); // Maximum 60 seconds
+    // Increase rotation time (slower rotation) with more granular control
+    const newSpeed = Math.min(60, rotationSpeed + 5); // Maximum 60 seconds, smaller increments
     setRotationSpeed(newSpeed);
     
-    // Resume auto-rotation with a smooth transition
+    // Get current rotation angle to maintain position
+    const currentRotation = getCurrentRotationAngle(rotatingRef.current);
+    
+    // Resume auto-rotation with a smoother transition
     if (rotatingRef.current) {
-      // First reset any existing transform with a transition
-      rotatingRef.current.style.transition = 'transform 0.5s ease-out';
-      rotatingRef.current.style.transform = 'perspective(var(--perspective)) rotateX(var(--rotateX)) rotateY(0deg)';
+      // Apply transition with current angle to prevent jumping
+      rotatingRef.current.style.transition = 'transform 0.3s ease-out';
+      rotatingRef.current.style.transform = `perspective(var(--perspective)) rotateX(var(--rotateX)) rotateY(${currentRotation}deg)`;
       
-      // Then after the transition, add the auto-rotating class
+      // Then after a shorter transition, add the auto-rotating class
       setTimeout(() => {
         if (rotatingRef.current) {
           rotatingRef.current.style.transition = '';
           rotatingRef.current.style.transform = '';
           rotatingRef.current.classList.add('auto-rotating');
+          
+          // Add active class to current card
+          if (cardRefs.current[activeIndex]) {
+            cardRefs.current[activeIndex].classList.add('active-card');
+          }
         }
-      }, 500);
+      }, 300);
     }
+  };
+  
+  // Helper function to get current rotation angle
+  const getCurrentRotationAngle = (element) => {
+    if (!element) return 0;
+    
+    const style = window.getComputedStyle(element);
+    const matrix = new DOMMatrix(style.transform);
+    
+    // Extract rotation angle from transform matrix
+    // Math.atan2 returns radians, convert to degrees
+    return Math.round(Math.atan2(matrix.m32, matrix.m33) * (180 / Math.PI));
   };
   
   // Update active index based on visible card only when auto-rotating
@@ -789,9 +832,12 @@ const AboutMe = () => {
   const rotateToCard = (index) => {
     if (!rotatingRef.current) return;
     
-    // Debounce function to prevent multiple rapid calls
-    if (rotatingRef.current.isRotating) return;
-    rotatingRef.current.isRotating = true;
+    // Improved debounce mechanism - allow interaction if enough time has passed
+    const now = Date.now();
+    if (rotatingRef.current.lastRotateTime && now - rotatingRef.current.lastRotateTime < 300) {
+      return; // Prevent rapid interactions within 300ms
+    }
+    rotatingRef.current.lastRotateTime = now;
     
     // Remove active class from all cards
     cardRefs.current.forEach(card => {
@@ -806,29 +852,25 @@ const AboutMe = () => {
     
     // Apply the rotation with a smooth transition
     // Using a more performant cubic-bezier curve
-    rotatingRef.current.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1)';
+    rotatingRef.current.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)';
     rotatingRef.current.style.transform = `perspective(var(--perspective)) rotateX(var(--rotateX)) rotateY(${angle}deg)`;
     
     // Update active index
     setActiveIndex(index);
     
-    // Add active class to the selected card after a short delay
-    // This helps with performance by separating the transform and class change
+    // Add active class to the selected card immediately for better responsiveness
     requestAnimationFrame(() => {
-      setTimeout(() => {
-        if (cardRefs.current[index]) {
-          cardRefs.current[index].classList.add('active-card');
-        }
-      }, 50);
+      if (cardRefs.current[index]) {
+        cardRefs.current[index].classList.add('active-card');
+      }
     });
     
     // Reset transition after animation completes
     setTimeout(() => {
       if (rotatingRef.current) {
         rotatingRef.current.style.transition = '';
-        rotatingRef.current.isRotating = false; // Reset the rotation flag
       }
-    }, 500);
+    }, 400);
   };
   
   // Add touch event handling for mobile
