@@ -13,23 +13,19 @@ export default defineConfig({
         // Optimize for size
         drop_console: true,
         drop_debugger: true,
-        pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.trace'],
       },
     },
     // Split chunks for better caching
     rollupOptions: {
       output: {
         manualChunks: {
-          'react-vendor': ['react', 'react-dom'],
-          'three-vendor': ['three'],
-          'drei-vendor': ['@react-three/drei'],
-          'fiber-vendor': ['@react-three/fiber'],
+          'vendor': ['react', 'react-dom', 'three', '@react-three/drei', '@react-three/fiber'],
         },
       },
     },
     // Optimize asset handling
     assetsInlineLimit: 4096, // 4kb - inline small assets
-    chunkSizeWarningLimit: 1000, // Increase warning limit
+    chunkSizeWarningLimit: 1200, // Increase warning limit
   },
   // Optimize dev server
   server: {
