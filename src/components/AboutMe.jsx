@@ -33,29 +33,7 @@ const CardContainer = styled.div`
     /* Let the individual elements handle their own touch behavior */
   }
   
-  /* Add a hint for mobile users to swipe */
-  &::after {
-    content: 'Swipe to explore';
-    position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.7rem;
-    color: rgba(255, 255, 255, 0.5);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-    white-space: nowrap;
-    
-    @media (max-width: 768px) {
-      opacity: 1;
-    }
-    
-    @media (max-width: 480px) {
-      bottom: -5px;
-      font-size: 0.65rem;
-    }
-  }
+  /* Removed swipe hint as requested */
 `;
 
 // 3D Rotating Card Wrapper
@@ -488,7 +466,7 @@ const NavButton = styled.button`
     }
     
     @media (max-width: 480px) {
-      left: 10px;
+      left: 20px; /* Increased from 10px to prevent being cut off */
     }
   }
   
@@ -500,7 +478,7 @@ const NavButton = styled.button`
     }
     
     @media (max-width: 480px) {
-      right: 10px;
+      right: 20px; /* Increased from 10px to prevent being cut off */
     }
   }
 `;
@@ -520,10 +498,10 @@ const Indicators = styled.div`
   }
   
   @media (max-width: 480px) {
-    bottom: -30px;
-    gap: 8px;
-    padding: 5px 10px;
-    background: rgba(15, 23, 42, 0.3);
+    bottom: -35px; /* Moved up slightly to ensure visibility */
+    gap: 12px; /* Increased from 8px for better tap targets */
+    padding: 6px 12px; /* Increased padding for better visibility */
+    background: rgba(15, 23, 42, 0.5); /* Increased opacity for better visibility */
     border-radius: 20px;
     backdrop-filter: blur(4px);
   }
@@ -550,8 +528,8 @@ const IndicatorDot = styled.button`
   }
   
   @media (max-width: 480px) {
-    width: 8px;
-    height: 8px;
+    width: 10px; /* Increased from 8px for better visibility */
+    height: 10px; /* Increased from 8px for better visibility */
     border-width: 1px;
     
     /* Make tap target larger than visual size for better touch interaction */
@@ -560,10 +538,10 @@ const IndicatorDot = styled.button`
     &::after {
       content: '';
       position: absolute;
-      top: -8px;
-      left: -8px;
-      right: -8px;
-      bottom: -8px;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
     }
   }
 `;
@@ -608,6 +586,12 @@ const AboutMe = () => {
     // Decrease rotation time (faster rotation)
     const newSpeed = Math.max(10, rotationSpeed - 10); // Minimum 10 seconds
     setRotationSpeed(newSpeed);
+    
+    // Resume auto-rotation if it was stopped
+    if (rotatingRef.current && !rotatingRef.current.classList.contains('auto-rotating')) {
+      rotatingRef.current.style.transform = '';
+      rotatingRef.current.classList.add('auto-rotating');
+    }
   };
   
   // Function to slow down rotation
@@ -615,28 +599,33 @@ const AboutMe = () => {
     // Increase rotation time (slower rotation)
     const newSpeed = Math.min(60, rotationSpeed + 10); // Maximum 60 seconds
     setRotationSpeed(newSpeed);
+    
+    // Resume auto-rotation if it was stopped
+    if (rotatingRef.current && !rotatingRef.current.classList.contains('auto-rotating')) {
+      rotatingRef.current.style.transform = '';
+      rotatingRef.current.classList.add('auto-rotating');
+    }
   };
   
-  // Update active index based on visible card
+  // Update active index based on visible card only when auto-rotating
   useEffect(() => {
     const interval = setInterval(() => {
-      // Calculate which card is currently most visible based on rotation
-      const currentRotation = rotatingRef.current ? 
-        (rotatingRef.current.style.animationDelay || 0) : 0;
-      
-      // Update the active index every second
-      const nextIndex = (activeIndex + 1) % aboutTimeline.length;
-      setActiveIndex(nextIndex);
+      // Only update if auto-rotating is active
+      if (rotatingRef.current && rotatingRef.current.classList.contains('auto-rotating')) {
+        // Update the active index
+        const nextIndex = (activeIndex + 1) % aboutTimeline.length;
+        setActiveIndex(nextIndex);
+      }
     }, 5000); // Check every 5 seconds
     
     return () => clearInterval(interval);
-  }, [activeIndex]);
+  }, [activeIndex, aboutTimeline.length]);
   
   // Function to rotate to a specific card
   const rotateToCard = (index) => {
     if (!rotatingRef.current) return;
     
-    // Temporarily pause auto-rotation
+    // Pause auto-rotation
     rotatingRef.current.classList.remove('auto-rotating');
     
     // Calculate the rotation angle to show the selected card
@@ -648,13 +637,7 @@ const AboutMe = () => {
     // Update active index
     setActiveIndex(index);
     
-    // Resume auto-rotation after a delay
-    setTimeout(() => {
-      if (rotatingRef.current) {
-        rotatingRef.current.style.transform = '';
-        rotatingRef.current.classList.add('auto-rotating');
-      }
-    }, 3000);
+    // Don't resume auto-rotation automatically - user can tap another card to see it
   };
   
   // Add touch event handling for mobile
@@ -864,14 +847,14 @@ const AboutMe = () => {
           </RotatingCardWrapper>
           
           {/* Speed Control Buttons */}
-          <NavButton className="prev" onClick={slowDownRotation} title="Slow down rotation">
+          <NavButton className="prev" onClick={slowDownRotation} title="Slow down & resume rotation">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="8" y1="12" x2="16" y2="12"></line>
             </svg>
           </NavButton>
           
-          <NavButton className="next" onClick={speedUpRotation} title="Speed up rotation">
+          <NavButton className="next" onClick={speedUpRotation} title="Speed up & resume rotation">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="12" y1="8" x2="12" y2="16"></line>
@@ -884,7 +867,8 @@ const AboutMe = () => {
             {aboutTimeline.map((_, index) => (
               <IndicatorDot 
                 key={index} 
-                active={index === activeIndex} 
+                active={index === activeIndex}
+                onClick={() => rotateToCard(index)}
               />
             ))}
           </Indicators>
