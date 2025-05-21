@@ -7,24 +7,25 @@ import { styles } from "../styles";
 import { EarthCanvas } from "./canvas";
 import { SectionWrapper } from "../hoc";
 import { slideIn } from "../utils/motion";
+import StarryBackground from "./StarryBackground";
 
 // Mobile detection hook
 const useIsMobile = () => {
   const [isMobile, setIsMobile] = useState(false);
-  
+
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-    
+
     // Initial check
     checkMobile();
-    
+
     // Add resize listener
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
-  
+
   return isMobile;
 };
 
@@ -33,10 +34,10 @@ const Contact = () => {
   const leftRef = useRef(null);
   const rightRef = useRef(null);
   const isMobile = useIsMobile();
-  
+
   const leftInView = useInView(leftRef, { once: false, amount: 0.2 });
   const rightInView = useInView(rightRef, { once: false, amount: 0.2 });
-  
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -55,9 +56,9 @@ const Contact = () => {
       [name]: value,
     });
   };
-/*template_li1u7ka*/ 
+/*template_li1u7ka*/
 /*service_ik7kppd*/
-//YdWwEgCsZJN3D5iKq 
+//YdWwEgCsZJN3D5iKq
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
@@ -79,7 +80,7 @@ const Contact = () => {
         () => {
           setLoading(false);
           setShowSuccess(true);
-          
+
           // Hide success message after 5 seconds
           setTimeout(() => {
             setShowSuccess(false);
@@ -105,9 +106,11 @@ const Contact = () => {
       className={`flex xl:flex-row flex-col-reverse xl:gap-4 gap-10 overflow-visible relative w-full justify-between items-center`}
       style={{ background: 'none', boxShadow: 'none', border: 'none' }}
     >
+      {/* Add StarryBackground with higher density for contact section */}
+      <StarryBackground density={250} />
       <AnimatePresence>
         {showSuccess && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.8 }}
@@ -223,7 +226,7 @@ const Contact = () => {
         animate={rightInView ? { x: 0, opacity: 1 } : { x: 50, opacity: 0 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         className='xl:w-[60%] lg:w-[58%] md:w-[55%] w-full h-[500px] md:h-[500px] sm:h-[400px] h-[350px] flex items-center justify-center overflow-visible earth-canvas-container'
-        style={{ 
+        style={{
           background: 'transparent',
           boxShadow: 'none',
           border: 'none',
