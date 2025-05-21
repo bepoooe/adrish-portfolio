@@ -5,32 +5,32 @@ import { styles } from '../styles';
 const Hero = () => {
   // Mock-up for scroll tracking
   const [scrollY, setScrollY] = React.useState(0);
-  
+
   React.useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
     };
-    
+
     // Add scroll listener
     window.addEventListener('scroll', handleScroll);
-    
+
     // Cleanup
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
-  
+
   return (
-    <motion.section 
+    <motion.section
       className="relative w-full h-full mx-auto overflow-visible"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
-      style={{ 
+      style={{
         opacity: scrollY > 300 ? 1 - (scrollY - 300) / 300 : 1, // Fade out effect when scrolling down
       }}
     >
-      <motion.div 
+      <motion.div
         className="stars-container absolute inset-0"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -40,7 +40,7 @@ const Hero = () => {
         <div className="stars stars-medium"></div>
         <div className="stars stars-large"></div>
       </motion.div>
-      
+
       <div className="hero-content-wrapper" style={{ position: 'relative', zIndex: 5 }}>
         {/* Left side - Text content */}
         <div className="hero-text-container" style={{ position: 'relative', zIndex: 10 }}>
@@ -48,9 +48,9 @@ const Hero = () => {
             <div className="w-5 h-5 rounded-full bg-[#6382ff]" />
             <div className="w-1 sm:h-80 h-40 blue-gradient" />
           </div>
-          
+
           <div className="hero-text-content" style={{ position: 'relative', zIndex: 10 }}>
-            <motion.h1 
+            <motion.h1
               className="text-white hero-main-text mb-0"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -58,6 +58,7 @@ const Hero = () => {
               style={{ textShadow: '0 0 10px rgba(0, 0, 0, 0.5)' }} // Add text shadow for better readability
             >
               <motion.span
+                className="greeting-text"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2, duration: 0.6, type: "spring" }}
@@ -66,6 +67,7 @@ const Hero = () => {
                 Hi,<br />
               </motion.span>
               <motion.span
+                className="greeting-text"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4, duration: 0.6, type: "spring" }}
@@ -73,8 +75,8 @@ const Hero = () => {
               >
                 My name is<br />
               </motion.span>
-              <motion.span 
-                className="text-[#6382ff]"
+              <motion.span
+                className="text-[#6382ff] adrish-name"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.6, duration: 0.6, type: "spring" }}
@@ -83,13 +85,13 @@ const Hero = () => {
                 Adrish
               </motion.span>
             </motion.h1>
-            <motion.p 
+            <motion.p
               className="mt-2 text-white-100 hero-sub-text"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8, duration: 0.8, type: "spring", damping: 12 }}
               whileHover={{ color: "#6382ff", scale: 1.02 }}
-              style={{ 
+              style={{
                 textShadow: '0 0 8px rgba(0, 0, 0, 0.7)',  // Add text shadow for better readability
                 position: 'relative',
                 zIndex: 10
@@ -101,15 +103,15 @@ const Hero = () => {
             </motion.p>
           </div>
         </div>
-        
+
         {/* Right side will contain the book card (positioned via CSS) */}
         <div className="hero-right-space"></div>
       </div>
-      
+
 
 
       {/* Book-themed decorative elements - with mobile-friendly positioning */}
-      <motion.div 
+      <motion.div
         className="absolute w-24 h-24 bg-[#6382ff]/10 filter blur-md hidden md:block"
         animate={{
           x: [0, 20, 0],
@@ -128,7 +130,7 @@ const Hero = () => {
           transform: 'rotate(15deg)'
         }}
       />
-      <motion.div 
+      <motion.div
         className="absolute w-32 h-40 bg-[#4d7eff]/10 filter blur-md hidden md:block"
         animate={{
           x: [0, -15, 0],
@@ -147,7 +149,7 @@ const Hero = () => {
           transform: 'rotate(-10deg)'
         }}
       />
-      <motion.div 
+      <motion.div
         className="absolute w-20 h-28 bg-[#ff4d7e]/10 filter blur-md hidden md:block"
         animate={{
           x: [0, 10, 0],
@@ -166,9 +168,9 @@ const Hero = () => {
           transform: 'rotate(5deg)'
         }}
       />
-      
+
       {/* Mobile-specific decorative elements - smaller and better positioned */}
-      <motion.div 
+      <motion.div
         className="absolute w-16 h-16 bg-[#6382ff]/10 filter blur-sm md:hidden"
         animate={{
           x: [0, 10, 0],
@@ -188,7 +190,7 @@ const Hero = () => {
           zIndex: 0  // Ensure it stays behind text
         }}
       />
-      <motion.div 
+      <motion.div
         className="absolute w-20 h-24 bg-[#4d7eff]/10 filter blur-sm md:hidden"
         animate={{
           x: [0, -8, 0],
@@ -208,7 +210,7 @@ const Hero = () => {
           zIndex: 0  // Ensure it stays behind text
         }}
       />
-      
+
       {/* Floating paper elements - desktop */}
       <motion.div
         className="absolute w-10 h-14 bg-white/5 backdrop-blur-sm hidden md:block"
@@ -246,7 +248,7 @@ const Hero = () => {
           transform: 'rotate(-5deg)'
         }}
       />
-      
+
       {/* Floating paper elements - mobile */}
       <motion.div
         className="absolute w-8 h-10 bg-white/5 backdrop-blur-sm md:hidden"
