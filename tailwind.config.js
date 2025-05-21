@@ -4,6 +4,9 @@ export default {
   theme: {
     fontFamily: {
       sans: ["Poppins", "sans-serif"],
+      'space-grotesk': ["Space Grotesk", "sans-serif"],
+      'orbitron': ["Orbitron", "sans-serif"],
+      'exo': ["Exo 2", "sans-serif"],
     },
     extend: {
       fontSize: {
