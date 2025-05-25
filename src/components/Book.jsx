@@ -334,8 +334,20 @@ const Page = ({ number, front, back, page, opened, bookClosed, visible = true, .
       animation.isAnimating = false;
     }
 
-    let targetRotation = opened ? -Math.PI / 2 : Math.PI / 2;
-    if (!bookClosed) {
+    // Different angles for closed vs open book states
+    let targetRotation;
+    if (bookClosed) {
+      // When book is closed, keep at 90 degrees for resting position
+      targetRotation = opened ? -Math.PI / 2 : Math.PI / 2;
+    } else {
+      // When book is open, use different angles for mobile vs desktop
+      if (isMobile) {
+        // Mobile: 130 degrees for wider opening
+        targetRotation = opened ? -Math.PI / 1.38 : Math.PI / 1.38;
+      } else {
+        // Desktop: 120 degrees
+        targetRotation = opened ? -Math.PI / 1.5 : Math.PI / 1.5;
+      }
       targetRotation += degToRad(number * 0.5);
     }
 
