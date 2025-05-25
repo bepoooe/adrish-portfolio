@@ -342,8 +342,8 @@ const Page = ({ number, front, back, page, opened, bookClosed, visible = true, .
     } else {
       // When book is open, use different angles for mobile vs desktop
       if (isMobile) {
-        // Mobile: 130 degrees for wider opening
-        targetRotation = opened ? -Math.PI / 1.38 : Math.PI / 1.38;
+        // Mobile: 240 degrees for maximum wide opening
+        targetRotation = opened ? -Math.PI * 1.333 : Math.PI * 1.333;
       } else {
         // Desktop: 120 degrees
         targetRotation = opened ? -Math.PI / 1.5 : Math.PI / 1.5;
