@@ -7,6 +7,7 @@ import { MusicPlayer } from "./components/MusicPlayer";
 import { Portfolio } from "./components/Portfolio";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
+import ScrollToTop from "./components/ScrollToTop";
 import { useDevice } from "./context/DeviceContext";
 import { optimizeRenderer } from "./utils/memoryOptimizer";
 import * as THREE from "three";
@@ -94,13 +95,13 @@ function App() {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
-
   return (
     <>
       <Navbar />
       <MusicPlayer />
       <UI />
       <Loader />
+      <ScrollToTop />
 
       {/* Hero Section with Book Card (responsive layout) */}
       <div className="hero-section">
