@@ -439,11 +439,10 @@ class App {
         media.onResize({ screen: this.screen, viewport: this.viewport })
       )
     }
-  }
-  update() {
+  }  update() {
     // Simple auto-scrolling implementation
     if (!this.isDown) {
-      this.scroll.target += 0.3; // Constant speed scrolling
+      this.scroll.target += 0.27; // Reduced speed by 10% (from 0.3)
     }
     
     this.scroll.current = lerp(

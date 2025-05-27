@@ -61,13 +61,29 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Scroll to section when nav link is clicked
+  // Enhanced scroll to section when nav link is clicked
   const scrollToSection = (sectionId) => {
     setToggle(false);
+    
+    // If sectionId is empty or null, scroll to top
+    if (!sectionId) {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+      return;
+    }
+    
     const section = document.getElementById(sectionId);
     if (section) {
+      // Calculate the exact position with offset for navbar height
+      const headerOffset = 100;
+      const elementPosition = section.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+      
+      // Smooth scroll with animation
       window.scrollTo({
-        top: section.offsetTop - 100,
+        top: offsetPosition,
         behavior: 'smooth'
       });
     }
@@ -100,15 +116,19 @@ const Navbar = () => {
             className='flex items-center gap-1 sm:gap-2 group cursor-pointer'
             onClick={() => {
               setActive("");
-              window.scrollTo(0, 0);
+              scrollToSection(""); // Use scrollToSection with empty ID to scroll to top
             }}
           >
             <motion.img 
               src="/favicon.ico" 
               alt='logo' 
               className='w-7 h-7 sm:w-9 sm:h-9 object-contain'
-              whileHover={{ rotate: 360 }}
-              transition={{ duration: 0.5 }}
+              whileHover={{ rotate: 360, scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              transition={{ 
+                rotate: { duration: 0.5, ease: "easeInOut" },
+                scale: { duration: 0.2 }
+              }}
             />
             <p className='text-[15px] sm:text-[18px] font-bold cursor-pointer flex transition-all duration-300'>
               <span className="text-[#e8e0cf] group-hover:text-[#f0e9db] drop-shadow-[0_0_3px_rgba(232,224,207,0.3)]">Bepo</span> <span className="ml-1"><span className="text-[#e8e0cf] opacity-70 group-hover:opacity-80">|</span> <span className="text-[#e8e0cf] group-hover:text-[#f0e9db] drop-shadow-[0_0_3px_rgba(232,224,207,0.3)]">Portfolio</span></span>
@@ -123,14 +143,19 @@ const Navbar = () => {
                 <motion.li
                   key={nav.id}
                   className={`${active === nav.id ? "text-white" : "text-secondary"} hover:text-white text-[16px] font-medium cursor-pointer transition-all duration-300`}
-                  onClick={() => {
-                    setActive(nav.id);
-                    scrollToSection(nav.id);
-                  }}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <a href={`#${nav.id}`}>{nav.title}</a>
+                  <a 
+                    href={`#${nav.id}`}
+                    onClick={(e) => {
+                      e.preventDefault(); // Prevent default link behavior
+                      setActive(nav.id);
+                      scrollToSection(nav.id);
+                    }}
+                  >
+                    {nav.title}
+                  </a>
                 </motion.li>
               ))}
             </ul>
@@ -218,14 +243,19 @@ const Navbar = () => {
                 <motion.li
                   key={nav.id}
                   className={`font-medium cursor-pointer text-[16px] ${active === nav.id ? "text-white" : "text-secondary"} hover:text-white transition-colors duration-300`}
-                  onClick={() => {
-                    setToggle(!toggle);
-                    setActive(nav.id);
-                    scrollToSection(nav.id);
-                  }}
                   whileHover={{ x: 5 }}
                 >
-                  <a href={`#${nav.id}`}>{nav.title}</a>
+                  <a 
+                    href={`#${nav.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setToggle(!toggle);
+                      setActive(nav.id);
+                      scrollToSection(nav.id);
+                    }}
+                  >
+                    {nav.title}
+                  </a>
                 </motion.li>
               ))}
             </ul>
