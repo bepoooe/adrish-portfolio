@@ -7,232 +7,224 @@ import { styles } from "../styles";
 import CircularGallery from "./CircularGallery";
 import StarryBackground from "./StarryBackground";
 
-// CSS for mobile tech carousel with horizontal scrolling and enhanced animations
-const mobileTechStyles = `
-  .mobile-tech-carousel {
+// Spacious circular mobile tech layout inspired by reference design
+const mobileTechStyles = `  /* Mobile tech container with generous spacing */
+  .mobile-tech-container {
     width: 100%;
-    overflow-x: auto;
-    position: relative;
-    padding: 20px 0;
-    margin-top: 20px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
-    cursor: grab;
-    touch-action: pan-x;
-  }
-  
-  .mobile-tech-carousel:active {
-    cursor: grabbing;
-  }
-  
-  .mobile-tech-carousel::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
-  }
-  
-  .mobile-tech-track {
+    padding: 60px 20px 80px 20px;
+    margin: 0 auto;
+    background: transparent;
     display: flex;
-    gap: 16px;
-    padding: 0 20px;
-    will-change: transform;
-    min-width: max-content;
-    animation: scrollTech 60s linear infinite;
-    animation-play-state: running;
+    justify-content: center;
   }
-  
-  .mobile-tech-carousel:hover .mobile-tech-track,
-  .mobile-tech-carousel:active .mobile-tech-track {
-    animation-play-state: paused;
+    /* 3-column grid layout with generous spacing */
+  .mobile-tech-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 45px 35px;
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
   }
-  
-  @keyframes scrollTech {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(calc(-100px * 21)); }
-  }
-  
+    /* Spacious circular tech items with blue theme */
   .mobile-tech-item {
-    flex: 0 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: rgba(4, 7, 20, 0.4);
-    border-radius: 50%;
-    padding: 8px;
-    width: 80px;
-    height: 80px;
-    box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
-    border: 1px solid rgba(59, 130, 246, 0.2);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: relative;
-    overflow: hidden;
-    transform: translateZ(0);
-    will-change: transform, box-shadow;
-    backdrop-filter: blur(8px);
-  }
-  
-  .mobile-tech-item:active {
-    transform: scale(0.92);
-  }
-  
-  .mobile-tech-item::before {
-    content: '';
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    right: -1px;
-    bottom: -1px;
-    border-radius: 50%;
-    background: linear-gradient(45deg, rgba(15, 23, 41, 0.3), rgba(17, 24, 39, 0.3), rgba(23, 37, 84, 0.3), rgba(12, 74, 110, 0.3));
-    z-index: -2;
-  }
-  
-  .mobile-tech-item::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 50%;
-    background: radial-gradient(circle at center, transparent 60%, rgba(59, 130, 246, 0.1));
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-    z-index: 1;
-  }
-  
-  .mobile-tech-item:hover::after {
-    opacity: 1;
-  }
-  
-  .mobile-tech-item:hover {
-    transform: translateY(-5px) scale(1.05);
-    box-shadow: 0 5px 20px rgba(59, 130, 246, 0.3), 0 0 30px rgba(59, 130, 246, 0.2);
-    border-color: rgba(59, 130, 246, 0.4);
-    background: rgba(4, 7, 20, 0.3);
-  }
-  
-  .mobile-tech-icon-container {
-    width: 60%;
-    height: 60%;
-    display: flex;
-    align-items: center;
     justify-content: center;
-    margin-bottom: 4px;
-    position: relative;
-    z-index: 2;
-    background: radial-gradient(circle at center, rgba(59, 130, 246, 0.03), transparent);
+    width: 85px;
+    height: 85px;
     border-radius: 50%;
-    padding: 6px;
+    background: rgba(15, 23, 42, 0.4);
+    border: 2px solid rgba(59, 130, 246, 0.5);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    position: relative;
+    overflow: visible;
+    backdrop-filter: blur(10px);
+    margin: 0 auto;
+    box-shadow: 
+      0 4px 15px rgba(0, 0, 0, 0.2),
+      0 0 20px rgba(59, 130, 246, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
   }
   
+  /* Enhanced hover effects with blue glow */
+  .mobile-tech-item:hover {
+    border-color: rgba(59, 130, 246, 0.9);
+    background: rgba(15, 23, 42, 0.7);
+    transform: translateY(-8px) scale(1.15);
+    box-shadow: 
+      0 12px 30px rgba(0, 0, 0, 0.3),
+      0 0 40px rgba(59, 130, 246, 0.4),
+      0 0 60px rgba(59, 130, 246, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Icon styling with proper sizing */
   .mobile-tech-icon {
-    width: 100%;
-    height: 100%;
+    width: 48px;
+    height: 48px;
     object-fit: contain;
-    filter: drop-shadow(0 0 2px rgba(59, 130, 246, 0.3));
-    transition: transform 0.3s ease, filter 0.3s ease;
+    transition: all 0.4s ease;
+    filter: brightness(1.1) contrast(1.05);
   }
   
   .mobile-tech-item:hover .mobile-tech-icon {
-    filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.5));
-    transform: scale(1.1) rotate(3deg);
+    transform: scale(1.2) rotate(5deg);
+    filter: brightness(1.3) contrast(1.1) drop-shadow(0 0 15px rgba(59, 130, 246, 0.7));
   }
-  
-  .mobile-tech-letter {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgba(255, 255, 255, 0.9);
-    font-weight: bold;
-    font-size: 16px;
-    transition: all 0.3s ease;
-    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
-    text-shadow: 0 2px 3px rgba(0, 0, 0, 0.3);
-  }
-  
-  .mobile-tech-item:hover .mobile-tech-letter {
-    transform: scale(1.1);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-  }
-  
+    /* Tech name styling with proper spacing */
   .mobile-tech-name {
-    font-size: 10px;
-    color: rgba(240, 240, 255, 0.8);
-    text-align: center;
-    font-weight: 400;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    transition: all 0.3s ease;
-    position: relative;
-    z-index: 2;
-    margin-top: 6px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    letter-spacing: 0.5px;
-  }
-  
-  .mobile-tech-item:hover .mobile-tech-name {
-    color: rgba(255, 255, 255, 0.95);
-    text-shadow: 0 0 3px rgba(59, 130, 246, 0.5);
-    transform: translateY(1px);
-  }
-  
-  /* Subtle border glow effect */
-  .mobile-tech-item::before {
-    content: '';
     position: absolute;
-    inset: -1px;
-    background: linear-gradient(
-      135deg,
-      rgba(59, 130, 246, 0.2) 0%,
-      rgba(30, 64, 175, 0.2) 25%,
-      rgba(59, 130, 246, 0.2) 50%,
-      rgba(30, 64, 175, 0.2) 75%,
-      rgba(59, 130, 246, 0.2) 100%
-    );
-    border-radius: 50%;
-    z-index: -1;
-    opacity: 0.3;
-    transition: opacity 0.4s ease;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.85);
+    text-align: center;
+    white-space: nowrap;
+    transition: all 0.4s ease;
+    font-weight: 600;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    letter-spacing: 0.3px;
+  }
+    .mobile-tech-item:hover .mobile-tech-name {
+    color: rgba(255, 255, 255, 1);
+    transform: translateX(-50%) translateY(-3px);
+    text-shadow: 0 0 8px rgba(59, 130, 246, 0.8);
   }
   
-  .mobile-tech-item:hover::before {
-    opacity: 0.6;
-    animation: spin 8s linear infinite;
-  }
-  
-  @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-  }
-  
-
-  
-  /* No gradient fade effect on edges */
-  
-  /* For larger mobile screens */
-  @media (min-width: 400px) {
+  /* Responsive adjustments for different screen sizes */  @media (min-width: 375px) {
+    .mobile-tech-container {
+      padding: 65px 25px 85px 25px;
+    }
+    
+    .mobile-tech-grid {
+      gap: 45px 35px;
+      max-width: 380px;
+    }
+    
     .mobile-tech-item {
       width: 90px;
       height: 90px;
     }
     
-    .mobile-tech-name {
-      font-size: 11px;
+    .mobile-tech-icon {
+      width: 50px;
+      height: 50px;
+    }
+      .mobile-tech-name {
+      font-size: 11.5px;
+      bottom: -38px;
+      left: 50%;
+      transform: translateX(-50%);
     }
   }
-  
-  /* For medium-sized mobile screens */
-  @media (min-width: 500px) {
+    @media (min-width: 425px) {
+    .mobile-tech-container {
+      padding: 70px 30px 90px 30px;
+    }
+    
+    .mobile-tech-grid {
+      gap: 50px 40px;
+      max-width: 420px;
+    }
+    
     .mobile-tech-item {
-      width: 100px;
-      height: 100px;
+      width: 95px;
+      height: 95px;
+    }
+    
+    .mobile-tech-icon {
+      width: 52px;
+      height: 52px;
+    }
+      .mobile-tech-name {
+      font-size: 12px;
+      bottom: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+    @media (min-width: 500px) {
+    .mobile-tech-container {
+      padding: 75px 35px 95px 35px;
+    }
+    
+    .mobile-tech-grid {
+      gap: 55px 45px;
+      max-width: 480px;
+    }
+    
+    .mobile-tech-item {
+      width: 105px;
+      height: 105px;
+    }
+    
+    .mobile-tech-icon {
+      width: 56px;
+      height: 56px;
+    }
+      .mobile-tech-name {
+      font-size: 12.5px;
+      bottom: -42px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+    @media (min-width: 640px) {
+    .mobile-tech-container {
+      padding: 80px 40px 100px 40px;
+    }
+    
+    .mobile-tech-grid {
+      gap: 60px 50px;
+      max-width: 540px;
+    }
+    
+    .mobile-tech-item {
+      width: 115px;
+      height: 115px;
+    }
+    
+    .mobile-tech-icon {
+      width: 60px;
+      height: 60px;
+    }
+      .mobile-tech-name {
+      font-size: 13px;
+      bottom: -45px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+    @media (min-width: 768px) {
+    .mobile-tech-container {
+      padding: 85px 45px 105px 45px;
+    }
+    
+    .mobile-tech-grid {
+      gap: 65px 55px;
+      max-width: 600px;
+    }
+    
+    .mobile-tech-item {
+      width: 125px;
+      height: 125px;
+    }
+    
+    .mobile-tech-icon {
+      width: 65px;
+      height: 65px;
+    }
+      .mobile-tech-name {
+      font-size: 14px;
+      bottom: -48px;
+      left: 50%;
+      transform: translateX(-50%);
     }
   }
 `;
@@ -358,8 +350,7 @@ const createTechImage = (technology) => {
 
 const Tech = () => {
   const [galleryItems, setGalleryItems] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
+  const [loading, setLoading] = useState(true);  const [isMobile, setIsMobile] = useState(false);
   
   // Add mobile detection
   useEffect(() => {
@@ -426,189 +417,84 @@ const Tech = () => {
     };
     
     return techIconUrls[tech.icon] || `https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${tech.icon}/${tech.icon}-original.svg`;
-  };
-
-  // Render mobile tech carousel with horizontal scrolling animation
-  const renderMobileTechCarousel = () => {
+  };  // Simple mobile layout with circular icons
+  const renderMobileLayout = () => {
     return (
       <>
         <style>{mobileTechStyles}</style>
-        <div className="mobile-tech-carousel">
-          <div className="mobile-tech-track">
-            {/* First set of items */}
+        
+        <div className="mobile-tech-container">
+          <motion.div 
+            className="mobile-tech-grid"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ 
+              duration: 0.6,
+              ease: "easeOut"
+            }}
+          >
             {technologies.map((tech, index) => (
               <motion.div 
-                key={`tech-${index}`}
+                key={`mobile-tech-${index}`}
                 className="mobile-tech-item"
-                initial={{ opacity: 0, scale: 0.9 }}
+                initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ 
-                  duration: 0.5, 
-                  delay: index * 0.03,
-                  ease: "easeOut"
+                  duration: 0.4, 
+                  delay: index * 0.1,
+                  ease: "easeOut",
+                  type: "spring",
+                  stiffness: 120,
+                  damping: 12
                 }}
-                whileHover={{ 
-                  y: -5, 
-                  scale: 1.05,
-                  transition: { duration: 0.2 } 
-                }}
-                whileTap={{ scale: 0.92 }}
+                whileTap={{ scale: 0.9 }}
               >
-                <div className="mobile-tech-icon-container">
-                  {tech.icon === "vhdl" ? (
-                    <img 
-                      src="https://img.icons8.com/color/48/000000/integrated-circuit.png"
-                      alt={tech.name}
-                      className="mobile-tech-icon"
-                    />
-                  ) : tech.icon === "render" ? (
-                    <img 
-                      src="https://cdn.simpleicons.org/render/46E3B7"
-                      alt={tech.name}
-                      className="mobile-tech-icon"
-                    />
-                  ) : tech.icon === "matplotlib" ? (
-                    <img 
-                      src="https://upload.wikimedia.org/wikipedia/commons/8/84/Matplotlib_icon.svg"
-                      alt={tech.name}
-                      className="mobile-tech-icon"
-                    />
-                  ) : (
-                    <img 
-                      src={getTechIconUrl(tech)}
-                      alt={tech.name}
-                      className="mobile-tech-icon"
-                      onError={(e) => {
-                        // Create a colored circle with the first letter as fallback
-                        e.target.style.display = "none";
-                        const parent = e.target.parentNode;
-                        
-                        // Check if we already created a fallback
-                        if (!parent.querySelector('.mobile-tech-letter')) {
-                          const letter = document.createElement("div");
-                          letter.className = "mobile-tech-letter";
-                          letter.style.backgroundColor = tech.color;
-                          letter.textContent = tech.name.charAt(0).toUpperCase();
-                          parent.appendChild(letter);
-                        }
-                      }}
-                    />
-                  )}
-                </div>
+                {tech.icon === "vhdl" ? (
+                  <img 
+                    src="https://img.icons8.com/color/48/000000/integrated-circuit.png"
+                    alt={tech.name}
+                    className="mobile-tech-icon"
+                  />
+                ) : tech.icon === "render" ? (
+                  <img 
+                    src="https://cdn.simpleicons.org/render/46E3B7"
+                    alt={tech.name}
+                    className="mobile-tech-icon"
+                  />
+                ) : tech.icon === "matplotlib" ? (
+                  <img 
+                    src="https://upload.wikimedia.org/wikipedia/commons/8/84/Matplotlib_icon.svg"
+                    alt={tech.name}
+                    className="mobile-tech-icon"
+                  />
+                ) : (
+                  <img 
+                    src={getTechIconUrl(tech)}
+                    alt={tech.name}
+                    className="mobile-tech-icon"
+                    onError={(e) => {
+                      // Fallback to first letter if image fails
+                      const parent = e.target.parentNode;
+                      e.target.style.display = "none";
+                      parent.innerHTML = `<div style="
+                        width: 40px; 
+                        height: 40px; 
+                        display: flex; 
+                        align-items: center; 
+                        justify-content: center; 
+                        background: ${tech.color}; 
+                        border-radius: 50%; 
+                        color: white; 
+                        font-weight: bold; 
+                        font-size: 18px;
+                      ">${tech.name.charAt(0).toUpperCase()}</div>`;
+                    }}
+                  />
+                )}
                 <span className="mobile-tech-name">{tech.name}</span>
-                
-                {/* Add cosmic glow effect */}
-                <motion.div
-                  className="absolute inset-0 rounded-full"
-                  style={{ 
-                    backgroundColor: `${tech.color}10`,
-                    boxShadow: `0 0 15px ${tech.color}40`
-                  }}
-                  animate={{
-                    boxShadow: [
-                      `0 0 10px ${tech.color}30`,
-                      `0 0 15px ${tech.color}50`,
-                      `0 0 10px ${tech.color}30`
-                    ]
-                  }}
-                  transition={{
-                    duration: 2,
-                    ease: "easeInOut",
-                    repeat: Infinity,
-                    repeatType: "reverse"
-                  }}
-                />
               </motion.div>
             ))}
-            
-            {/* Duplicate all items to create a seamless loop effect */}
-            {technologies.map((tech, index) => (
-              <motion.div 
-                key={`tech-dup-${index}`}
-                className="mobile-tech-item"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ 
-                  duration: 0.5, 
-                  delay: (technologies.length + index) * 0.03,
-                  ease: "easeOut"
-                }}
-                whileHover={{ 
-                  y: -5, 
-                  scale: 1.05,
-                  transition: { duration: 0.2 } 
-                }}
-                whileTap={{ scale: 0.92 }}
-              >
-                <div className="mobile-tech-icon-container">
-                  {tech.icon === "vhdl" ? (
-                    <img 
-                      src="https://img.icons8.com/color/48/000000/integrated-circuit.png"
-                      alt={tech.name}
-                      className="mobile-tech-icon"
-                    />
-                  ) : tech.icon === "render" ? (
-                    <img 
-                      src="https://cdn.simpleicons.org/render/46E3B7"
-                      alt={tech.name}
-                      className="mobile-tech-icon"
-                    />
-                  ) : tech.icon === "matplotlib" ? (
-                    <img 
-                      src="https://upload.wikimedia.org/wikipedia/commons/8/84/Matplotlib_icon.svg"
-                      alt={tech.name}
-                      className="mobile-tech-icon"
-                    />
-                  ) : (
-                    <img 
-                      src={getTechIconUrl(tech)}
-                      alt={tech.name}
-                      className="mobile-tech-icon"
-                      onError={(e) => {
-                        // Create a colored circle with the first letter as fallback
-                        e.target.style.display = "none";
-                        const parent = e.target.parentNode;
-                        
-                        // Check if we already created a fallback
-                        if (!parent.querySelector('.mobile-tech-letter')) {
-                          const letter = document.createElement("div");
-                          letter.className = "mobile-tech-letter";
-                          letter.style.backgroundColor = tech.color;
-                          letter.textContent = tech.name.charAt(0).toUpperCase();
-                          parent.appendChild(letter);
-                        }
-                      }}
-                    />
-                  )}
-                </div>
-                <span className="mobile-tech-name">{tech.name}</span>
-                
-                {/* Add cosmic glow effect */}
-                <motion.div
-                  className="absolute inset-0 rounded-full"
-                  style={{ 
-                    backgroundColor: `${tech.color}10`,
-                    boxShadow: `0 0 15px ${tech.color}40`
-                  }}
-                  animate={{
-                    boxShadow: [
-                      `0 0 10px ${tech.color}30`,
-                      `0 0 15px ${tech.color}50`,
-                      `0 0 10px ${tech.color}30`
-                    ]
-                  }}
-                  transition={{
-                    duration: 2,
-                    ease: "easeInOut",
-                    repeat: Infinity,
-                    repeatType: "reverse"
-                  }}
-                />
-              </motion.div>
-            ))}
-          </div>
-          
-
+          </motion.div>
         </div>
       </>
     );
@@ -625,11 +511,9 @@ const Tech = () => {
         <h2 className={`${styles.sectionHeadText} text-center`}>
           Technologies I've Worked With
         </h2>
-      </motion.div>
-
-      {/* Conditional rendering based on device */}
+      </motion.div>      {/* Conditional rendering based on device */}
       {isMobile ? (
-        // Mobile view - horizontal scrolling carousel
+        // Mobile view - wave layout only
         loading ? (
           <div className="w-full h-[300px] flex justify-center items-center">
             <motion.div 
@@ -652,9 +536,8 @@ const Tech = () => {
                 }}
               ></motion.div>
             </motion.div>
-          </div>
-        ) : (
-          renderMobileTechCarousel()
+          </div>        ) : (
+          renderMobileLayout()
         )
       ) : (
         // Desktop view - circular gallery (unchanged)
