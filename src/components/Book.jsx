@@ -56,14 +56,14 @@ const BOOK_PARAMS = {
   mobile: {
     easingFactor: 0.12,
     easingFactorFold: 0.08,
-    insideCurveStrength: 0.12, // Reduced for better performance
-    outsideCurveStrength: 0.03, // Reduced for better performance
-    turningCurveStrength: 0.06, // Reduced for better performance
+    insideCurveStrength: 0.18, // Increased for better structure with wide opening
+    outsideCurveStrength: 0.06, // Increased for better page separation
+    turningCurveStrength: 0.09, // Increased for more dynamic turning
     pageSegments: 6, // Reduced from 8 for better performance
     frameSkip: 2, // Increased frame skipping for mobile
     animationDuration: 450, // Slightly slower for smoother appearance
-  },
-  desktop: {
+    structuralOffset: 0.15, // New parameter for better page structure
+  },  desktop: {
     easingFactor: 0.15,
     easingFactorFold: 0.1,
     insideCurveStrength: 0.16,
@@ -72,6 +72,7 @@ const BOOK_PARAMS = {
     pageSegments: 12,
     frameSkip: 0,
     animationDuration: 350,
+    structuralOffset: 0.1, // Desktop structural offset
   }
 };
 
@@ -135,7 +136,6 @@ class ResourceManager {
     this.geometries.set(key, geometry);
     return geometry;
   }
-
   getAnimationData(segments) {
     if (this.animationData.has(segments)) {
       return this.animationData.get(segments);
@@ -146,12 +146,14 @@ class ResourceManager {
 
     for (let i = 0; i <= segments; i++) {
       const boneIndex = i / segments;
+      const edgeIntensity = Math.min(1, Math.abs(i - halfSegments) / halfSegments); // Enhanced edge definition
 
       data.push({
-        insideCurveIntensity: i < halfSegments ? Math.sin(i * 0.2 + 0.25) : 0,
-        outsideCurveIntensity: i >= halfSegments ? Math.cos(i * 0.3 + 0.09) : 0,
+        insideCurveIntensity: i < halfSegments ? Math.sin(i * 0.25 + 0.3) * (1 + edgeIntensity * 0.3) : 0,
+        outsideCurveIntensity: i >= halfSegments ? Math.cos(i * 0.35 + 0.12) * (1 + edgeIntensity * 0.4) : 0,
         sinValue: Math.sin(i * Math.PI * boneIndex),
         foldSinValue: i > segments * 0.6 ? Math.sin(i * Math.PI * boneIndex - 0.5) : 0,
+        structuralCurve: Math.sin(boneIndex * Math.PI) * 0.8, // New parameter for better structure
       });
     }
 
@@ -352,23 +354,22 @@ const Page = React.memo(({ number, front, back, page, opened, bookClosed, visibl
 
     if (timeSinceTurn >= params.animationDuration) {
       animation.isAnimating = false;
-    }
-
-    // Different angles for closed vs open book states
+    }    // Different angles for closed vs open book states
     let targetRotation;
     if (bookClosed) {
       // When book is closed, keep at 90 degrees for resting position
       targetRotation = opened ? -Math.PI / 2 : Math.PI / 2;
-    } else {
-      // When book is open, use different angles for mobile vs desktop
+    } else {      // When book is open, use different angles for mobile vs desktop
       if (isMobile) {
-        // Mobile: 240 degrees for maximum wide opening
-        targetRotation = opened ? -Math.PI * 1.333 : Math.PI * 1.333;
+        // Mobile: 150 degrees for maximum wide opening
+        targetRotation = opened ? -Math.PI * 0.833 : Math.PI * 0.833;
       } else {
         // Desktop: 120 degrees
         targetRotation = opened ? -Math.PI / 1.5 : Math.PI / 1.5;
       }
-      targetRotation += degToRad(number * 0.5);
+      // Enhanced offset calculation for better mobile structure
+      const offsetMultiplier = isMobile ? 0.3 : 0.5;
+      targetRotation += degToRad(number * offsetMultiplier);
     }
 
     const bones = skinnedMeshRef.current.skeleton.bones;
@@ -376,9 +377,7 @@ const Page = React.memo(({ number, front, back, page, opened, bookClosed, visibl
     // Animate bones
     for (let i = 0; i < Math.min(bones.length, animationData.length); i++) {
       const bone = i === 0 ? group.current : bones[i];
-      if (!bone) continue;
-
-      const calc = animationData[i];
+      if (!bone) continue;      const calc = animationData[i];
       let rotationAngle = 0;
 
       if (bookClosed && i === 0) {
@@ -387,11 +386,18 @@ const Page = React.memo(({ number, front, back, page, opened, bookClosed, visibl
         const insideContrib = params.insideCurveStrength * calc.insideCurveIntensity * targetRotation;
         const outsideContrib = params.outsideCurveStrength * calc.outsideCurveIntensity * targetRotation;
         const turningContrib = params.turningCurveStrength * calc.sinValue * turningProgress * targetRotation;
+        
+        // Enhanced structural contribution for mobile
+        const structuralContrib = isMobile 
+          ? (params.structuralOffset || 0.1) * calc.structuralCurve * targetRotation * 0.8
+          : 0;
 
-        rotationAngle = insideContrib - outsideContrib + turningContrib;
+        rotationAngle = insideContrib - outsideContrib + turningContrib + structuralContrib;
       }
 
-      rotationAngle = MathUtils.clamp(rotationAngle, -Math.PI, Math.PI);
+      // Enhanced clamping for mobile wide opening
+      const clampRange = isMobile ? Math.PI * 1.5 : Math.PI;
+      rotationAngle = MathUtils.clamp(rotationAngle, -clampRange, clampRange);
 
       easing.dampAngle(
         bone.rotation,
