@@ -4,18 +4,53 @@ import { OrbitControls, Preload, Box, Cylinder } from "@react-three/drei";
 
 import CanvasLoader from "../Loader";
 
-const SimpleComputer = ({ isMobile }) => {
-  const computerRef = useRef();
+// Mobile detection hook with debouncing for better performance
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    let timeoutId;
+    
+    const checkMobile = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        setIsMobile(window.innerWidth <= 500);
+      }, 100); // Debounce for 100ms
+    };
+    
+    // Initial check
+    setIsMobile(window.innerWidth <= 500);
+    
+    // Add resize listener
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      clearTimeout(timeoutId);
+    };
+  }, []);
+  
+  return isMobile;
+};
+
+const SimpleComputer = React.memo(({ isMobile }) => {  const computerRef = useRef();
   const monitorRef = useRef();
   const screenRef = useRef();
   
-  // Animation
+  // Optimized animation with frame skipping for mobile
   useFrame(({ clock }) => {
-    if (computerRef.current) {
-      computerRef.current.rotation.y = Math.sin(clock.getElapsedTime() * 0.3) * 0.1;
+    const elapsedTime = clock.getElapsedTime();
+    
+    // Frame skipping for mobile performance
+    if (isMobile && Math.floor(elapsedTime * 60) % 2 !== 0) {
+      return;
     }
-    if (screenRef.current) {
-      screenRef.current.material.emissiveIntensity = 0.5 + Math.sin(clock.getElapsedTime() * 2) * 0.2;
+    
+    if (computerRef.current) {
+      computerRef.current.rotation.y = Math.sin(elapsedTime * 0.3) * 0.1;
+    }
+    if (screenRef.current && screenRef.current.material) {
+      screenRef.current.material.emissiveIntensity = 0.5 + Math.sin(elapsedTime * 2) * 0.2;
     }
   });
 
@@ -58,44 +93,27 @@ const SimpleComputer = ({ isMobile }) => {
       <Box args={[2, 0.1, 0.8]} position={[0, -1.8, 0.8]}>
         <meshStandardMaterial color="#252525" metalness={0.4} roughness={0.4} />
       </Box>
-      
-      {/* Mouse */}
+        {/* Mouse */}
       <Box args={[0.3, 0.1, 0.5]} position={[1.2, -1.8, 0.8]} rotation={[0, 0.3, 0]}>
         <meshStandardMaterial color="#303030" metalness={0.4} roughness={0.4} />
       </Box>
     </group>
   );
-};
+});
 
 const ComputersCanvas = () => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    // Add a listener for changes to the screen size
-    const mediaQuery = window.matchMedia("(max-width: 500px)");
-
-    // Set the initial value of the `isMobile` state variable
-    setIsMobile(mediaQuery.matches);
-
-    // Define a callback function to handle changes to the media query
-    const handleMediaQueryChange = (event) => {
-      setIsMobile(event.matches);
-    };
-
-    // Add the callback function as a listener for changes to the media query
-    mediaQuery.addEventListener("change", handleMediaQueryChange);
-
-    // Remove the listener when the component is unmounted
-    return () => {
-      mediaQuery.removeEventListener("change", handleMediaQueryChange);
-    };
-  }, []);
+  const isMobile = useIsMobile();
 
   return (
     <Canvas
-      frameloop='always'
+      frameloop='demand' // Changed from 'always' for better performance
       camera={{ position: [0, 0, 8], fov: 25 }}
-      gl={{ antialias: true, alpha: true }}
+      gl={{ 
+        antialias: !isMobile, // Disable anti-aliasing on mobile
+        alpha: true,
+        powerPreference: "high-performance"
+      }}
+      dpr={[1, isMobile ? 1.5 : 2]} // Lower DPR on mobile
       style={{ background: 'transparent' }}
     >
       <ambientLight intensity={0.5} />
@@ -106,9 +124,11 @@ const ComputersCanvas = () => {
         <OrbitControls
           enableZoom={false}
           autoRotate
-          autoRotateSpeed={0.5}
+          autoRotateSpeed={isMobile ? 0.3 : 0.5} // Slower rotation on mobile
           maxPolarAngle={Math.PI / 1.8}
           minPolarAngle={Math.PI / 2.2}
+          enableDamping={true}
+          dampingFactor={0.05}
         />
         <SimpleComputer isMobile={isMobile} />
       </Suspense>

@@ -1,5 +1,5 @@
 import { useFrame } from "@react-three/fiber";
-import { useMemo, useRef, useEffect } from "react";
+import React, { useMemo, useRef, useEffect } from "react";
 import * as THREE from "three";
 import { useDevice } from "../context/DeviceContext";
 import { registerDisposable } from "../utils/memoryOptimizer";
@@ -12,17 +12,17 @@ const createFireflyTexture = () => {
 
   // Reduced texture size for better performance
   const canvas = document.createElement('canvas');
-  canvas.width = 16; // Reduced from 32
-  canvas.height = 16; // Reduced from 32
+  canvas.width = 12; // Further reduced from 16
+  canvas.height = 12; // Further reduced from 16
   const ctx = canvas.getContext('2d');
 
-  const gradient = ctx.createRadialGradient(8, 8, 0, 8, 8, 8); // Adjusted center points
+  const gradient = ctx.createRadialGradient(6, 6, 0, 6, 6, 6); // Adjusted center points
   gradient.addColorStop(0, 'rgba(255, 252, 187, 1)');
   gradient.addColorStop(0.4, 'rgba(255, 252, 187, 0.5)');
   gradient.addColorStop(1, 'rgba(255, 252, 187, 0)');
 
   ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, 16, 16); // Adjusted size
+  ctx.fillRect(0, 0, 12, 12); // Adjusted size
 
   const texture = new THREE.Texture(canvas);
   texture.needsUpdate = true;
@@ -36,9 +36,9 @@ const createFireflyTexture = () => {
   return texture;
 };
 
-export function Particles({ count = 1000 }) {
+export const Particles = React.memo(({ count = 1000 }) => {
   // Significantly reduce particle count for better performance
-  const actualCount = Math.min(count, 300); // Cap at 300 particles maximum
+  const actualCount = Math.min(count, 250); // Further reduced cap
 
   const points = useRef();
   const { isMobile, isLowPerformance } = useDevice();
@@ -46,8 +46,8 @@ export function Particles({ count = 1000 }) {
 
   // Further reduce count based on device capability
   const finalCount = useMemo(() => {
-    return isMobile ? Math.floor(actualCount * 0.5) :
-           isLowPerformance ? Math.floor(actualCount * 0.7) :
+    return isMobile ? Math.floor(actualCount * 0.4) : // Further reduced for mobile
+           isLowPerformance ? Math.floor(actualCount * 0.6) : // Further reduced for low performance
            actualCount;
   }, [actualCount, isMobile, isLowPerformance]);
 
@@ -137,8 +137,7 @@ export function Particles({ count = 1000 }) {
     <points ref={points}>
       <bufferGeometry>
         <bufferAttribute
-          attach="attributes-position"
-          count={particlesPosition.length / 3}
+          attach="attributes-position"        count={particlesPosition.length / 3}
           array={particlesPosition}
           itemSize={3}
         />
@@ -156,4 +155,4 @@ export function Particles({ count = 1000 }) {
       />
     </points>
   );
-}
+});

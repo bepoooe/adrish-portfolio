@@ -2,7 +2,7 @@ import { useCursor, useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useAtom } from "jotai";
 import { easing } from "maath";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Bone,
   BoxGeometry,
@@ -22,9 +22,33 @@ import { degToRad } from "three/src/math/MathUtils.js";
 import { pageAtom, pages } from "./UI";
 import { useDevice } from "../context/DeviceContext";
 
-const useIsMobile = () => {
+// Mobile detection hook with debouncing for better performance
+const useIsMobileOptimized = () => {
   const { isMobile } = useDevice();
-  return isMobile;
+  const [optimizedIsMobile, setOptimizedIsMobile] = useState(isMobile);
+  
+  useEffect(() => {
+    let timeoutId;
+    
+    const updateMobile = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        setOptimizedIsMobile(isMobile);
+      }, 100); // Debounce for 100ms
+    };
+    
+    updateMobile();
+    
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [isMobile]);
+  
+  return optimizedIsMobile;
+};
+
+const useIsMobile = () => {
+  return useIsMobileOptimized();
 };
 
 // Balanced book parameters for optimal performance and stability
@@ -32,12 +56,12 @@ const BOOK_PARAMS = {
   mobile: {
     easingFactor: 0.12,
     easingFactorFold: 0.08,
-    insideCurveStrength: 0.14,
-    outsideCurveStrength: 0.04,
-    turningCurveStrength: 0.07,
-    pageSegments: 8,
-    frameSkip: 1,
-    animationDuration: 400,
+    insideCurveStrength: 0.12, // Reduced for better performance
+    outsideCurveStrength: 0.03, // Reduced for better performance
+    turningCurveStrength: 0.06, // Reduced for better performance
+    pageSegments: 6, // Reduced from 8 for better performance
+    frameSkip: 2, // Increased frame skipping for mobile
+    animationDuration: 450, // Slightly slower for smoother appearance
   },
   desktop: {
     easingFactor: 0.15,
@@ -160,7 +184,7 @@ class ResourceManager {
 // Global resource manager
 let resourceManager = new ResourceManager();
 
-const Page = ({ number, front, back, page, opened, bookClosed, visible = true, ...props }) => {
+const Page = React.memo(({ number, front, back, page, opened, bookClosed, visible = true, ...props }) => {
   const isMobile = useIsMobile();
   const params = getBookParameters(isMobile);
 
@@ -187,15 +211,14 @@ const Page = ({ number, front, back, page, opened, bookClosed, visible = true, .
     if (back) textureList.push(`/textures/${back}.jpg`);
     return textureList;
   }, [front, back]);
-
-  // Load textures with proper error handling
+  // Load textures with proper error handling and mobile optimization
   const loadedTextures = useTexture(textures, (textures) => {
-    // Configure each texture properly
+    // Configure each texture properly with mobile optimization
     textures.forEach(texture => {
       texture.colorSpace = SRGBColorSpace;
       texture.minFilter = LinearFilter;
       texture.magFilter = LinearFilter;
-      texture.generateMipmaps = false;
+      texture.generateMipmaps = !isMobile; // Disable mipmaps on mobile for memory optimization
       texture.flipY = true;
       texture.wrapS = THREE.RepeatWrapping;
       texture.wrapT = THREE.RepeatWrapping;
@@ -208,13 +231,12 @@ const Page = ({ number, front, back, page, opened, bookClosed, visible = true, .
   const textureArray = Array.isArray(loadedTextures) ? loadedTextures : [loadedTextures];
   const frontTexture = front ? textureArray[0] : null;
   const backTexture = back ? textureArray[front ? 1 : 0] : null;
-
-  // Create materials with proper texture assignment
+  // Create materials with proper texture assignment and mobile optimization
   const materials = useMemo(() => {
     const baseMaterial = new MeshStandardMaterial({
       color: 0xffffff,
-      roughness: 0.8,
-      metalness: 0.1,
+      roughness: isMobile ? 0.9 : 0.8, // Higher roughness on mobile for better performance
+      metalness: isMobile ? 0 : 0.1, // Disable metalness on mobile
     });
 
     return [
@@ -232,8 +254,8 @@ const Page = ({ number, front, back, page, opened, bookClosed, visible = true, .
         color: 0xffffff,
         emissive: 0x000000,
         emissiveIntensity: 0,
-        roughness: 0.8,
-        metalness: 0.1,
+        roughness: isMobile ? 0.9 : 0.8,
+        metalness: isMobile ? 0 : 0.1,
         transparent: false,
         opacity: 1,
       }),
@@ -243,23 +265,23 @@ const Page = ({ number, front, back, page, opened, bookClosed, visible = true, .
         color: 0xffffff,
         emissive: 0x000000,
         emissiveIntensity: 0,
-        roughness: 0.8,
-        metalness: 0.1,
+        roughness: isMobile ? 0.9 : 0.8,
+        metalness: isMobile ? 0 : 0.1,
         transparent: false,
         opacity: 1,
       })
     ];
-  }, [frontTexture, backTexture]);
-
-  // Create the skinned mesh
+  }, [frontTexture, backTexture, isMobile]);
+  // Create the skinned mesh with mobile optimization
   const skinnedMesh = useMemo(() => {
     try {
       const geometry = resourceManager.getGeometry(params.pageSegments);
       const mesh = new SkinnedMesh(geometry, materials);
 
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
-      mesh.frustumCulled = false;
+      // Optimize for mobile
+      mesh.castShadow = !isMobile; // Disable shadows on mobile
+      mesh.receiveShadow = !isMobile; // Disable shadows on mobile
+      mesh.frustumCulled = true; // Enable frustum culling for better performance
 
       // Create bones and skeleton
       const bones = [];
@@ -276,14 +298,12 @@ const Page = ({ number, front, back, page, opened, bookClosed, visible = true, .
 
       const skeleton = new Skeleton(bones);
       mesh.add(skeleton.bones[0]);
-      mesh.bind(skeleton);
-
-      return mesh;
+      mesh.bind(skeleton);      return mesh;
     } catch (error) {
-      console.error("Failed to create skinned mesh:", error);
+      console.warn("Failed to create skinned mesh:", error);
       return null;
     }
-  }, [params.pageSegments, materials]);
+  }, [params.pageSegments, materials, isMobile]);
 
   // Get animation data
   const animationData = useMemo(() =>
@@ -447,8 +467,7 @@ const Page = ({ number, front, back, page, opened, bookClosed, visible = true, .
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
       onClick={handleClick}
-    >
-      <primitive
+    >      <primitive
         object={skinnedMesh}
         ref={skinnedMeshRef}
         position-z={-number * PAGE_DEPTH + page * PAGE_DEPTH}
@@ -456,9 +475,9 @@ const Page = ({ number, front, back, page, opened, bookClosed, visible = true, .
       />
     </group>
   );
-};
+});
 
-export const Book = ({ ...props }) => {
+export const Book = React.memo(({ ...props }) => {
   const [page] = useAtom(pageAtom);
   const [delayedPage, setDelayedPage] = useState(page);
   const isMobile = useIsMobile();
@@ -537,9 +556,7 @@ export const Book = ({ ...props }) => {
   return (
     <group {...props} rotation-y={-Math.PI / 2}>
       {visiblePages.map((pageData) => {
-        const pageNumber = pageData._index;
-
-        return (
+        const pageNumber = pageData._index;        return (
           <Page
             key={pageNumber}
             page={delayedPage}
@@ -554,4 +571,4 @@ export const Book = ({ ...props }) => {
       })}
     </group>
   );
-};
+});

@@ -1,25 +1,26 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import './StarryBackground.css';
 import { useDevice } from '../context/DeviceContext';
 
 // Memory-optimized starry background with significantly fewer DOM elements
-const StarryBackground = ({ density = 100 }) => {
+const StarryBackground = React.memo(({ density = 100 }) => {
   const { isMobile, isLowPerformance } = useDevice();
   const canvasRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const animationRef = useRef(null);
+  const frameCountRef = useRef(0);
 
-  // Reduce density based on device capability
+  // Further reduce density based on device capability
   const adjustedDensity = useMemo(() => {
-    if (isLowPerformance) return Math.floor(density * 0.3);
-    if (isMobile) return Math.floor(density * 0.5);
-    return density;
+    if (isLowPerformance) return Math.floor(density * 0.2); // Further reduced
+    if (isMobile) return Math.floor(density * 0.3); // Further reduced
+    return Math.floor(density * 0.7); // Reduced even for desktop
   }, [density, isMobile, isLowPerformance]);
 
   // Create star data only once
   const starData = useMemo(() => {
-    // Significantly reduced star count
-    const starCount = Math.min(adjustedDensity * 2, 100);
+    // Further reduced star count
+    const starCount = Math.min(adjustedDensity * 1.5, 75); // Reduced maximum
     const stars = [];
 
     // Create stars with varied properties
@@ -41,8 +42,8 @@ const StarryBackground = ({ density = 100 }) => {
 
   // Create shooting star data
   const shootingStarData = useMemo(() => {
-    // Very few shooting stars
-    const count = Math.min(Math.floor(adjustedDensity / 50), 3);
+    // Even fewer shooting stars
+    const count = Math.min(Math.floor(adjustedDensity / 75), 2); // Reduced from 3 to 2
     const shootingStars = [];
 
     for (let i = 0; i < count; i++) {
@@ -216,8 +217,7 @@ const StarryBackground = ({ density = 100 }) => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
-    };
-  }, [dimensions, starData, shootingStarData, isLowPerformance]);
+    };  }, [dimensions, starData, shootingStarData, isLowPerformance]);
 
   return (
     <div className="starry-background">
@@ -228,6 +228,6 @@ const StarryBackground = ({ density = 100 }) => {
       />
     </div>
   );
-};
+});
 
 export default StarryBackground;
