@@ -25,10 +25,9 @@ const CardContainer = styled.div`
     min-height: 60vh;
     padding: 1rem 0;
   }
-  
-  @media (max-width: 480px) {
+    @media (max-width: 480px) {
     min-height: 50vh;
-    padding: 0.5rem 0 6rem; /* Adjusted bottom padding for better spacing */
+    padding: 0.5rem 0 9rem; /* Increased bottom padding to accommodate indicators at -130px */
     margin-bottom: 1.5rem; /* Adjusted margin for better spacing */
     /* Don't restrict touch actions at the container level */
     /* Let the individual elements handle their own touch behavior */
@@ -507,14 +506,13 @@ const NavButton = styled.button`
     width: 42px;
     height: 42px;
   }
-  
-  @media (max-width: 480px) {
+    @media (max-width: 480px) {
     width: 40px;
     height: 40px;
     background: rgba(15, 23, 42, 0.9); /* Darker for better visibility */
     border: 2px solid rgba(59, 130, 246, 0.9); /* More visible border */
     top: auto; /* Reset top positioning */
-    bottom: -70px; /* Position closer to the carousel */
+    bottom: -50px; /* Moved higher to prevent overlap with indicators */
     transform: none; /* Reset transform */
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), 0 0 10px rgba(59, 130, 246, 0.5);
     
@@ -617,9 +615,8 @@ const Indicators = styled.div`
     bottom: -40px;
     gap: 14px;
   }
-  
-  @media (max-width: 480px) {
-    bottom: -120px; /* Adjusted position to be closer to buttons but not overlapping */
+    @media (max-width: 480px) {
+    bottom: -130px; /* Moved further down to avoid overlap with speed control buttons */
     gap: 10px; /* Slightly reduced gap for better fit */
     padding: 6px 14px; /* Adjusted padding for better visibility and tap area */
     background: rgba(15, 23, 42, 0.8); /* Increased opacity for better visibility */
