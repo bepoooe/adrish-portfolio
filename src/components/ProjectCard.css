@@ -5,6 +5,7 @@
   display: flex;
   flex-direction: column;
   min-height: 360px; /* Decreased height by 10% */
+  padding-bottom: 1rem; /* Added padding to ensure tech tags are visible */
 }
 
 /* Ensure images load properly */
@@ -105,52 +106,80 @@
 /* Add some responsive adjustments */
 @media (max-width: 768px) {
   .infinite-scroll-item .project-card {
-    max-width: 396px; /* Made more rectangular and decreased by 10% from previous value */
+    max-width: 100%; /* Full width on mobile - edge to edge */
+    width: 100%; /* Ensure full width */
   }
-  
   .project-card h3 {
     font-size: 1.4rem; /* Further reduced font size on smaller screens */
-  }
-  
-  .project-card p {
+    margin-top: 1rem; /* Increased spacing for square proportions */
+    margin-bottom: 0.8rem; /* Increased for better text separation */
+  }.project-card p {
     font-size: 0.95rem; /* Smaller text on mobile */
-    line-height: 1.5;
+    line-height: 1.6; /* Increased line height for better readability */
+    margin-bottom: 1.4rem; /* Increased spacing for taller cards */
   }
   
   .project-card-wrapper {
     width: 100% !important;
-    max-width: 350px !important;
-    padding: 0.5rem;
-    margin-bottom: 1.5rem;
+    max-width: 100% !important; /* Full width wrapper on mobile */
+    padding: 0.25rem; /* Reduced padding for more edge-to-edge appearance */
+    margin-bottom: 1rem; /* Reduced margin between cards */
+  }  .project-card {
+    min-height: 400px; /* Increased to create more square proportions */
+    max-height: 420px; /* Square-like dimensions for mobile cards */
   }
-  
-  .project-card {
-    min-height: 320px;
+  /* Adjust image container for full-width square-like cards */
+  .project-card .relative {
+    height: 160px !important; /* Increased image height for better proportions */
+  }  /* Ensure tags container has proper spacing in square-like layout */
+  .project-card .flex-wrap {
+    margin-top: 0.8rem; /* Increased top margin for square card proportions */
+    padding: 0 0.8rem; /* Maintain horizontal padding for readability */
   }
 }
 
 @media (max-width: 480px) {
   .infinite-scroll-item .project-card {
-    max-width: 300px;
+    max-width: 100%; /* Full width on small mobile devices */
+    width: 100%;
   }
-  
   .project-card h3 {
     font-size: 1.2rem;
-    margin-top: 0.8rem;
-  }
-  
-  .project-card p {
+    margin-top: 0.8rem; /* Increased for better spacing in square cards */
+    margin-bottom: 0.7rem; /* Increased for better text spacing */
+  }.project-card p {
     font-size: 0.9rem;
-    line-height: 1.4;
+    line-height: 1.5; /* Increased for better readability */
+    margin-bottom: 1.2rem; /* Increased spacing for square card proportions */
   }
   
   .project-card-wrapper {
-    max-width: 280px !important;
+    max-width: 100% !important; /* Full width wrapper on small mobile */
+    width: 100% !important;
+    padding: 0.15rem; /* Even less padding for full edge effect */
+    margin-bottom: 0.8rem; /* Reduced margin for tighter spacing */
+  }  .project-card {
+    min-height: 380px; /* Increased for square-like proportions on small mobile */
+    max-height: 400px; /* Square dimensions for better visual balance */
+  }
+  /* Adjust image height for square proportions on small mobile */
+  .project-card .relative {
+    height: 150px !important; /* Increased image height for balanced proportions */
   }
   
   .project-card .flex-wrap p {
     font-size: 0.7rem;
     padding: 0.15rem 0.5rem;
+  }
+
+  /* Adjust content padding for small screens */
+  .project-card h3,
+  .project-card p {
+    padding-left: 0.8rem;
+    padding-right: 0.8rem;
+  }  .project-card .flex-wrap {
+    padding: 0 0.8rem;
+    margin-top: 0.6rem; /* Increased for better spacing in square cards */
   }
 }
 

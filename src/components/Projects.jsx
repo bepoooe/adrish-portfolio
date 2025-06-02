@@ -101,10 +101,9 @@ const Projects = () => {
         <h2 className={`${styles.sectionHeadText} text-center`}>Projects.</h2>
       </motion.div>
 
-      <div className='w-full flex justify-center'>
-        <motion.p
+      <div className='w-full flex justify-center'>        <motion.p
           variants={fadeIn("", "", 0.1, 1)}
-          className='mt-3 text-gray-300 text-[17px] max-w-3xl leading-[30px] text-center'
+          className='mt-3 text-gray-300 text-[17px] max-w-sm md:max-w-3xl leading-[30px] text-center'
         >
           Following projects showcase my skills and experience through
           real-world examples of my work. Each project is briefly described with

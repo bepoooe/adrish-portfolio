@@ -20,8 +20,10 @@
 /* Mobile responsive adjustments */
 @media (max-width: 768px) {
   .simple-infinite-scroll {
-    max-width: 100%;
+    max-width: 100%; /* Allow full width on mobile */
     perspective: none;
+    margin: 0; /* Remove auto margins for full width */
+    padding: 0; /* Remove padding for edge-to-edge effect */
   }
   
   .simple-infinite-scroll.tilted-left,

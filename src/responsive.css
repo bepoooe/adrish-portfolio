@@ -98,11 +98,33 @@
   .simple-infinite-scroll {
     transform: none !important;
     perspective: none;
+    margin: 0 !important; /* Remove margins for full width */
+    padding: 0 !important; /* Remove padding for edge-to-edge */
   }
   
   .project-card-wrapper {
-    width: 90% !important;
-    max-width: 400px !important;
+    width: 100% !important; /* Full width on mobile */
+    max-width: 100% !important; /* Override any max-width constraints */
+    padding: 0.25rem !important; /* Minimal padding for edge effect */
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* Override projects section constraints on mobile for full-width cards */
+  #projects {
+    max-width: none !important; /* Remove max-width constraint */
+    padding-left: 0 !important; /* Remove left padding */
+    padding-right: 0 !important; /* Remove right padding */
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* Ensure the inner container also allows full width */
+  #projects > div {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    border-radius: 0 !important; /* Remove border radius for edge-to-edge effect */
+    margin: 0 !important;
   }
 }
 
