@@ -3,6 +3,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100..900;1,100..900&display=swap");
 
+/* Import mobile spacing optimizations */
+@import "./mobile-spacing.css";
+
 /* Tailwind directives - these are processed during build time */
 /* ! postcss-preset-env stage 1 end */
 /* ! tailwindcss */
@@ -1048,69 +1051,93 @@ body {
   }
 }
 
-/* Animated horizontal scroll for text */
-@keyframes horizontal-scroll {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-100%);
-  }
-}
-
-@keyframes horizontal-scroll-2 {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-.animate-horizontal-scroll {
-  animation: horizontal-scroll 20s linear infinite;
-}
-
-.animate-horizontal-scroll-2 {
-  animation: horizontal-scroll-2 20s linear infinite;
-}
-
-/* Mobile-specific adjustments for 3D book - enhanced for prominence */
+/* Mobile spacing optimizations - reduce unnecessary gaps between sections */
 @media (max-width: 768px) {
-  /* Improve book container for mobile */
-  .book-card {
-    touch-action: none;
-    -webkit-overflow-scrolling: auto;
-    animation: subtle-float 6s ease-in-out infinite; /* Add subtle floating animation */
+  /* Portfolio section spacing reductions */
+  .portfolio-container section {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+    margin-bottom: 0.5rem !important;
   }
-
-  /* Ensure canvas takes full height on mobile */
-  .canvas-container {
-    height: 100% !important;
-    min-height: 320px; /* Increased from 300px */
+  
+  /* Override Tailwind py-16 class specifically for mobile */
+  .py-16 {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
   }
-
-  /* Enhanced visual feedback for touch interactions */
-  .book-card:active::before {
-    opacity: 0.8; /* Increased from 0.7 */
-    background: radial-gradient(circle at center, rgba(99,130,255,0.15) 0%, transparent 70%);
+  
+  /* Contact section specific mobile adjustments */
+  #contact {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
   }
-
-  /* Add a subtle glow to the book card by default */
-  .book-card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    box-shadow: 0 0 15px rgba(99, 130, 255, 0.3);
-    opacity: 0.7;
-    z-index: -1;
-    pointer-events: none;
+  
+  /* Contact form container adjustments */
+  .contact-form-container {
+    padding: 1rem !important;
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
   }
+  
+  /* Earth canvas container height reduction for mobile */
+  .earth-canvas-container {
+    height: 250px !important;
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  /* Footer spacing reduction */
+  footer {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+    margin-top: 0.5rem !important;
+  }
+  
+  /* Inner content padding adjustments */
+  .bg-black.bg-opacity-60 {
+    padding: 1rem !important;
+  }
+  
+  /* Reduce vertical gaps between form elements */
+  .contact-form input,
+  .contact-form textarea {
+    margin-bottom: 0.75rem !important;
+  }
+  
+  /* Tighten spacing in cards */
+  .about-card,
+  .education-card,
+  .tech-card,
+  .project-card {
+    margin-bottom: 1rem !important;
+    padding: 1rem !important;
+  }
+}
 
-  /* Add subtle floating animation */
-  @keyframes subtle-float {
-    0%, 100% { transform: translateY(0) translateZ(0); }
-    50% { transform: translateY(-5px) translateZ(0); }
+/* Extra small mobile devices - even tighter spacing */
+@media (max-width: 480px) {
+  .portfolio-container section {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+  
+  .py-16 {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+  
+  #contact {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+  
+  footer {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+  
+  .bg-black.bg-opacity-60 {
+    padding: 0.75rem !important;
   }
 }

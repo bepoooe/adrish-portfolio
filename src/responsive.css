@@ -157,13 +157,36 @@
 
 /* Ensure proper spacing between sections on mobile */
 @media (max-width: 768px) {
+  /* Reduce section spacing significantly on mobile */
   section {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem !important;
+    padding-top: 2rem !important; /* Reduce from py-16 (4rem) to 2rem */
+    padding-bottom: 2rem !important; /* Reduce from py-16 (4rem) to 2rem */
   }
   
   /* Adjust padding for section content */
   section > div {
     padding: 1rem !important;
+  }
+  
+  /* Specific adjustments for Portfolio sections */
+  .portfolio-container section {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+  
+  /* Contact section specific adjustments */
+  #contact {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+  
+  /* Footer spacing reduction */
+  footer {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+    margin-top: 1rem !important;
   }
 }
 

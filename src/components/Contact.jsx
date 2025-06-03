@@ -100,10 +100,9 @@ const Contact = () => {
         }
       );
   };
-
   return (
     <div
-      className={`flex xl:flex-row flex-col-reverse xl:gap-4 gap-10 overflow-visible relative w-full justify-between items-center`}
+      className={`flex xl:flex-row flex-col-reverse xl:gap-4 ${isMobile ? 'gap-4' : 'gap-10'} overflow-visible relative w-full justify-between items-center`}
       style={{ background: 'none', boxShadow: 'none', border: 'none' }}
     >
       {/* Add StarryBackground with higher density for contact section */}
@@ -132,14 +131,12 @@ const Contact = () => {
             </p>
           </motion.div>
         )}
-      </AnimatePresence>
-
-      <motion.div
+      </AnimatePresence>      <motion.div
         ref={leftRef}
         initial={{ x: -50, opacity: 0 }}
         animate={leftInView ? { x: 0, opacity: 1 } : { x: -50, opacity: 0 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className='xl:w-[38%] lg:w-[40%] md:w-[45%] w-full bg-[#0c0a1d] p-5 md:p-5 p-4 rounded-lg transition-all duration-300 relative overflow-hidden contact-form-container'
+        className={`xl:w-[38%] lg:w-[40%] md:w-[45%] w-full bg-[#0c0a1d] ${isMobile ? 'p-3' : 'p-5 md:p-5 p-4'} rounded-lg transition-all duration-300 relative overflow-hidden contact-form-container`}
         style={{
           boxShadow: '0 8px 32px -5px rgba(63, 81, 181, 0.4)',
           border: '1px solid rgba(99, 130, 255, 0.2)',
@@ -218,14 +215,12 @@ const Contact = () => {
             </button>
           </div>
         </form>
-      </motion.div>
-
-      <motion.div
+      </motion.div>      <motion.div
         ref={rightRef}
         initial={{ x: 50, opacity: 0 }}
         animate={rightInView ? { x: 0, opacity: 1 } : { x: 50, opacity: 0 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className='xl:w-[60%] lg:w-[58%] md:w-[55%] w-full h-[500px] md:h-[500px] sm:h-[400px] h-[350px] flex items-center justify-center overflow-visible earth-canvas-container'
+        className={`xl:w-[60%] lg:w-[58%] md:w-[55%] w-full ${isMobile ? 'h-[280px]' : 'h-[500px] md:h-[500px] sm:h-[400px] h-[350px]'} flex items-center justify-center overflow-visible earth-canvas-container`}
         style={{
           background: 'transparent',
           boxShadow: 'none',

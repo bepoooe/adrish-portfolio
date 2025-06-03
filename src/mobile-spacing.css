@@ -1,0 +1,265 @@
+/* Mobile Spacing Optimizations
+   This file contains all mobile-specific spacing adjustments to reduce 
+   unnecessary gaps between sections for better mobile UX */
+
+/* Base mobile spacing (tablets and small laptops) */
+@media (max-width: 768px) {
+  /* Main section spacing reductions */
+  .portfolio-container section {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+  
+  /* Override default Tailwind spacing classes */
+  .py-16 {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+  
+  .py-8 {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+  
+  /* Contact section specific optimizations */
+  #contact {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+  
+  .contact-form-container {
+    padding: 1rem !important;
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  /* Earth canvas container adjustments */
+  .earth-canvas-container {
+    height: 280px !important;
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  /* Footer spacing reduction */
+  footer {
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+    margin-top: 1rem !important;
+  }
+  
+  /* Card container spacing */
+  .bg-black.bg-opacity-60 {
+    padding: 1.25rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+  
+  /* Form elements spacing */
+  .contact-form input,
+  .contact-form textarea,
+  .contact-form label {
+    margin-bottom: 0.75rem !important;
+  }
+  
+  /* AboutMe card container adjustments */
+  .about-card-container {
+    padding: 1rem 0 !important;
+    min-height: 60vh !important;
+  }
+  
+  /* Tech section spacing */
+  .tech-container {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+  
+  /* Projects section spacing */
+  .projects-container {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+  
+  /* Education section spacing */
+  .education-container {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+  
+  /* Hero section adjustment to connect better with portfolio */
+  .hero-section {
+    margin-bottom: 0 !important;
+    padding-bottom: 1rem !important;
+  }
+  
+  /* Reduce gap between hero and first portfolio section */
+  .portfolio-container {
+    margin-top: 0 !important;
+    padding-top: 0.5rem !important;
+  }
+}
+
+/* Small mobile devices (phones) */
+@media (max-width: 480px) {
+  /* Even tighter spacing for small screens */
+  .portfolio-container section {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .py-16 {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+  }
+  
+  .py-8 {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+  
+  #contact {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+  
+  footer {
+    padding-top: 1rem !important;
+    padding-bottom: 1rem !important;
+    margin-top: 0.5rem !important;
+  }
+  
+  .bg-black.bg-opacity-60 {
+    padding: 1rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  /* Further reduce earth canvas height for very small screens */
+  .earth-canvas-container {
+    height: 250px !important;
+  }
+  
+  /* AboutMe card further adjustments */
+  .about-card-container {
+    padding: 0.5rem 0 !important;
+    min-height: 50vh !important;
+  }
+  
+  /* Reduce hero section bottom spacing */
+  .hero-section {
+    padding-bottom: 0.5rem !important;
+  }
+  
+  .portfolio-container {
+    padding-top: 0.25rem !important;
+  }
+}
+
+/* Extra small devices (very small phones) */
+@media (max-width: 375px) {
+  .portfolio-container section {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+  
+  .bg-black.bg-opacity-60 {
+    padding: 0.75rem !important;
+  }
+  
+  .earth-canvas-container {
+    height: 220px !important;
+  }
+  
+  .about-card-container {
+    min-height: 45vh !important;
+  }
+}
+
+/* Specific component spacing optimizations */
+
+/* Contact form mobile spacing */
+@media (max-width: 768px) {
+  .contact-form {
+    gap: 0.75rem !important;
+  }
+  
+  .contact-form label {
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .contact-form input,
+  .contact-form textarea {
+    margin-bottom: 0.75rem !important;
+  }
+  
+  /* Contact section flex layout adjustments */
+  .contact-flex-container {
+    gap: 1rem !important;
+  }
+  
+  /* Reduce space around contact buttons */
+  .contact-button-container {
+    margin-top: 0.75rem !important;
+  }
+}
+
+/* Tech stack mobile spacing */
+@media (max-width: 768px) {
+  .tech-grid {
+    gap: 0.75rem !important;
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .tech-item {
+    padding: 0.75rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+}
+
+/* Projects grid mobile spacing */
+@media (max-width: 768px) {
+  .projects-grid {
+    gap: 1rem !important;
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .project-card {
+    margin-bottom: 1rem !important;
+    padding: 1rem !important;
+  }
+}
+
+/* Education timeline mobile spacing */
+@media (max-width: 768px) {
+  .education-timeline {
+    gap: 1rem !important;
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .education-item {
+    margin-bottom: 1rem !important;
+    padding: 1rem !important;
+  }
+}
+
+/* Hero to portfolio transition optimization */
+@media (max-width: 768px) {
+  /* Create a seamless transition from hero to portfolio */
+  .hero-section + .portfolio-container {
+    margin-top: -0.5rem !important;
+  }
+  
+  /* Ensure proper z-index layering */
+  .hero-section {
+    position: relative;
+    z-index: 2;
+  }
+  
+  .portfolio-container {
+    position: relative;
+    z-index: 1;
+  }
+}

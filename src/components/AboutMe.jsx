@@ -20,15 +20,14 @@ const CardContainer = styled.div`
   min-height: 70vh;
   padding: 2rem 0;
   overflow: visible;
-  
-  @media (max-width: 768px) {
-    min-height: 60vh;
-    padding: 1rem 0;
+    @media (max-width: 768px) {
+    min-height: 50vh;
+    padding: 0.75rem 0;
   }
     @media (max-width: 480px) {
-    min-height: 50vh;
-    padding: 0.5rem 0 9rem; /* Increased bottom padding to accommodate indicators at -130px */
-    margin-bottom: 1.5rem; /* Adjusted margin for better spacing */
+    min-height: 45vh;
+    padding: 0.5rem 0 3rem; /* Reduced from 9rem to 3rem bottom padding */
+    margin-bottom: 0.75rem; /* Reduced from 1.5rem to 0.75rem */
     /* Don't restrict touch actions at the container level */
     /* Let the individual elements handle their own touch behavior */
   }
