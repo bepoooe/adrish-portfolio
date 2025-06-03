@@ -108,15 +108,14 @@
   .infinite-scroll-item .project-card {
     max-width: 100%; /* Full width on mobile - edge to edge */
     width: 100%; /* Ensure full width */
-  }
-  .project-card h3 {
+  }  .project-card h3 {
     font-size: 1.4rem; /* Further reduced font size on smaller screens */
-    margin-top: 1rem; /* Increased spacing for square proportions */
-    margin-bottom: 0.8rem; /* Increased for better text separation */
+    margin-top: 1.2rem; /* Increased spacing for longer proportions */
+    margin-bottom: 1rem; /* Increased for better text separation */
   }.project-card p {
     font-size: 0.95rem; /* Smaller text on mobile */
     line-height: 1.6; /* Increased line height for better readability */
-    margin-bottom: 1.4rem; /* Increased spacing for taller cards */
+    margin-bottom: 1.8rem; /* Increased spacing for taller cards */
   }
   
   .project-card-wrapper {
@@ -125,15 +124,14 @@
     padding: 0.25rem; /* Reduced padding for more edge-to-edge appearance */
     margin-bottom: 1rem; /* Reduced margin between cards */
   }  .project-card {
-    min-height: 400px; /* Increased to create more square proportions */
-    max-height: 420px; /* Square-like dimensions for mobile cards */
-  }
-  /* Adjust image container for full-width square-like cards */
+    min-height: 450px; /* Increased to make cards longer on mobile */
+    max-height: 480px; /* Longer dimensions for mobile cards */
+  }  /* Adjust image container for full-width longer cards */
   .project-card .relative {
-    height: 160px !important; /* Increased image height for better proportions */
-  }  /* Ensure tags container has proper spacing in square-like layout */
+    height: 170px !important; /* Increased image height for better proportions */
+  }/* Ensure tags container has proper spacing in longer layout */
   .project-card .flex-wrap {
-    margin-top: 0.8rem; /* Increased top margin for square card proportions */
+    margin-top: 1rem; /* Increased top margin for longer card proportions */
     padding: 0 0.8rem; /* Maintain horizontal padding for readability */
   }
 }
@@ -142,15 +140,14 @@
   .infinite-scroll-item .project-card {
     max-width: 100%; /* Full width on small mobile devices */
     width: 100%;
-  }
-  .project-card h3 {
+  }  .project-card h3 {
     font-size: 1.2rem;
-    margin-top: 0.8rem; /* Increased for better spacing in square cards */
-    margin-bottom: 0.7rem; /* Increased for better text spacing */
+    margin-top: 1rem; /* Increased for better spacing in longer cards */
+    margin-bottom: 0.9rem; /* Increased for better text spacing */
   }.project-card p {
     font-size: 0.9rem;
     line-height: 1.5; /* Increased for better readability */
-    margin-bottom: 1.2rem; /* Increased spacing for square card proportions */
+    margin-bottom: 1.6rem; /* Increased spacing for longer card proportions */
   }
   
   .project-card-wrapper {
@@ -159,12 +156,11 @@
     padding: 0.15rem; /* Even less padding for full edge effect */
     margin-bottom: 0.8rem; /* Reduced margin for tighter spacing */
   }  .project-card {
-    min-height: 380px; /* Increased for square-like proportions on small mobile */
-    max-height: 400px; /* Square dimensions for better visual balance */
-  }
-  /* Adjust image height for square proportions on small mobile */
+    min-height: 430px; /* Increased for longer proportions on small mobile */
+    max-height: 460px; /* Longer dimensions for better visual balance */
+  }  /* Adjust image height for longer proportions on small mobile */
   .project-card .relative {
-    height: 150px !important; /* Increased image height for balanced proportions */
+    height: 160px !important; /* Increased image height for balanced proportions */
   }
   
   .project-card .flex-wrap p {
@@ -179,7 +175,7 @@
     padding-right: 0.8rem;
   }  .project-card .flex-wrap {
     padding: 0 0.8rem;
-    margin-top: 0.6rem; /* Increased for better spacing in square cards */
+    margin-top: 0.8rem; /* Increased for better spacing in longer cards */
   }
 }
 
