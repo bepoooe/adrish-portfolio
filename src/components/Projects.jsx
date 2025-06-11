@@ -23,8 +23,7 @@ const ProjectCard = ({
     <motion.div 
       variants={fadeIn("up", "spring", index * 0.5, 0.75)} 
       className="project-card"
-    >
-      <Tilt
+    >      <Tilt
         options={{
           max: 15,
           scale: 1,
@@ -32,11 +31,11 @@ const ProjectCard = ({
           glare: true,
           "max-glare": 0.3,
         }}
-        className='bg-transparent p-4 rounded-xl w-full border border-gray-800'
+        className='bg-transparent p-3 md:p-4 rounded-xl w-full border border-gray-800'
       >
-        <div className='flex flex-col gap-4'>
+        <div className='flex flex-col gap-3 md:gap-4 h-full'>
           {/* Image section at the top */}
-          <div className='relative w-full h-[200px] overflow-hidden rounded-t-lg'>
+          <div className='relative w-full h-[140px] md:h-[200px] overflow-hidden rounded-t-lg'>
             <img
               src={image}
               alt={`${name} project image`}
@@ -59,17 +58,17 @@ const ProjectCard = ({
           </div>
           
           {/* Content section below the image */}
-          <div className='flex flex-col flex-1 justify-between px-3 pb-3'>
-            <div>
-              <h3 className='text-white font-bold text-[20px] leading-tight mb-2'>{name}</h3>
-              <p className='text-gray-300 text-[14px] mb-3'>{description}</p>
+          <div className='flex flex-col flex-1 justify-between px-2 md:px-3 pb-2 md:pb-3'>
+            <div className='flex-1'>
+              <h3 className='text-white font-bold text-[18px] md:text-[20px] leading-tight mb-2'>{name}</h3>
+              <p className='text-gray-300 text-[13px] md:text-[14px] mb-2 md:mb-3 leading-relaxed'>{description}</p>
             </div>
 
-            <div className='mt-2 flex flex-wrap gap-2'>
+            <div className='mt-1 md:mt-2 flex flex-wrap gap-1.5 md:gap-2'>
               {tags.map((tag) => (
                 <p
                   key={`${name}-${tag.name}`}
-                  className={`text-[14px] ${tag.color} px-3 py-1 rounded-full bg-gray-800 bg-opacity-70`}
+                  className={`text-[12px] md:text-[14px] ${tag.color} px-2 md:px-3 py-1 rounded-full bg-gray-800 bg-opacity-70`}
                 >
                   #{tag.name}
                 </p>

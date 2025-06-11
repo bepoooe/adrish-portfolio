@@ -8,6 +8,14 @@
   padding-bottom: 1rem; /* Added padding to ensure tech tags are visible */
 }
 
+/* Ensure proper content distribution on mobile */
+@media (max-width: 768px) {
+  .project-card {
+    min-height: auto; /* Allow natural height on mobile */
+    height: auto;
+  }
+}
+
 /* Ensure images load properly */
 .project-card img {
   max-width: 100%;
@@ -108,14 +116,19 @@
   .infinite-scroll-item .project-card {
     max-width: 100%; /* Full width on mobile - edge to edge */
     width: 100%; /* Ensure full width */
-  }  .project-card h3 {
-    font-size: 1.4rem; /* Further reduced font size on smaller screens */
-    margin-top: 1.2rem; /* Increased spacing for longer proportions */
-    margin-bottom: 1rem; /* Increased for better text separation */
-  }.project-card p {
-    font-size: 0.95rem; /* Smaller text on mobile */
-    line-height: 1.6; /* Increased line height for better readability */
-    margin-bottom: 1.8rem; /* Increased spacing for taller cards */
+  }
+  
+  .project-card h3 {
+    font-size: 1.3rem; /* Slightly smaller font size for mobile */
+    margin-top: 0.8rem; /* Reduced top margin */
+    margin-bottom: 0.6rem; /* Reduced bottom margin */
+    line-height: 1.3; /* Better line height */
+  }
+  
+  .project-card p {
+    font-size: 0.9rem; /* Smaller text on mobile */
+    line-height: 1.5; /* Optimized line height */
+    margin-bottom: 0.8rem; /* Reduced spacing to prevent cutoff */
   }
   
   .project-card-wrapper {
@@ -123,16 +136,30 @@
     max-width: 100% !important; /* Full width wrapper on mobile */
     padding: 0.25rem; /* Reduced padding for more edge-to-edge appearance */
     margin-bottom: 1rem; /* Reduced margin between cards */
-  }  .project-card {
-    min-height: 450px; /* Increased to make cards longer on mobile */
-    max-height: 480px; /* Longer dimensions for mobile cards */
-  }  /* Adjust image container for full-width longer cards */
+  }
+  
+  .project-card {
+    min-height: auto; /* Allow height to adjust to content */
+    max-height: none; /* Remove height constraint */
+    height: auto; /* Auto height to fit content */
+    padding-bottom: 1rem; /* Ensure bottom padding for tags */
+  }
+  
+  /* Adjust image container for mobile */
   .project-card .relative {
-    height: 170px !important; /* Increased image height for better proportions */
-  }/* Ensure tags container has proper spacing in longer layout */
+    height: 160px !important; /* Optimized image height */
+  }
+  
+  /* Ensure tags container has proper spacing and visibility */
   .project-card .flex-wrap {
-    margin-top: 1rem; /* Increased top margin for longer card proportions */
+    margin-top: 0.6rem; /* Reduced top margin */
     padding: 0 0.8rem; /* Maintain horizontal padding for readability */
+    margin-bottom: 0.5rem; /* Add bottom margin to ensure visibility */
+  }
+  
+  /* Better spacing for content section */
+  .project-card .flex.flex-col.flex-1 {
+    padding-bottom: 0.5rem; /* Ensure content doesn't get cut off */
   }
 }
 
@@ -140,42 +167,111 @@
   .infinite-scroll-item .project-card {
     max-width: 100%; /* Full width on small mobile devices */
     width: 100%;
-  }  .project-card h3 {
-    font-size: 1.2rem;
-    margin-top: 1rem; /* Increased for better spacing in longer cards */
-    margin-bottom: 0.9rem; /* Increased for better text spacing */
-  }.project-card p {
-    font-size: 0.9rem;
-    line-height: 1.5; /* Increased for better readability */
-    margin-bottom: 1.6rem; /* Increased spacing for longer card proportions */
+  }
+  
+  .project-card h3 {
+    font-size: 1.1rem; /* Smaller font for small screens */
+    margin-top: 0.6rem; /* Reduced spacing */
+    margin-bottom: 0.5rem; /* Reduced spacing */
+    line-height: 1.3;
+  }
+  
+  .project-card p {
+    font-size: 0.85rem; /* Smaller text for small screens */
+    line-height: 1.4; /* Optimized line height */
+    margin-bottom: 0.6rem; /* Reduced spacing to prevent cutoff */
   }
   
   .project-card-wrapper {
     max-width: 100% !important; /* Full width wrapper on small mobile */
     width: 100% !important;
-    padding: 0.15rem; /* Even less padding for full edge effect */
+    padding: 0.15rem; /* Minimal padding */
     margin-bottom: 0.8rem; /* Reduced margin for tighter spacing */
-  }  .project-card {
-    min-height: 430px; /* Increased for longer proportions on small mobile */
-    max-height: 460px; /* Longer dimensions for better visual balance */
-  }  /* Adjust image height for longer proportions on small mobile */
-  .project-card .relative {
-    height: 160px !important; /* Increased image height for balanced proportions */
   }
   
+  .project-card {
+    min-height: auto; /* Allow height to adjust to content */
+    max-height: none; /* Remove height constraint */
+    height: auto; /* Auto height to fit content */
+    padding-bottom: 1rem; /* Ensure space for tags */
+  }
+  
+  /* Adjust image height for small mobile */
+  .project-card .relative {
+    height: 140px !important; /* Smaller image height for small screens */
+  }
+  
+  /* Smaller tag styling for small screens */
   .project-card .flex-wrap p {
     font-size: 0.7rem;
-    padding: 0.15rem 0.5rem;
+    padding: 0.2rem 0.4rem; /* Smaller padding */
+    margin-bottom: 0.3rem; /* Reduced margin */
   }
 
   /* Adjust content padding for small screens */
   .project-card h3,
   .project-card p {
-    padding-left: 0.8rem;
-    padding-right: 0.8rem;
-  }  .project-card .flex-wrap {
-    padding: 0 0.8rem;
-    margin-top: 0.8rem; /* Increased for better spacing in longer cards */
+    padding-left: 0.6rem; /* Reduced padding */
+    padding-right: 0.6rem;
+  }
+  
+  .project-card .flex-wrap {
+    padding: 0 0.6rem; /* Reduced padding */
+    margin-top: 0.5rem; /* Reduced top margin */
+    margin-bottom: 0.4rem; /* Ensure tags are visible */
+  }
+}
+
+/* Additional mobile safety styles */
+@media (max-width: 360px) {
+  .project-card h3 {
+    font-size: 1rem; /* Even smaller font for very small screens */
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
+  }
+  
+  .project-card p {
+    font-size: 0.8rem; /* Smaller text for very small screens */
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+  }
+  
+  .project-card .flex-wrap {
+    padding: 0 0.5rem; /* Minimal padding */
+    margin-top: 0.4rem;
+    margin-bottom: 0.6rem; /* Ensure tags have space */
+  }
+  
+  .project-card .flex-wrap p {
+    font-size: 0.65rem; /* Very small tag text */
+    padding: 0.15rem 0.3rem; /* Minimal tag padding */
+    margin-bottom: 0.2rem;
+  }
+  
+  /* Adjust image height for very small screens */
+  .project-card .relative {
+    height: 120px !important;
+  }
+  
+  /* Ensure content has minimal padding */
+  .project-card h3,
+  .project-card p {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
+/* Ensure tags are always visible with proper overflow handling */
+@media (max-width: 768px) {
+  .project-card .flex-wrap {
+    overflow: visible; /* Ensure tags are never hidden */
+    min-height: 2rem; /* Minimum height to ensure tag visibility */
+  }
+  
+  /* Ensure the card content container allows for tag space */
+  .project-card .flex.flex-col.flex-1.justify-between {
+    min-height: auto;
+    padding-bottom: 2.5rem; /* Extra bottom padding for tags */
   }
 }
 
