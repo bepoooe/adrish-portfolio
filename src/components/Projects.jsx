@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Tilt } from 'react-tilt';
 import { motion } from "framer-motion";
 
@@ -9,7 +9,25 @@ import { projects } from "../constants";
 import { fadeIn, textVariant } from "../utils/motion";
 import SimpleInfiniteScroll from "./SimpleInfiniteScroll";
 import StarryBackground from "./StarryBackground";
+import ProjectsMobile from "./ProjectsMobile";
 import "./ProjectCard.css";
+
+// Mobile detection hook
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  return isMobile;
+};
 
 const ProjectCard = ({
   index,
@@ -82,7 +100,20 @@ const ProjectCard = ({
 };
 
 const Projects = () => {
-  // Create project items for the infinite scroll
+  const isMobile = useIsMobile();
+  
+  console.log("Projects component rendering, isMobile:", isMobile);
+  console.log("Window width:", window.innerWidth);
+
+  // If mobile, render the mobile version
+  if (isMobile) {
+    console.log("Rendering mobile version");
+    return <ProjectsMobile />;
+  }
+
+  console.log("Rendering desktop version");
+  
+  // Desktop version (unchanged)
   const projectItems = projects.map((project, index) => (
     <div key={`project-${index}`} className="project-card-wrapper">
       <ProjectCard 
