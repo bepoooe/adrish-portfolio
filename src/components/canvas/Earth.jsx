@@ -62,11 +62,10 @@ const Earth = React.memo(() => {
   if (!earth || !earth.scene) {
     return null;
   }
-
   return (
     <primitive 
       object={earth.scene} 
-      scale={isMobile ? 2.0 : 2.5} 
+      scale={isMobile ? 2.0 : 3.0} 
       position-y={0} 
       rotation-y={0} 
     />
