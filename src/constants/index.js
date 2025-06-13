@@ -220,58 +220,74 @@ export const experiences = [
 
 export const projects = [
   {
-    name: "Space Portfolio",
+    name: "Rangmanch - Social Media Management Platform",
     description:
-      "A modern portfolio website with space theme featuring 3D animations, interactive UI components, and responsive design. Built with React, Three.js, and Framer Motion.",
+      "A modern web application for managing social media profiles and content, built with React and styled with Tailwind CSS.",
     tags: [
       {
-        name: "react",
+        name: "React",
         color: "text-blue-400",
       },
       {
-        name: "threejs",
+        name: "Node.js",
         color: "text-green-400",
       },
       {
-        name: "tailwind",
+        name: "Tailwind CSS",
+        color: "text-pink-400",
+      },
+      {
+        name: "TypeScript",
+        color: "text-blue-400",
+      },
+      {
+        name: "Flask",
+        color: "text-green-400",
+      },
+      {
+        name: "Python",
         color: "text-pink-400",
       },
     ],
-    image: "https://images.unsplash.com/photo-1635830625698-3b9bd74671ca?q=80&w=1932&auto=format&fit=crop",
-    source_code_link: "https://github.com/",
+    image: "/project pics/Rangmanch.png",
+    source_code_link: "https://github.com/aniket123de/Rangmanch",
   },
   {
-    name: "AI Chat Application",
+    name: "Animated Memory Book",
     description:
-      "A real-time chat application powered by AI that can translate messages, summarize conversations, and suggest responses. Implemented with WebSockets, Node.js, and OpenAI API.",
+      "A 3D interactive memory book built with React and Three.js. This project features an animated book interface that allows users to flip through pages of photographs with smooth animations and transitions, complete with ambient music and page-turning sound effects.",
     tags: [
       {
-        name: "react",
+        name: "React",
         color: "text-blue-400",
       },
       {
-        name: "nodejs",
+        name: "Three.js",
         color: "text-green-400",
       },
       {
-        name: "mongodb",
+        name: "React Three Fiber",
+        color: "text-yellow-400",
+      },
+      {
+        name: "Tailwind CSS",
         color: "text-yellow-400",
       },
     ],
-    image: "https://images.unsplash.com/photo-1673187236927-8b8788522a6b?q=80&w=2070&auto=format&fit=crop",
-    source_code_link: "https://github.com/",
+    image: "/project pics/Animated Memory Book.png",
+    source_code_link: "https://github.com/bepoooe/animated-proposal-book",
   },
   {
-    name: "E-Commerce Dashboard",
+    name: "LokSeva – Digital Municipal Services Platform",
     description:
-      "A comprehensive admin dashboard for e-commerce platforms with analytics, inventory management, and order processing. Features responsive design and dark/light mode.",
+      "A comprehensive web platform enabling citizens to access municipal services, file grievances, and track issues.",
     tags: [
       {
-        name: "react",
+        name: "React",
         color: "text-blue-400",
       },
       {
-        name: "redux",
+        name: "Tailwind CSS",
         color: "text-purple-400",
       },
       {
@@ -279,70 +295,70 @@ export const projects = [
         color: "text-yellow-400",
       },
     ],
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop",
-    source_code_link: "https://github.com/",
+    image: "/project pics/LokSeva.png",
+    source_code_link: "https://github.com/aniket123de/LokSeva",
   },
   {
-    name: "Virtual Reality Experience",
+    name: "Speechify - Voice Processing Web Application",
     description:
-      "An immersive VR experience that allows users to explore space environments. Built with Three.js and WebXR API, optimized for various VR headsets and browsers.",
+      "A simple web application that provides speech-to-text and text-to-speech capabilities with an elegant, responsive interface. Built with modern web technologies, it delivers a seamless voice processing experience across all devices.",
     tags: [
       {
-        name: "threejs",
+        name: "Flask",
         color: "text-white",
       },
       {
-        name: "webxr",
+        name: "Python",
         color: "text-green-400",
       },
       {
-        name: "javascript",
+        name: "JavaScript",
         color: "text-yellow-400",
       },
     ],
-    image: "https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?q=80&w=2070&auto=format&fit=crop",
-    source_code_link: "https://github.com/",
+    image: "/project pics/Speechify.png",
+    source_code_link: "https://github.com/bepoooe/Speechify",
   },
   {
-    name: "Weather Forecast App",
+    name: "Proposal Paper Slides",
     description:
-      "A beautiful weather application with animated visualizations, 7-day forecasts, and location-based weather alerts. Uses OpenWeatherMap API and Geolocation services.",
+      "A responsive presentation website built with modern web technologies. Features semantic HTML5 markup, CSS Grid and Flexbox layouts, mobile-first design approach, interactive JavaScript functionality, and optimized performance across all major browsers.",
     tags: [
       {
-        name: "react",
+        name: "HTML5",
         color: "text-blue-400",
       },
       {
-        name: "api",
+        name: "CSS3",
         color: "text-green-400",
       },
       {
-        name: "css",
+        name: "JavaScript",
         color: "text-pink-400",
       },
     ],
-    image: "https://images.unsplash.com/photo-1592210454359-9043f067919b?q=80&w=2070&auto=format&fit=crop",
-    source_code_link: "https://github.com/",
+    image: "/project pics/proposal.png",
+    source_code_link: "https://github.com/bepoooe/proposal",
   },
   {
-    name: "Music Streaming Platform",
+    name: "Kavach Privacy Guardian - Chrome Extension",
     description:
-      "A Spotify-like music streaming service with playlist creation, artist profiles, and music recommendations. Features audio visualization and social sharing.",
+      "An advanced privacy protection Chrome extension built with React and TypeScript that provides real-time tracker blocking, AI-powered privacy policy analysis, and data flow visualization.",
     tags: [
       {
-        name: "react",
+        name: "React",
         color: "text-blue-400",
       },
       {
-        name: "nodejs",
+        name: "Node.js",
         color: "text-green-400",
       },
       {
-        name: "mongodb",
+        name: "TypeScript",
         color: "text-yellow-400",
       },
     ],
-    image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=2070&auto=format&fit=crop",
-    source_code_link: "https://github.com/",
+    image: "/project pics/Kavach.png",
+    source_code_link: "https://github.com/bepoooe/Kavach-trial",
   },
 ];
