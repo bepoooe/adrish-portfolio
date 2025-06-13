@@ -5,6 +5,8 @@ import './index.css'
 import './responsive.css'
 import { DeviceProvider } from './context/DeviceContext'
 import { startMemoryMonitoring, cleanupResources } from './utils/memoryManager'
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 
 // Initialize memory monitoring in development mode
 if (import.meta.env.DEV) {
@@ -31,6 +33,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <DeviceProvider>
       <App />
+      <Analytics />
+      <SpeedInsights />
     </DeviceProvider>
   </React.StrictMode>,
 )
