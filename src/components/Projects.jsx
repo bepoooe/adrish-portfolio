@@ -59,17 +59,15 @@ const ProjectCard = ({
               alt={`${name} project image`}
               className='w-full h-full object-cover'
               loading="lazy"
-            />
-
-            <div className='absolute top-3 right-3 card-img_hover'>
+            />            <div className='absolute top-3 right-3 github-overlay-pc'>
               <div
                 onClick={() => window.open(source_code_link, "_blank")}
-                className='black-gradient w-10 h-10 rounded-full flex justify-center items-center cursor-pointer'
+                className='github-btn-pc'
               >
                 <img
                   src={github}
                   alt='source code'
-                  className='w-1/2 h-1/2 object-contain'
+                  className='github-icon-pc'
                 />
               </div>
             </div>

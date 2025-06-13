@@ -289,3 +289,59 @@
     font-size: 1.05rem; /* Slightly larger text on big screens */
   }
 }
+
+/* GitHub overlay and button styles for PC version */
+.github-overlay-pc {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+}
+
+.github-btn-pc {
+  background: linear-gradient(145deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4));
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  box-shadow: 
+    0 4px 20px rgba(0, 0, 0, 0.3),
+    0 0 15px rgba(59, 130, 246, 0.2);
+  opacity: 1; /* Always visible */
+}
+
+.github-btn-pc:hover {
+  background: linear-gradient(145deg, rgba(59, 130, 246, 0.8), rgba(128, 77, 238, 0.6));
+  border-color: rgba(59, 130, 246, 0.8);
+  transform: scale(1.15);
+  box-shadow: 
+    0 8px 30px rgba(59, 130, 246, 0.4),
+    0 0 25px rgba(128, 77, 238, 0.3);
+}
+
+.github-btn-pc:active {
+  transform: scale(0.95);
+}
+
+.github-icon-pc {
+  width: 18px;
+  height: 18px;
+  filter: brightness(0) invert(1);
+  transition: all 0.3s ease;
+}
+
+.github-btn-pc:hover .github-icon-pc {
+  filter: brightness(0) invert(1);
+}
+
+/* Enhanced project card image positioning for GitHub button */
+.project-card .relative {
+  position: relative;
+}
