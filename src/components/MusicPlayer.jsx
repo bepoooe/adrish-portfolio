@@ -57,9 +57,8 @@ export const MusicPlayer = () => {
     }
   };
 
-  return (
-    <div 
-      className="fixed top-[70px] sm:top-5 right-3 sm:right-5 z-20 flex flex-col items-end gap-2"
+  return (    <div 
+      className="fixed top-[90px] sm:top-5 right-3 sm:right-5 z-20 flex flex-col items-end gap-2"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onTouchStart={() => setIsHovered(true)}

@@ -278,6 +278,27 @@ export const projects = [
     source_code_link: "https://github.com/bepoooe/animated-proposal-book",
   },
   {
+    name: "Repository – A Hackathon-Focused Developer Community",
+    description:
+      "A student-led tech community for hackathon enthusiasts at BPPIMT and beyond.",
+    tags: [
+      {
+        name: "Next.js",
+        color: "text-blue-400",
+      },
+      {
+        name: "SCSS",
+        color: "text-green-400",
+      },
+      {
+        name: "TypeScript",
+        color: "text-yellow-400",
+      },
+    ],
+    image: "/project pics/repository.png",
+    source_code_link: "https://github.com/aniket123de/Repository",
+  },
+  {
     name: "LokSeva – Digital Municipal Services Platform",
     description:
       "A comprehensive web platform enabling citizens to access municipal services, file grievances, and track issues.",
@@ -339,26 +360,5 @@ export const projects = [
     ],
     image: "/project pics/proposal.png",
     source_code_link: "https://github.com/bepoooe/proposal",
-  },
-  {
-    name: "Kavach Privacy Guardian - Chrome Extension",
-    description:
-      "An advanced privacy protection Chrome extension built with React and TypeScript that provides real-time tracker blocking, AI-powered privacy policy analysis, and data flow visualization.",
-    tags: [
-      {
-        name: "React",
-        color: "text-blue-400",
-      },
-      {
-        name: "Node.js",
-        color: "text-green-400",
-      },
-      {
-        name: "TypeScript",
-        color: "text-yellow-400",
-      },
-    ],
-    image: "/project pics/Kavach.png",
-    source_code_link: "https://github.com/bepoooe/Kavach-trial",
   },
 ];
