@@ -317,7 +317,7 @@ export const projects = [
       },
     ],
     image: "/project pics/LokSeva.png",
-    source_code_link: "https://github.com/aniket123de/LokSeva",
+    source_code_link: "https://github.com/bepoooe/LokSeva",
   },
   {
     name: "Speechify - Voice Processing Web Application",
