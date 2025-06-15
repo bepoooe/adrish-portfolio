@@ -320,6 +320,35 @@ export const projects = [
     source_code_link: "https://github.com/bepoooe/LokSeva",
   },
   {
+    name: "BioSphere - AI-powered Multi-Platform Bio Generator",
+    description:
+      "An AI-powered multi-platform bio generator built with Next.js and Groq's Llama 3 models. This project features intelligent bio generation for Twitter/X, Instagram, and LinkedIn with platform-specific optimization, customizable settings, and real-time AI processing.",
+    tags: [
+      {
+        name: "Next.js",
+        color: "text-blue-400",
+      },
+      {
+        name: "React",
+        color: "text-green-400",
+      },
+      {
+        name: "TypeScript",
+        color: "text-pink-400",
+      },
+      {
+        name: "Vercel AI SDK",
+        color: "text-green-400",
+      },
+      {
+        name: "Groq API",
+        color: "text-pink-400",
+      },
+    ],
+    image: "/project pics/BioSphere.png",
+    source_code_link: "https://github.com/bepoooe/BioSphere",
+  },
+  {
     name: "Speechify - Voice Processing Web Application",
     description:
       "A simple web application that provides speech-to-text and text-to-speech capabilities with an elegant, responsive interface. Built with modern web technologies, it delivers a seamless voice processing experience across all devices.",
