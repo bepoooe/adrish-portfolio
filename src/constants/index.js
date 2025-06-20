@@ -370,7 +370,7 @@ export const projects = [
     source_code_link: "https://github.com/bepoooe/Speechify",
   },
   {
-    name: "Proposal Paper Slides",
+    name: "Proposal Paper Slides ",
     description:
       "A responsive presentation website built with modern web technologies. Features semantic HTML5 markup, CSS Grid and Flexbox layouts, mobile-first design approach, interactive JavaScript functionality, and optimized performance across all major browsers.",
     tags: [
