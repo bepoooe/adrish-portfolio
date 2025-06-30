@@ -349,25 +349,25 @@ export const projects = [
     source_code_link: "https://github.com/bepoooe/BioSphere",
   },
   {
-    name: "Speechify - Voice Processing Web Application",
+    name: "Kavach Privacy Guardian - Chrome Extension",
     description:
-      "A simple web application that provides speech-to-text and text-to-speech capabilities with an elegant, responsive interface. Built with modern web technologies, it delivers a seamless voice processing experience across all devices.",
+      "An advanced privacy protection Chrome extension built with React and TypeScript that provides real-time tracker blocking, AI-powered privacy policy analysis, and data flow visualization.",
     tags: [
       {
-        name: "Flask",
+        name: "React",
         color: "text-white",
       },
       {
-        name: "Python",
+        name: "TypeScript",
         color: "text-green-400",
       },
       {
-        name: "JavaScript",
+        name: "Gemini API",
         color: "text-yellow-400",
       },
     ],
-    image: "/project pics/Speechify.png",
-    source_code_link: "https://github.com/bepoooe/Speechify",
+    image: "/project pics/Kavach.png",
+    source_code_link: "https://github.com/Anik-Paul-toj/KAVACH_HACKOLUTION",
   },
   {
     name: "Proposal Paper Slides ",
