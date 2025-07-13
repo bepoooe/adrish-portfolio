@@ -13,27 +13,26 @@ const createFireflyTexture = () => {
 
   // Reduced texture size for better performance
   const canvas = document.createElement('canvas');
-  canvas.width = 12; // Further reduced from 16
-  canvas.height = 12; // Further reduced from 16
+  canvas.width = 12;
+  canvas.height = 12;
   const ctx = canvas.getContext('2d');
 
-  const gradient = ctx.createRadialGradient(6, 6, 0, 6, 6, 6); // Adjusted center points
+  const gradient = ctx.createRadialGradient(6, 6, 0, 6, 6, 6);
   gradient.addColorStop(0, 'rgba(255, 252, 187, 1)');
   gradient.addColorStop(0.4, 'rgba(255, 252, 187, 0.5)');
   gradient.addColorStop(1, 'rgba(255, 252, 187, 0)');
 
   ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, 12, 12); // Adjusted size
+  ctx.fillRect(0, 0, 12, 12);
 
   const texture = new THREE.Texture(canvas);
   texture.needsUpdate = true;
-  texture.generateMipmaps = false; // Disable mipmaps to save memory
-  texture.minFilter = THREE.LinearFilter; // Use simple filtering
+  texture.generateMipmaps = false;
+  texture.minFilter = THREE.LinearFilter;
   texture.magFilter = THREE.LinearFilter;
 
-  // Store for reuse
   sharedFireflyTexture = texture;
-  registerDisposable(texture); // Register for proper cleanup
+  registerDisposable(texture);
   return texture;
 };
 
@@ -177,3 +176,5 @@ export const Particles = React.memo(({ count = 1000 }) => {
     />
   );
 });
+
+export default Particles;

@@ -8,6 +8,7 @@ import { Portfolio } from "./components/Portfolio";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import ScrollToTop from "./components/ScrollToTop";
+import SafeThreeCanvas from "./components/SafeThreeCanvas";
 import { useDevice } from "./context/DeviceContext";
 import { optimizeRenderer } from "./utils/memoryOptimizer";
 import * as THREE from "three";
@@ -95,8 +96,9 @@ function App() {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, []);
+  
   return (
-    <>
+    <SafeThreeCanvas>
       <Navbar />
       <MusicPlayer />
       <UI />
@@ -121,7 +123,7 @@ function App() {
         </div>
       </div>
       <Portfolio />
-    </>
+    </SafeThreeCanvas>
   );
 }
 
