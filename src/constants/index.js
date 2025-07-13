@@ -370,9 +370,9 @@ export const projects = [
     source_code_link: "https://github.com/Anik-Paul-toj/KAVACH_HACKOLUTION",
   },
   {
-    name: "Proposal Paper Slides ",
+    name: "TodoSphere",
     description:
-      "A responsive presentation website built with modern web technologies. Features semantic HTML5 markup, CSS Grid and Flexbox layouts, mobile-first design approach, interactive JavaScript functionality, and optimized performance across all major browsers.",
+      "A modern, responsive todo application with a sleek dark theme and advanced task management features.",
     tags: [
       {
         name: "HTML5",
@@ -387,7 +387,7 @@ export const projects = [
         color: "text-pink-400",
       },
     ],
-    image: "/project pics/proposal.png",
-    source_code_link: "https://github.com/bepoooe/proposal",
+    image: "/project pics/todosphere.png",
+    source_code_link: "https://github.com/bepoooe/TodoSphere",
   },
 ];

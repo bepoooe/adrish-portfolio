@@ -12,18 +12,42 @@ import StarryBackground from "./StarryBackground";
 import ProjectsMobile from "./ProjectsMobile";
 import "./ProjectCard.css";
 
-// Mobile detection hook
+// Mobile detection hook with debouncing
 const useIsMobile = () => {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => {
+    // Initialize with current window size to avoid hydration mismatch
+    if (typeof window !== 'undefined') {
+      return window.innerWidth <= 768;
+    }
+    return false;
+  });
 
   useEffect(() => {
+    let timeoutId;
+    
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
+      // Debounce the resize event to prevent excessive re-renders
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        const newIsMobile = window.innerWidth <= 768;
+        setIsMobile(prevIsMobile => {
+          // Only update if the value actually changed
+          if (prevIsMobile !== newIsMobile) {
+            return newIsMobile;
+          }
+          return prevIsMobile;
+        });
+      }, 150); // 150ms debounce delay
     };
 
+    // Check initial size
     checkMobile();
+    
     window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   return isMobile;
@@ -99,17 +123,11 @@ const ProjectCard = ({
 
 const Projects = () => {
   const isMobile = useIsMobile();
-  
-  console.log("Projects component rendering, isMobile:", isMobile);
-  console.log("Window width:", window.innerWidth);
 
   // If mobile, render the mobile version
   if (isMobile) {
-    console.log("Rendering mobile version");
     return <ProjectsMobile />;
   }
-
-  console.log("Rendering desktop version");
   
   // Desktop version (unchanged)
   const projectItems = projects.map((project, index) => (

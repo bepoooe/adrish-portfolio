@@ -630,10 +630,10 @@ const IndicatorDot = styled.button`
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: ${props => props.active ? 'rgba(59, 130, 246, 0.9)' : 'rgba(15, 23, 42, 0.7)'};
-  border: 2px solid ${props => props.active ? 'rgba(59, 130, 246, 0.9)' : 'rgba(59, 130, 246, 0.3)'};
+  background: ${props => props.$active ? 'rgba(59, 130, 246, 0.9)' : 'rgba(15, 23, 42, 0.7)'};
+  border: 2px solid ${props => props.$active ? 'rgba(59, 130, 246, 0.9)' : 'rgba(59, 130, 246, 0.3)'};
   cursor: pointer;
-  box-shadow: ${props => props.active ? '0 0 15px rgba(59, 130, 246, 0.7)' : 'none'};
+  box-shadow: ${props => props.$active ? '0 0 15px rgba(59, 130, 246, 0.7)' : 'none'};
   transition: all 0.3s ease;
   outline: none; /* Remove outline for better aesthetics */
   
@@ -669,7 +669,7 @@ const IndicatorDot = styled.button`
     }
     
     /* More pronounced active state for mobile */
-    ${props => props.active && `
+    ${props => props.$active && `
       background: rgba(59, 130, 246, 1);
       border-color: white;
       box-shadow: 0 0 20px rgba(59, 130, 246, 0.9);
@@ -1129,7 +1129,7 @@ const AboutMe = () => {
             {aboutTimeline.map((_, index) => (
               <IndicatorDot 
                 key={index} 
-                active={index === activeIndex}
+                $active={index === activeIndex}
                 onClick={() => rotateToCard(index)}
               />
             ))}

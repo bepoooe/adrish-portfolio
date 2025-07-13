@@ -9,13 +9,29 @@ import { SectionWrapper } from "../hoc";
 import { slideIn } from "../utils/motion";
 import StarryBackground from "./StarryBackground";
 
-// Mobile detection hook
+// Mobile detection hook with debouncing
 const useIsMobile = () => {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth <= 768;
+    }
+    return false;
+  });
 
   useEffect(() => {
+    let timeoutId;
+    
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        const newIsMobile = window.innerWidth <= 768;
+        setIsMobile(prevIsMobile => {
+          if (prevIsMobile !== newIsMobile) {
+            return newIsMobile;
+          }
+          return prevIsMobile;
+        });
+      }, 150);
     };
 
     // Initial check
@@ -23,7 +39,10 @@ const useIsMobile = () => {
 
     // Add resize listener
     window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   return isMobile;
@@ -136,7 +155,7 @@ const Contact = () => {
         initial={{ x: -50, opacity: 0 }}
         animate={leftInView ? { x: 0, opacity: 1 } : { x: -50, opacity: 0 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className={`xl:w-[38%] lg:w-[40%] md:w-[45%] w-full bg-[#0c0a1d] ${isMobile ? 'p-3' : 'p-5 md:p-5 p-4'} rounded-lg transition-all duration-300 relative overflow-hidden contact-form-container`}
+        className={`xl:w-[38%] lg:w-[40%] md:w-[45%] w-full bg-[#0c0a1d] ${isMobile ? 'p-3' : 'p-5'} rounded-lg transition-all duration-300 relative overflow-hidden contact-form-container`}
         style={{
           boxShadow: '0 8px 32px -5px rgba(63, 81, 181, 0.4)',
           border: '1px solid rgba(99, 130, 255, 0.2)',
@@ -161,41 +180,55 @@ const Contact = () => {
           ref={formRef}
           onSubmit={handleSubmit}
           className='mt-3 flex flex-col gap-3'
+          aria-label="Contact form"
+          noValidate
         >
-          <label className='flex flex-col'>
+          <label className='flex flex-col' htmlFor="contact-name">
             <span className='text-blue-200 font-medium mb-2'>Your Name</span>
             <input
               type='text'
+              id='contact-name'
               name='name'
               value={form.name}
               onChange={handleChange}
               placeholder="What's your name, traveler?"
               className='bg-[#151129] py-3 px-4 placeholder:text-[#6e6a7d] text-white rounded-lg outline-none border border-[#2a2550] font-medium transition-all duration-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 hover:bg-[#1a1632]'
               style={{boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.3)'}}
+              autoComplete="name"
+              required
+              aria-required="true"
             />
           </label>
-          <label className='flex flex-col'>
+          <label className='flex flex-col' htmlFor="contact-email">
             <span className='text-blue-200 font-medium mb-2'>Your Email</span>
             <input
               type='email'
+              id='contact-email'
               name='email'
               value={form.email}
               onChange={handleChange}
               placeholder="Your cosmic coordinates?"
               className='bg-[#151129] py-3 px-4 placeholder:text-[#6e6a7d] text-white rounded-lg outline-none border border-[#2a2550] font-medium transition-all duration-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 hover:bg-[#1a1632]'
               style={{boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.3)'}}
+              autoComplete="email"
+              required
+              aria-required="true"
             />
           </label>
-          <label className='flex flex-col'>
+          <label className='flex flex-col' htmlFor="contact-message">
             <span className='text-blue-200 font-medium mb-2'>Your Message</span>
             <textarea
               rows={4}
+              id='contact-message'
               name='message'
               value={form.message}
               onChange={handleChange}
               placeholder='Send a message across the stars...'
               className='bg-[#151129] py-3 px-4 placeholder:text-[#6e6a7d] text-white rounded-lg outline-none border border-[#2a2550] font-medium transition-all duration-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 resize-none hover:bg-[#1a1632]'
               style={{boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.3)'}}
+              autoComplete="off"
+              required
+              aria-required="true"
             />
           </label>
 
@@ -220,7 +253,7 @@ const Contact = () => {
         initial={{ x: 50, opacity: 0 }}
         animate={rightInView ? { x: 0, opacity: 1 } : { x: 50, opacity: 0 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className={`xl:w-[60%] lg:w-[58%] md:w-[55%] w-full ${isMobile ? 'h-[280px]' : 'h-[500px] md:h-[500px] sm:h-[400px] h-[350px]'} flex items-center justify-center overflow-visible earth-canvas-container`}
+        className={`xl:w-[60%] lg:w-[58%] md:w-[55%] w-full ${isMobile ? 'h-[280px]' : 'h-[500px] md:h-[450px] sm:h-[400px]'} flex items-center justify-center overflow-visible earth-canvas-container`}
         style={{
           background: 'transparent',
           boxShadow: 'none',

@@ -28,11 +28,35 @@ export const pages = [
 export const UI = () => {
   const [page, setPage] = useAtom(pageAtom);
   const [showControls, setShowControls] = useState(true);
+  const [userInteracted, setUserInteracted] = useState(false);
 
   useEffect(() => {
-    const audio = new Audio("/audios/page-flip-01a.mp3");
-    audio.play();
-  }, [page]);
+    const handleFirstInteraction = () => {
+      setUserInteracted(true);
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('keydown', handleFirstInteraction);
+      document.removeEventListener('touchstart', handleFirstInteraction);
+    };
+
+    document.addEventListener('click', handleFirstInteraction);
+    document.addEventListener('keydown', handleFirstInteraction);
+    document.addEventListener('touchstart', handleFirstInteraction);
+
+    return () => {
+      document.removeEventListener('click', handleFirstInteraction);
+      document.removeEventListener('keydown', handleFirstInteraction);
+      document.removeEventListener('touchstart', handleFirstInteraction);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (userInteracted) {
+      const audio = new Audio("/audios/page-flip-01a.mp3");
+      audio.play().catch(error => {
+        console.log("Audio play failed:", error);
+      });
+    }
+  }, [page, userInteracted]);
   
   // Handle scroll to hide/show controls
   useEffect(() => {

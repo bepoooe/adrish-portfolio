@@ -5,7 +5,12 @@ import CanvasLoader from "../Loader";
 
 // Mobile detection hook with debouncing for better performance
 const useIsMobile = () => {
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth <= 768;
+    }
+    return false;
+  });
   
   useEffect(() => {
     let timeoutId;
@@ -13,12 +18,18 @@ const useIsMobile = () => {
     const checkMobile = () => {
       clearTimeout(timeoutId);
       timeoutId = setTimeout(() => {
-        setIsMobile(window.innerWidth <= 768);
+        const newIsMobile = window.innerWidth <= 768;
+        setIsMobile(prevIsMobile => {
+          if (prevIsMobile !== newIsMobile) {
+            return newIsMobile;
+          }
+          return prevIsMobile;
+        });
       }, 100); // Debounce for 100ms
     };
     
     // Initial check
-    setIsMobile(window.innerWidth <= 768);
+    checkMobile();
     
     // Add resize listener
     window.addEventListener('resize', checkMobile);
