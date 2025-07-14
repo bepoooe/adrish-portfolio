@@ -1,4 +1,4 @@
-# Bepo's Portfolio
+# Bepo's Portfolio 
 
 An interactive 3D portfolio website built with React and Three.js. This project features a modern, responsive design with a 3D book interface, interactive 3D Earth model, and dynamic components showcasing projects, skills, and experience. Optimized for performance with reduced memory usage and improved rendering efficiency.
 
