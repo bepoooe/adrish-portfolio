@@ -253,31 +253,6 @@ export const projects = [
     source_code_link: "https://github.com/aniket123de/Rangmanch",
   },
   {
-    name: "Animated Memory Book",
-    description:
-      "A 3D interactive memory book built with React and Three.js. This project features an animated book interface that allows users to flip through pages of photographs with smooth animations and transitions, complete with ambient music and page-turning sound effects.",
-    tags: [
-      {
-        name: "React",
-        color: "text-blue-400",
-      },
-      {
-        name: "Three.js",
-        color: "text-green-400",
-      },
-      {
-        name: "React Three Fiber",
-        color: "text-yellow-400",
-      },
-      {
-        name: "Tailwind CSS",
-        color: "text-yellow-400",
-      },
-    ],
-    image: "/project pics/Animated Memory Book.png",
-    source_code_link: "https://github.com/bepoooe/animated-proposal-book",
-  },
-  {
     name: "Repository – A Hackathon-Focused Developer Community",
     description:
       "A student-led tech community for hackathon enthusiasts at BPPIMT and beyond.",
