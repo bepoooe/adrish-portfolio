@@ -278,6 +278,48 @@ export const projects = [
     source_code_link: "https://github.com/aniket123de/Repository",
   },
   {
+    name: " Nazaakat- E-commerce Jewelry Catalogue",
+    description:
+      "An e-commerce catalogue website developed for handcrafted jewelry brand.",
+    tags: [
+      {
+        name: "Next.js",
+        color: "text-blue-400",
+      },
+      {
+        name: "Tailwind CSS",
+        color: "text-purple-400",
+      },
+      {
+        name: "TypeScript",
+        color: "text-yellow-400",
+      },
+      {
+        name: "MongoDB Atlas",
+        color: "text-yellow-400",
+      },
+    ],
+    image: "/project pics/nazaakat.png",
+    source_code_link: "https://github.com/aniket123de/Nazaakat",
+  },
+  {
+    name: " DialogueVault- Prompt Navigator ",
+    description:
+      "A Chrome extension for navigating conversations in ChatGPT, Claude, and Gemini.",
+    tags: [
+      {
+        name: "React",
+        color: "text-blue-400",
+      },
+      {
+        name: "TypeScript",
+        color: "text-yellow-400",
+      },
+    ],
+    image: "/project pics/DialogueVault.png",
+    source_code_link: "https://github.com/bepoooe/DialogueVault",
+  },
+  {
     name: "LokSeva – Digital Municipal Services Platform",
     description:
       "A comprehensive web platform enabling citizens to access municipal services, file grievances, and track issues.",
@@ -368,5 +410,26 @@ export const projects = [
     ],
     image: "/project pics/todosphere.png",
     source_code_link: "https://github.com/bepoooe/TodoSphere",
+  },
+  {
+    name: "VibeVerse Music Player",
+    description:
+      "A modern, responsive web-based music player designed for a beautiful and minimal listening experience.",
+    tags: [
+      {
+        name: "HTML5",
+        color: "text-blue-400",
+      },
+      {
+        name: "CSS3",
+        color: "text-green-400",
+      },
+      {
+        name: "JavaScript",
+        color: "text-pink-400",
+      },
+    ],
+    image: "/project pics/VibeVerse.png",
+    source_code_link: "https://github.com/bepoooe/VibeVerse",
   },
 ];
