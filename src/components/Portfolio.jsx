@@ -9,7 +9,28 @@ import Contact from './Contact';
 
 export const Portfolio = () => {
   // State for animation triggers
-  const [visibleSections, setVisibleSections] = useState({});
+  const [visibleSections, setVisibleSections] = useState({
+    // Start with projects visible on mobile to prevent blank screen
+    projects: typeof window !== 'undefined' && window.innerWidth <= 768
+  });
+  
+  // Track if we're on mobile
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      if (mobile) {
+        // On mobile, ensure projects are visible from start
+        setVisibleSections(prev => ({ ...prev, projects: true }));
+      }
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   
   // Refs for sections
   const aboutRef = useRef(null);
@@ -34,7 +55,8 @@ export const Portfolio = () => {
   const isAboutVisible = useIntersectionObserver(aboutRef, { threshold: 0.2 });
   const isEducationVisible = useIntersectionObserver(educationRef, { threshold: 0.2 });
   const isTechVisible = useIntersectionObserver(techRef, { threshold: 0.2 });
-  const isProjectsVisible = useIntersectionObserver(projectsRef, { threshold: 0.2 });
+  // Lower threshold for projects to improve mobile visibility
+  const isProjectsVisible = useIntersectionObserver(projectsRef, { threshold: 0.1, rootMargin: '50px' });
   const isGithubVisible = useIntersectionObserver(githubRef, { threshold: 0.2 });
   const isContactVisible = useIntersectionObserver(contactRef, { threshold: 0.2 });
   
@@ -59,6 +81,34 @@ export const Portfolio = () => {
       setVisibleSections(prev => ({ ...prev, contact: true }));
     }
   }, [isAboutVisible, isEducationVisible, isTechVisible, isProjectsVisible, isGithubVisible, isContactVisible]);
+
+  // Fallback timeout to ensure projects section becomes visible on mobile
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setVisibleSections(prev => ({ ...prev, projects: true }));
+    }, 3000); // Show projects after 3 seconds as fallback
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Additional scroll listener to ensure projects become visible on mobile
+  useEffect(() => {
+    const handleScroll = () => {
+      if (projectsRef.current) {
+        const rect = projectsRef.current.getBoundingClientRect();
+        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+        if (isVisible) {
+          setVisibleSections(prev => ({ ...prev, projects: true }));
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    // Check immediately on mount
+    handleScroll();
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   
   // Add mouse move event listener
   useEffect(() => {
@@ -134,7 +184,11 @@ export const Portfolio = () => {
       </section>      {/* Projects Section - Full Width */}
       <div 
         ref={projectsRef}
-        className={`relative z-10 transition-all duration-1000 ${visibleSections.projects ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+        className={`relative z-10 transition-all duration-1000 ${
+          visibleSections.projects || isMobile 
+            ? 'opacity-100 translate-y-0' 
+            : 'opacity-0 translate-y-10'
+        }`}
       >
         <Projects />
       </div>

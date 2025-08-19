@@ -21,7 +21,7 @@ const MobileProjectCard = ({
       variants={fadeIn("up", "spring", index * 0.15, 0.6)}
       initial="hidden"
       whileInView="show"
-      viewport={{ once: false, amount: 0.1 }}
+      viewport={{ once: true, amount: 0.1 }}
       className="mobile-project-card"
     >
       <div className="mobile-glass-card">
@@ -91,7 +91,12 @@ const MobileProjectCard = ({
 
 const ProjectsMobile = () => {
   return (
-    <div className="mobile-projects-container">
+    <motion.div 
+      className="mobile-projects-container"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <StarryBackground density={280} />
       
       {/* Header section */}
@@ -130,7 +135,7 @@ const ProjectsMobile = () => {
           />
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

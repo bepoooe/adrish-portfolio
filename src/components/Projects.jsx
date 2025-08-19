@@ -10,45 +10,32 @@ import StarryBackground from "./StarryBackground";
 import ProjectsMobile from "./ProjectsMobile";
 import "./ProjectCard.css";
 
-// Mobile detection hook with debouncing
+// Mobile detection hook with better initial loading
 const useIsMobile = () => {
-  const [isMobile, setIsMobile] = useState(() => {
-    // Initialize with current window size to avoid hydration mismatch
-    if (typeof window !== 'undefined') {
-      return window.innerWidth <= 768;
-    }
-    return false;
-  });
+  const [isMobile, setIsMobile] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    let timeoutId;
+    // Mark that we're on the client side
+    setIsClient(true);
     
     const checkMobile = () => {
-      // Debounce the resize event to prevent excessive re-renders
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => {
-        const newIsMobile = window.innerWidth <= 768;
-        setIsMobile(prevIsMobile => {
-          // Only update if the value actually changed
-          if (prevIsMobile !== newIsMobile) {
-            return newIsMobile;
-          }
-          return prevIsMobile;
-        });
-      }, 150); // 150ms debounce delay
+      const newIsMobile = window.innerWidth <= 768;
+      setIsMobile(newIsMobile);
     };
 
-    // Check initial size
+    // Initial check
     checkMobile();
     
+    // Add resize listener
     window.addEventListener('resize', checkMobile);
+    
     return () => {
       window.removeEventListener('resize', checkMobile);
-      clearTimeout(timeoutId);
     };
   }, []);
 
-  return isMobile;
+  return { isMobile, isClient };
 };
 
 const ProjectCard = ({
@@ -142,11 +129,44 @@ const ProjectCard = ({
 };
 
 const Projects = () => {
-  const isMobile = useIsMobile();
+  const { isMobile, isClient } = useIsMobile();
+
+  // Show loading state until client-side hydration is complete
+  if (!isClient) {
+    return (
+      <section
+        id="projects"
+        className="relative w-screen min-h-screen overflow-x-hidden flex items-center justify-center"
+      >
+        <div className="text-white text-lg">Loading projects...</div>
+      </section>
+    );
+  }
 
   // If mobile, render the mobile version
   if (isMobile) {
-    return <ProjectsMobile />;
+    return (
+      <section
+        id="projects"
+        className="relative w-screen min-h-screen overflow-x-hidden"
+        style={{ 
+          background: 'transparent',
+          margin: 0,
+          padding: 0,
+          left: 0,
+          right: 0,
+        }}
+      >
+        <motion.div
+          className="relative z-10 transition-all duration-1000"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+          <ProjectsMobile />
+        </motion.div>
+      </section>
+    );
   }
   
   // Desktop version - using grid layout like mobile but adapted for desktop

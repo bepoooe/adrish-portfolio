@@ -410,11 +410,7 @@
   }
 }
 
-/* Smooth loading animation */
-.mobile-project-card {
-  opacity: 0;
-  animation: fadeInUp 0.6s ease forwards;
-}
+/* Smooth loading animation - Using Framer Motion instead */
 
 @keyframes fadeInUp {
   from {
@@ -437,15 +433,7 @@
   }
 }
 
-/* Stagger animation delays */
-.mobile-project-card:nth-child(1) { animation-delay: 0.1s; }
-.mobile-project-card:nth-child(2) { animation-delay: 0.2s; }
-.mobile-project-card:nth-child(3) { animation-delay: 0.3s; }
-.mobile-project-card:nth-child(4) { animation-delay: 0.4s; }
-.mobile-project-card:nth-child(5) { animation-delay: 0.5s; }
-.mobile-project-card:nth-child(6) { animation-delay: 0.6s; }
-.mobile-project-card:nth-child(7) { animation-delay: 0.7s; }
-.mobile-project-card:nth-child(8) { animation-delay: 0.8s; }
+/* Stagger animation delays - handled by Framer Motion now */
 
 .mobile-project-card:nth-child(2n) .mobile-glass-card {
   animation-delay: -2s;
