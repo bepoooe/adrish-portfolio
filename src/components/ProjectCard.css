@@ -8,6 +8,25 @@
   padding-bottom: 1rem; /* Added padding to ensure tech tags are visible */
 }
 
+/* Line clamp utility for description text */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.line-clamp-4 {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /* Ensure proper content distribution on mobile */
 @media (max-width: 768px) {
   .project-card {

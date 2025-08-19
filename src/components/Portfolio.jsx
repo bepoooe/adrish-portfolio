@@ -131,16 +131,13 @@ export const Portfolio = () => {
         <div className="bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm rounded-2xl p-8 shadow-xl">
           <Tech />
         </div>
-      </section>      {/* Projects Section */}
-      <section 
-        id="projects" 
+      </section>      {/* Projects Section - Full Width */}
+      <div 
         ref={projectsRef}
-        className={`py-8 md:py-16 px-4 md:px-16 max-w-6xl mx-auto relative z-10 transition-all duration-1000 ${visibleSections.projects ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+        className={`relative z-10 transition-all duration-1000 ${visibleSections.projects ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
       >
-        <div className="bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm rounded-2xl p-8 shadow-xl">
-          <Projects />
-        </div>
-      </section>
+        <Projects />
+      </div>
 
       {/* GitHub Stats Section */}
       <section 
