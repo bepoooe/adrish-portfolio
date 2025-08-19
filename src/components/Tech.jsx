@@ -234,7 +234,7 @@ const createTechImage = (technology) => {
   // Tech icon base URLs - these are the actual tech logo images
   const techIconUrls = {
     // Programming Languages
-    c: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg',
+    c: 'https://upload.wikimedia.org/wikipedia/commons/1/19/C_Logo.png',
     java: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg',
     python: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
     javascript: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg',
