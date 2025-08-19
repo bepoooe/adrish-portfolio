@@ -277,7 +277,7 @@ export const projects = [
     ],
     image: "/project pics/repository.png",
     source_code_link: "https://github.com/aniket123de/Repository",
-    website_link: "https://repository-community.vercel.app",
+    website_link: "https://www.repositoryweb.com/",
   },
   {
     name: " Nazaakat- E-commerce Jewelry Catalogue",
@@ -303,7 +303,7 @@ export const projects = [
     ],
     image: "/project pics/nazaakat.png",
     source_code_link: "https://github.com/aniket123de/Nazaakat",
-    website_link: "https://nazaakat.vercel.app",
+    website_link: "https://mynazaakat.vercel.app/",
   },
   {
     name: " DialogueVault- Prompt Navigator ",
@@ -321,7 +321,7 @@ export const projects = [
     ],
     image: "/project pics/DialogueVault.png",
     source_code_link: "https://github.com/bepoooe/DialogueVault",
-    website_link: "https://chrome.google.com/webstore/detail/dialoguevault",
+    website_link: "https://github.com/bepoooe/DialogueVault/releases",
   },
   {
     name: "LokSeva – Digital Municipal Services Platform",
@@ -343,7 +343,7 @@ export const projects = [
     ],
     image: "/project pics/LokSeva.png",
     source_code_link: "https://github.com/bepoooe/LokSeva",
-    website_link: "https://lokseva.vercel.app",
+    website_link: "https://lok-seva.vercel.app/",
   },
   {
     name: "BioSphere - AI-powered Multi-Platform Bio Generator",
@@ -373,7 +373,7 @@ export const projects = [
     ],
     image: "/project pics/BioSphere.png",
     source_code_link: "https://github.com/bepoooe/BioSphere",
-    website_link: "https://biosphere-ai.vercel.app",
+    website_link: "https://bio-sphere.vercel.app/",
   },
   {
     name: "Kavach Privacy Guardian - Chrome Extension",
@@ -395,7 +395,7 @@ export const projects = [
     ],
     image: "/project pics/Kavach.png",
     source_code_link: "https://github.com/Anik-Paul-toj/KAVACH_HACKOLUTION",
-    website_link: "https://chrome.google.com/webstore/detail/kavach-privacy-guardian",
+    website_link: "https://kavach-landing.vercel.app/",
   },
   {
     name: "TodoSphere",
@@ -417,7 +417,7 @@ export const projects = [
     ],
     image: "/project pics/todosphere.png",
     source_code_link: "https://github.com/bepoooe/TodoSphere",
-    website_link: "https://todosphere.netlify.app",
+    website_link: "https://todo-sphere-tau.vercel.app/",
   },
   {
     name: "VibeVerse Music Player",
@@ -439,6 +439,6 @@ export const projects = [
     ],
     image: "/project pics/VibeVerse.png",
     source_code_link: "https://github.com/bepoooe/VibeVerse",
-    website_link: "https://vibeverse-music.netlify.app",
+    website_link: "https://vibe--verse.vercel.app/",
   },
 ];
