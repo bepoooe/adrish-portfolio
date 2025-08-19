@@ -253,7 +253,7 @@ const Contact = () => {
         initial={{ x: 50, opacity: 0 }}
         animate={rightInView ? { x: 0, opacity: 1 } : { x: 50, opacity: 0 }}
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className={`xl:w-[60%] lg:w-[58%] md:w-[55%] w-full ${isMobile ? 'h-[280px]' : 'h-[500px] md:h-[450px] sm:h-[400px]'} flex items-center justify-center overflow-visible earth-canvas-container`}
+        className={`xl:w-[60%] lg:w-[58%] md:w-[55%] w-full ${isMobile ? 'h-[280px]' : 'h-[500px] md:h-[450px] sm:h-[400px]'} flex items-center justify-center overflow-visible earth-canvas-container relative`}
         style={{
           background: 'transparent',
           boxShadow: 'none',
@@ -262,6 +262,86 @@ const Contact = () => {
           overflow: 'visible'
         }}
       >
+        {/* Floating Contact Info Boxes */}
+        {!isMobile && (
+          <>
+            {/* Phone Contact Box - Top Right Scattered */}
+            <motion.div
+              initial={{ opacity: 0, x: 30, y: -30, scale: 0.8 }}
+              animate={rightInView ? { opacity: 1, x: 0, y: 0, scale: 1 } : { opacity: 0, x: 30, y: -30, scale: 0.8 }}
+              transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute top-[8%] right-[12%] z-20 bg-gradient-to-br from-[#0f172a]/95 to-[#1e1b4b]/95 backdrop-blur-lg rounded-xl p-3 shadow-xl border border-blue-400/40 min-w-[180px] floating-contact-box"
+              style={{
+                boxShadow: '0 12px 40px rgba(59, 130, 246, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15)',
+                backdropFilter: 'blur(16px)',
+                animation: 'floatContact 7s ease-in-out infinite'
+              }}
+            >
+              <div className="flex items-center space-x-2.5">
+                <div className="w-9 h-9 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-blue-300 text-xs font-medium uppercase tracking-wider">Direct Contact</p>
+                  <p className="text-white text-xs font-semibold">+91 7003940421</p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Email Box - Middle Left Scattered */}
+            <motion.div
+              initial={{ opacity: 0, x: -40, y: 20, scale: 0.8 }}
+              animate={rightInView ? { opacity: 1, x: 0, y: 0, scale: 1 } : { opacity: 0, x: -40, y: 20, scale: 0.8 }}
+              transition={{ duration: 0.9, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute top-[45%] left-[2%] z-20 bg-gradient-to-br from-[#0f172a]/95 to-[#312e81]/95 backdrop-blur-lg rounded-xl p-3 shadow-xl border border-indigo-400/40 min-w-[200px] floating-contact-box"
+              style={{
+                boxShadow: '0 12px 40px rgba(99, 102, 241, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15)',
+                backdropFilter: 'blur(16px)',
+                animation: 'floatContact 8s ease-in-out infinite 1.5s'
+              }}
+            >
+              <div className="flex items-center space-x-2.5">
+                <div className="w-9 h-9 bg-gradient-to-r from-indigo-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-indigo-300 text-xs font-medium uppercase tracking-wider">Email Address</p>
+                  <p className="text-white text-xs font-semibold truncate">adrishbasak003@gmail.com</p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Response Time Box - Bottom Right Scattered */}
+            <motion.div
+              initial={{ opacity: 0, x: 25, y: 35, scale: 0.8 }}
+              animate={rightInView ? { opacity: 1, x: 0, y: 0, scale: 1 } : { opacity: 0, x: 25, y: 35, scale: 0.8 }}
+              transition={{ duration: 0.9, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute bottom-[18%] right-[15%] z-20 bg-gradient-to-br from-[#0f172a]/95 to-[#1e3a8a]/95 backdrop-blur-lg rounded-xl p-3 shadow-xl border border-cyan-400/40 min-w-[170px] floating-contact-box"
+              style={{
+                boxShadow: '0 12px 40px rgba(6, 182, 212, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15)',
+                backdropFilter: 'blur(16px)',
+                animation: 'floatContact 6.5s ease-in-out infinite 3s'
+              }}
+            >
+              <div className="flex items-center space-x-2.5">
+                <div className="w-9 h-9 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-cyan-300 text-xs font-medium uppercase tracking-wider">Response Time</p>
+                  <p className="text-white text-xs font-semibold">Within 24 Hours</p>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+
         {/* Always render Earth on desktop, and conditionally on mobile */}
         <EarthCanvas />
       </motion.div>
