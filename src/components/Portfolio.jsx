@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 import Tech from './Tech';
 import Projects from './Projects';
+import GithubStats from './GithubStats';
 import ScholasticRecord from './ScholasticRecord';
 import AboutMe from './AboutMe';
 import Contact from './Contact';
@@ -15,6 +16,7 @@ export const Portfolio = () => {
   const educationRef = useRef(null);
   const techRef = useRef(null);
   const projectsRef = useRef(null);
+  const githubRef = useRef(null);
   const contactRef = useRef(null);
   
   // Mouse position for interactive elements
@@ -33,6 +35,7 @@ export const Portfolio = () => {
   const isEducationVisible = useIntersectionObserver(educationRef, { threshold: 0.2 });
   const isTechVisible = useIntersectionObserver(techRef, { threshold: 0.2 });
   const isProjectsVisible = useIntersectionObserver(projectsRef, { threshold: 0.2 });
+  const isGithubVisible = useIntersectionObserver(githubRef, { threshold: 0.2 });
   const isContactVisible = useIntersectionObserver(contactRef, { threshold: 0.2 });
   
   // Update visible sections when intersection changes
@@ -49,10 +52,13 @@ export const Portfolio = () => {
     if (isProjectsVisible) {
       setVisibleSections(prev => ({ ...prev, projects: true }));
     }
+    if (isGithubVisible) {
+      setVisibleSections(prev => ({ ...prev, github: true }));
+    }
     if (isContactVisible) {
       setVisibleSections(prev => ({ ...prev, contact: true }));
     }
-  }, [isAboutVisible, isEducationVisible, isTechVisible, isProjectsVisible, isContactVisible]);
+  }, [isAboutVisible, isEducationVisible, isTechVisible, isProjectsVisible, isGithubVisible, isContactVisible]);
   
   // Add mouse move event listener
   useEffect(() => {
@@ -133,6 +139,17 @@ export const Portfolio = () => {
       >
         <div className="bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm rounded-2xl p-8 shadow-xl">
           <Projects />
+        </div>
+      </section>
+
+      {/* GitHub Stats Section */}
+      <section 
+        id="github" 
+        ref={githubRef}
+        className={`py-8 md:py-16 px-4 md:px-16 max-w-6xl mx-auto relative z-10 transition-all duration-1000 ${visibleSections.github ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+      >
+        <div className="bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm rounded-2xl p-8 shadow-xl">
+          <GithubStats />
         </div>
       </section>      {/* Contact Section */}
       <section 

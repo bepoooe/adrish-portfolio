@@ -29,6 +29,8 @@ export default defineConfig({
   },
   // Optimize dev server
   server: {
+    // Use a non-default dev port to avoid conflicts
+    port: 5174,
     hmr: {
       overlay: false, // Disable HMR overlay for better performance
     },
