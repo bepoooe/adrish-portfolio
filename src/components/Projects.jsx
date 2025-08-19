@@ -3,7 +3,7 @@ import { Tilt } from 'react-tilt';
 import { motion } from "framer-motion";
 
 import { styles } from "../styles";
-import { github } from "../assets";
+import { github, website } from "../assets";
 import { projects } from "../constants";
 import { fadeIn, textVariant } from "../utils/motion";
 import StarryBackground from "./StarryBackground";
@@ -58,6 +58,7 @@ const ProjectCard = ({
   tags,
   image,
   source_code_link,
+  website_link,
 }) => {
   return (
     <motion.div 
@@ -86,6 +87,22 @@ const ProjectCard = ({
               className='absolute top-0 left-0 w-full h-full object-cover transition-transform duration-300 hover:scale-105'
               loading="lazy"
             />            
+            {/* Website link button - top left */}
+            {website_link && (
+              <div className='absolute top-3 left-3 website-overlay-pc'>
+                <div
+                  onClick={() => window.open(website_link, "_blank")}
+                  className='website-btn-pc bg-black/60 backdrop-blur-sm rounded-full p-2.5 hover:bg-black/80 transition-all duration-300 cursor-pointer'
+                >
+                  <img
+                    src={website}
+                    alt='live website'
+                    className='w-5 h-5'
+                  />
+                </div>
+              </div>
+            )}
+            {/* GitHub button - top right */}
             <div className='absolute top-3 right-3 github-overlay-pc'>
               <div
                 onClick={() => window.open(source_code_link, "_blank")}

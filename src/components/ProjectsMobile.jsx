@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { styles } from "../styles";
-import { github } from "../assets";
+import { github, website } from "../assets";
 import { projects } from "../constants";
 import { fadeIn, textVariant } from "../utils/motion";
 import StarryBackground from "./StarryBackground";
@@ -14,6 +14,7 @@ const MobileProjectCard = ({
   tags,
   image,
   source_code_link,
+  website_link,
 }) => {
   return (
     <motion.div
@@ -33,7 +34,24 @@ const MobileProjectCard = ({
             loading="lazy"
           />
           
-          {/* GitHub link overlay */}
+          {/* Website link button - top left */}
+          {website_link && (
+            <div className="mobile-website-overlay">
+              <button
+                onClick={() => window.open(website_link, "_blank")}
+                className="mobile-website-btn"
+                aria-label={`Visit ${name} website`}
+              >
+                <img
+                  src={website}
+                  alt="Website"
+                  className="mobile-website-icon"
+                />
+              </button>
+            </div>
+          )}
+          
+          {/* GitHub button - top right */}
           <div className="mobile-github-overlay">
             <button
               onClick={() => window.open(source_code_link, "_blank")}
