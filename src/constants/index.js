@@ -230,27 +230,27 @@ export const projects = [
     tags: [
       {
         name: "React",
-        color: "text-blue-400",
+        color: "text-white",
       },
       {
         name: "Node.js",
-        color: "text-green-400",
-      },
-      {
-        name: "Tailwind CSS",
-        color: "text-pink-400",
-      },
-      {
-        name: "TypeScript",
         color: "text-blue-400",
       },
       {
+        name: "Tailwind CSS",
+        color: "text-purple-400",
+      },
+      {
+        name: "TypeScript",
+        color: "text-pink-400",
+      },
+      {
         name: "Flask",
-        color: "text-green-400",
+        color: "text-white",
       },
       {
         name: "Python",
-        color: "text-pink-400",
+        color: "text-blue-400",
       },
     ],
     image: "/project pics/Rangmanch.png",
@@ -264,15 +264,15 @@ export const projects = [
     tags: [
       {
         name: "Next.js",
-        color: "text-blue-400",
+        color: "text-white",
       },
       {
         name: "SCSS",
-        color: "text-green-400",
+        color: "text-blue-400",
       },
       {
         name: "TypeScript",
-        color: "text-yellow-400",
+        color: "text-purple-400",
       },
     ],
     image: "/project pics/repository.png",
@@ -286,19 +286,19 @@ export const projects = [
     tags: [
       {
         name: "Next.js",
-        color: "text-blue-400",
+        color: "text-white",
       },
       {
         name: "Tailwind CSS",
-        color: "text-purple-400",
+        color: "text-blue-400",
       },
       {
         name: "TypeScript",
-        color: "text-yellow-400",
+        color: "text-purple-400",
       },
       {
         name: "MongoDB Atlas",
-        color: "text-yellow-400",
+        color: "text-pink-400",
       },
     ],
     image: "/project pics/nazaakat.png",
@@ -312,16 +312,38 @@ export const projects = [
     tags: [
       {
         name: "React",
-        color: "text-blue-400",
+        color: "text-white",
       },
       {
         name: "TypeScript",
-        color: "text-yellow-400",
+        color: "text-blue-400",
       },
     ],
     image: "/project pics/DialogueVault.png",
     source_code_link: "https://github.com/bepoooe/DialogueVault",
     website_link: "https://github.com/bepoooe/DialogueVault/releases",
+  },
+  {
+    name: "EduBh - Industry-Ready Education Platform",
+    description:
+      "A modern and responsive educational platform landing page built with Next.js, React, and Tailwind CSS. EduBh bridges the gap between academia and industry with comprehensive programs designed for modern career success.",
+    tags: [
+      {
+        name: "Next.js",
+        color: "text-white",
+      },
+      {
+        name: "TypeScript",
+        color: "text-blue-400",
+      },
+      {
+        name: "Email JS",
+        color: "text-purple-400",
+      },
+    ],
+    image: "/project pics/edubh.png",
+    source_code_link: "https://github.com/aniket123de/EduBharat",
+    website_link: "https://edu-bh.vercel.app/",
   },
   {
     name: "LokSeva – Digital Municipal Services Platform",
@@ -330,15 +352,15 @@ export const projects = [
     tags: [
       {
         name: "React",
-        color: "text-blue-400",
+        color: "text-white",
       },
       {
         name: "Tailwind CSS",
-        color: "text-purple-400",
+        color: "text-blue-400",
       },
       {
         name: "firebase",
-        color: "text-yellow-400",
+        color: "text-purple-400",
       },
     ],
     image: "/project pics/LokSeva.png",
@@ -352,23 +374,23 @@ export const projects = [
     tags: [
       {
         name: "Next.js",
-        color: "text-blue-400",
+        color: "text-white",
       },
       {
         name: "React",
-        color: "text-green-400",
+        color: "text-blue-400",
       },
       {
         name: "TypeScript",
-        color: "text-pink-400",
+        color: "text-purple-400",
       },
       {
         name: "Vercel AI SDK",
-        color: "text-green-400",
+        color: "text-pink-400",
       },
       {
         name: "Groq API",
-        color: "text-pink-400",
+        color: "text-white",
       },
     ],
     image: "/project pics/BioSphere.png",
@@ -386,11 +408,11 @@ export const projects = [
       },
       {
         name: "TypeScript",
-        color: "text-green-400",
+        color: "text-blue-400",
       },
       {
         name: "Gemini API",
-        color: "text-yellow-400",
+        color: "text-purple-400",
       },
     ],
     image: "/project pics/Kavach.png",
@@ -404,15 +426,15 @@ export const projects = [
     tags: [
       {
         name: "HTML5",
-        color: "text-blue-400",
+        color: "text-white",
       },
       {
         name: "CSS3",
-        color: "text-green-400",
+        color: "text-blue-400",
       },
       {
         name: "JavaScript",
-        color: "text-pink-400",
+        color: "text-purple-400",
       },
     ],
     image: "/project pics/todosphere.png",
@@ -426,15 +448,15 @@ export const projects = [
     tags: [
       {
         name: "HTML5",
-        color: "text-blue-400",
+        color: "text-white",
       },
       {
         name: "CSS3",
-        color: "text-green-400",
+        color: "text-blue-400",
       },
       {
         name: "JavaScript",
-        color: "text-pink-400",
+        color: "text-purple-400",
       },
     ],
     image: "/project pics/VibeVerse.png",
