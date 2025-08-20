@@ -584,6 +584,149 @@ body {
   background: linear-gradient(180deg, #6382ff 0%, rgba(60, 51, 80, 0) 100%);
 }
 
+/* Hero text gradient styles */
+.hero-gradient-text {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 20%, #e2e8f0 35%, #cbd5e1 50%, #94a3b8 65%, #64748b 80%, #ffffff 100%);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none; /* Remove text shadow for gradient text */
+  transition: all 0.4s ease;
+  animation: gradientShift 3s ease-in-out infinite;
+  filter: drop-shadow(0 0 5px rgba(148, 163, 184, 0.2));
+}
+
+.hero-gradient-text:hover {
+  background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 15%, #e2e8f0 30%, #81d4fa 55%, #29b6f6 75%, #ffffff 100%);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 10px rgba(41, 182, 246, 0.4)) brightness(1.15);
+  animation-duration: 1.5s;
+  transform: scale(1.02);
+}
+
+.hero-name-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #e1f5fe 10%, #81d4fa 20%, #29b6f6 35%, #0288d1 50%, #0277bd 65%, #01579b 80%, #ffffff 90%, #e1f5fe 100%);
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 30px rgba(41, 182, 246, 0.4);
+  transition: all 0.5s ease;
+  animation: nameGradientShift 2.5s ease-in-out infinite, nameGlow 3s ease-in-out infinite alternate, nameFloat 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 15px rgba(41, 182, 246, 0.5));
+  position: relative;
+  transform-origin: center;
+}
+
+.hero-name-gradient:hover {
+  background: linear-gradient(135deg, #ffffff 0%, #4fc3f7 15%, #29b6f6 30%, #0288d1 45%, #0277bd 60%, #01579b 75%, #29b6f6 90%, #ffffff 100%);
+  background-size: 400% 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 40px rgba(41, 182, 246, 0.8);
+  filter: drop-shadow(0 0 25px rgba(41, 182, 246, 0.8)) brightness(1.3) saturate(1.2);
+  animation: nameGradientShift 1s ease-in-out infinite, nameGlow 1.5s ease-in-out infinite alternate, nameHoverFloat 2s ease-in-out infinite;
+  transform: scale(1.05) rotateY(5deg);
+}
+
+.hero-subtitle-gradient {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 20%, #e9ecef 35%, #dee2e6 50%, #81d4fa 65%, #29b6f6 80%, #0288d1 95%, #ffffff 100%);
+  background-size: 250% 250%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  transition: all 0.4s ease;
+  animation: gradientShift 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 5px rgba(41, 182, 246, 0.2));
+}
+
+.hero-subtitle-gradient:hover {
+  background: linear-gradient(135deg, #ffffff 0%, #e1f5fe 20%, #81d4fa 40%, #29b6f6 60%, #0288d1 80%, #ffffff 100%);
+  background-size: 250% 250%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 12px rgba(41, 182, 246, 0.5)) brightness(1.15);
+  animation-duration: 2s;
+  transform: scale(1.01);
+}
+
+/* Gradient animation keyframes */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Special animation for Adrish name */
+@keyframes nameGradientShift {
+  0% {
+    background-position: 0% 0%;
+  }
+  25% {
+    background-position: 100% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+  75% {
+    background-position: 0% 100%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
+@keyframes nameGlow {
+  0% {
+    filter: drop-shadow(0 0 15px rgba(41, 182, 246, 0.5)) brightness(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 25px rgba(41, 182, 246, 0.8)) brightness(1.1);
+  }
+  100% {
+    filter: drop-shadow(0 0 15px rgba(41, 182, 246, 0.5)) brightness(1);
+  }
+}
+
+/* Subtle floating animation */
+@keyframes nameFloat {
+  0%, 100% {
+    transform: translateY(0px) rotateX(0deg);
+  }
+  25% {
+    transform: translateY(-2px) rotateX(1deg);
+  }
+  50% {
+    transform: translateY(0px) rotateX(0deg);
+  }
+  75% {
+    transform: translateY(2px) rotateX(-1deg);
+  }
+}
+
+/* Enhanced hover floating */
+@keyframes nameHoverFloat {
+  0%, 100% {
+    transform: scale(1.05) rotateY(5deg) translateY(0px);
+  }
+  50% {
+    transform: scale(1.05) rotateY(5deg) translateY(-3px);
+  }
+}
+
 
 
 .card-glow {

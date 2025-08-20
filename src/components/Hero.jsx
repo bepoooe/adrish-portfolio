@@ -51,32 +51,32 @@ const Hero = () => {
 
           <div className="hero-text-content" style={{ position: 'relative', zIndex: 10 }}>
             <motion.h1
-              className="text-white hero-main-text mb-0"
+              className="hero-main-text mb-0"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
               style={{ textShadow: '0 0 10px rgba(0, 0, 0, 0.5)' }} // Add text shadow for better readability
             >
               <motion.span
-                className="greeting-text"
+                className="greeting-text hero-gradient-text"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2, duration: 0.6, type: "spring" }}
-                whileHover={{ scale: 1.05, color: "#6382ff" }}
+                whileHover={{ scale: 1.05 }}
               >
                 Hi,<br />
               </motion.span>
               <motion.span
-                className="greeting-text"
+                className="greeting-text hero-gradient-text"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4, duration: 0.6, type: "spring" }}
-                whileHover={{ scale: 1.05, color: "#6382ff" }}
+                whileHover={{ scale: 1.05 }}
               >
                 My name is<br />
               </motion.span>
               <motion.span
-                className="text-[#6382ff] adrish-name"
+                className="adrish-name hero-name-gradient"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.6, duration: 0.6, type: "spring" }}
@@ -86,11 +86,11 @@ const Hero = () => {
               </motion.span>
             </motion.h1>
             <motion.p
-              className="mt-2 text-white-100 hero-sub-text"
+              className="mt-2 hero-sub-text hero-subtitle-gradient"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8, duration: 0.8, type: "spring", damping: 12 }}
-              whileHover={{ color: "#6382ff", scale: 1.02 }}
+              whileHover={{ scale: 1.02 }}
               style={{
                 textShadow: '0 0 8px rgba(0, 0, 0, 0.7)',  // Add text shadow for better readability
                 position: 'relative',
