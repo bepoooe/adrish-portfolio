@@ -106,7 +106,8 @@ const Navbar = () => {
       transition={{ duration: 0.5 }}
       className={`${styles.paddingX} w-full flex items-center justify-center py-3 sm:py-5 fixed top-0 z-20 transition-all duration-300 ${scrolled ? "bg-black bg-opacity-70 backdrop-blur-md shadow-[0_4px_15px_rgba(0,0,0,0.5)]" : "bg-transparent"}`}
     >
-      <div className='w-full flex justify-center items-center max-w-7xl mx-auto'>
+      {/* Desktop Container */}
+      <div className='w-full hidden sm:flex justify-center items-center max-w-7xl mx-auto'>
         <motion.div 
           className="flex items-center justify-between px-3 sm:px-8 py-2 sm:py-3 rounded-full border border-gray-700 bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm navbar-glow relative overflow-visible"
           whileHover={{ boxShadow: "0 0 15px rgba(0, 0, 0, 0.7)" }}
@@ -237,41 +238,84 @@ const Navbar = () => {
             </motion.div>
           </motion.div>
 
-          {/* Mobile Menu Button */}
-          <div className='sm:hidden flex items-center mr-1'>
-            <motion.button
-              className='w-[38px] h-[38px] flex items-center justify-center bg-white/15 rounded-full relative border border-white/20 z-20'
-              onClick={() => setToggle(!toggle)}
-              whileHover={{ scale: 1.1, backgroundColor: 'rgba(255, 255, 255, 0.2)' }}
+        </motion.div>
+      </div>
+
+      {/* Mobile Container */}
+      <div className='w-full flex sm:hidden justify-between items-center max-w-7xl mx-auto'>
+        <motion.div 
+          className="flex items-center justify-between w-full px-3 py-2 rounded-lg border border-gray-700 bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm navbar-glow relative overflow-visible"
+          whileHover={{ boxShadow: "0 0 15px rgba(0, 0, 0, 0.7)" }}
+          transition={{ duration: 0.3 }}
+        >
+          {/* Decorative stars for mobile */}
+          <div className="absolute top-1/4 left-[10%] w-1 h-1 bg-white rounded-full opacity-70 star-twinkle"></div>
+          <div className="absolute top-3/4 left-[20%] w-0.5 h-0.5 bg-white rounded-full opacity-50 star-twinkle-slow"></div>
+          <div className="absolute top-1/3 right-[10%] w-1 h-1 bg-white rounded-full opacity-70 star-twinkle" style={{animationDelay: '0.5s'}}></div>
+          <div className="absolute top-2/3 right-[20%] w-0.5 h-0.5 bg-white rounded-full opacity-50 star-twinkle-slow" style={{animationDelay: '1.5s'}}></div>
+          
+          {/* Space dust particles for mobile */}
+          <div className="absolute top-1/2 left-1/4 w-[2px] h-[2px] bg-blue-400 rounded-full opacity-30" style={{animation: 'space-dust 8s linear infinite'}}></div>
+          <div className="absolute top-1/3 right-1/3 w-[1px] h-[1px] bg-purple-400 rounded-full opacity-20" style={{animation: 'space-dust 12s linear infinite', animationDelay: '2s'}}></div>
+          
+          {/* Left section - Logo and Name for mobile */}
+          <div
+            className='flex items-center gap-1 group cursor-pointer'
+            onClick={() => {
+              setActive("");
+              scrollToSection("");
+            }}
+          >
+            <motion.img 
+              src="/favicon.ico" 
+              alt='logo' 
+              className='w-7 h-7 object-contain'
+              whileHover={{ rotate: 360, scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              animate={{
-                boxShadow: toggle 
-                  ? '0 0 12px rgba(255, 255, 255, 0.6)' 
-                  : '0 0 5px rgba(255, 255, 255, 0.3)',
-                width: isRetracted ? "32px" : "38px",
-                height: isRetracted ? "32px" : "38px"
+              transition={{ 
+                rotate: { duration: 0.5, ease: "easeInOut" },
+                scale: { duration: 0.2 }
+              }}
+            />
+            <p className='text-[15px] font-bold cursor-pointer flex transition-all duration-300'>
+              <span className="text-[#e8e0cf] group-hover:text-[#f0e9db] drop-shadow-[0_0_3px_rgba(232,224,207,0.3)]">Bepo</span> 
+              <span className="ml-1">
+                <span className="text-[#e8e0cf] opacity-70 group-hover:opacity-80">|</span> 
+                <span className="text-[#e8e0cf] group-hover:text-[#f0e9db] drop-shadow-[0_0_3px_rgba(232,224,207,0.3)]">Portfolio</span>
+              </span>
+            </p>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <motion.button
+            className='w-[38px] h-[38px] flex items-center justify-center rounded-full relative border border-white/20 z-20'
+            onClick={() => setToggle(!toggle)}
+            style={{ backgroundColor: 'rgba(255, 255, 255, 0.15)' }}
+            whileHover={{ scale: 1.1, backgroundColor: 'rgba(255, 255, 255, 0.2)' }}
+            whileTap={{ scale: 0.9 }}
+            animate={{
+              boxShadow: toggle 
+                ? '0 0 12px rgba(255, 255, 255, 0.6)' 
+                : '0 0 5px rgba(255, 255, 255, 0.3)'
+            }}
+            transition={{ duration: 0.3 }}
+          >
+            <motion.img
+              src={toggle ? close : menu}
+              alt={toggle ? 'close' : 'menu'}
+              className='w-[22px] h-[22px] object-contain'
+              style={{ 
+                filter: 'brightness(1.3) drop-shadow(0 0 3px rgba(255, 255, 255, 0.7))',
+              }}
+              animate={{ 
+                rotate: toggle ? [0, 90, 0] : 0,
+                scale: toggle ? [1, 1.2, 1] : 1
               }}
               transition={{ duration: 0.3 }}
-            >
-              <motion.img
-                src={toggle ? close : menu}
-                alt={toggle ? 'close' : 'menu'}
-                className='w-[22px] h-[22px] object-contain'
-                style={{ 
-                  filter: 'brightness(1.3) drop-shadow(0 0 3px rgba(255, 255, 255, 0.7))',
-                }}
-                animate={{ 
-                  rotate: toggle ? [0, 90, 0] : 0,
-                  scale: toggle ? [1, 1.2, 1] : (isRetracted ? 0.8 : 1),
-                  width: isRetracted ? "18px" : "22px",
-                  height: isRetracted ? "18px" : "22px"
-                }}
-                transition={{ duration: 0.3 }}
-              />
-              {/* Additional glow effect for better visibility */}
-              <div className={`absolute inset-0 rounded-full ${toggle ? 'bg-white/10' : 'bg-transparent'} transition-all duration-300`}></div>
-            </motion.button>
-          </div>
+            />
+            {/* Additional glow effect for better visibility */}
+            <div className={`absolute inset-0 rounded-full ${toggle ? 'bg-white/10' : 'bg-transparent'} transition-all duration-300`}></div>
+          </motion.button>
         </motion.div>
 
         {/* Mobile Menu */}
@@ -279,7 +323,7 @@ const Navbar = () => {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: toggle ? 1 : 0, scale: toggle ? 1 : 0.8 }}
           transition={{ duration: 0.2 }}
-          className={`${!toggle ? "hidden" : "flex"} p-4 sm:p-6 bg-black bg-opacity-90 absolute top-16 sm:top-20 right-4 mx-0 sm:mx-4 my-2 min-w-[200px] z-10 rounded-xl backdrop-blur-md border border-gray-600 shadow-[0_4px_25px_rgba(0,0,0,0.7)] overflow-hidden w-[85%] sm:w-[80%] max-w-[300px]`}
+          className={`${!toggle ? "hidden" : "flex"} sm:hidden p-4 bg-black bg-opacity-90 absolute top-16 right-4 mx-0 my-2 min-w-[200px] z-10 rounded-xl backdrop-blur-md border border-gray-600 shadow-[0_4px_25px_rgba(0,0,0,0.7)] overflow-hidden w-[85%] max-w-[300px]`}
         >
           {/* Decorative stars for mobile menu */}
           <div className="absolute top-1/4 right-[10%] w-1 h-1 bg-white rounded-full opacity-70 star-twinkle"></div>

@@ -33,8 +33,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <DeviceProvider>
       <App />
-      <Analytics />
-      <SpeedInsights />
+      {/* Only include analytics in production */}
+      {import.meta.env.PROD && <Analytics />}
+      {import.meta.env.PROD && <SpeedInsights />}
     </DeviceProvider>
   </React.StrictMode>,
 )

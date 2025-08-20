@@ -39,8 +39,11 @@ export const safeUpdateBufferAttribute = (attribute, newData, startIndex = 0, co
     // Mark for update
     attribute.needsUpdate = true;
     
-    // Set update range for performance
-    if (attribute.updateRange) {
+    // Use addUpdateRange instead of deprecated updateRange
+    if (attribute.addUpdateRange) {
+      attribute.addUpdateRange(startIndex, actualCount);
+    } else if (attribute.updateRange) {
+      // Fallback for older THREE.js versions
       attribute.updateRange.offset = startIndex;
       attribute.updateRange.count = actualCount;
     }

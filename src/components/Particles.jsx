@@ -115,7 +115,12 @@ const StableParticles = React.memo(({ deviceKey, count }) => {
     }
 
     positionAttribute.needsUpdate = true;
-    if (positionAttribute.updateRange) {
+    
+    // Use addUpdateRange instead of deprecated updateRange
+    if (positionAttribute.addUpdateRange) {
+      positionAttribute.addUpdateRange(startIndex * 3, (endIndex - startIndex) * 3);
+    } else if (positionAttribute.updateRange) {
+      // Fallback for older THREE.js versions
       positionAttribute.updateRange.offset = startIndex * 3;
       positionAttribute.updateRange.count = (endIndex - startIndex) * 3;
     }
