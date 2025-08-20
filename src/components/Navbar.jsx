@@ -11,6 +11,7 @@ const Navbar = () => {
   const [active, setActive] = useState("");
   const [toggle, setToggle] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isRetracted, setIsRetracted] = useState(false);
 
   const socialLinks = [
     {
@@ -30,14 +31,23 @@ const Navbar = () => {
     }
   ];
 
-  // Handle scroll events to change navbar appearance
+  // Handle scroll events to change navbar appearance with retractable functionality
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
+      
+      // Set scrolled state for background
       if (scrollTop > 100) {
         setScrolled(true);
       } else {
         setScrolled(false);
+      }
+
+      // Set retracted state for navbar size - retract when scrolled more
+      if (scrollTop > 200) {
+        setIsRetracted(true);
+      } else {
+        setIsRetracted(false);
       }
       
       // Find which section is currently in view
@@ -94,13 +104,18 @@ const Navbar = () => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`${styles.paddingX} w-full flex items-center py-3 sm:py-5 fixed top-0 z-20 transition-all duration-300 ${scrolled ? "bg-black bg-opacity-70 backdrop-blur-md shadow-[0_4px_15px_rgba(0,0,0,0.5)]" : "bg-transparent"}`}
+      className={`${styles.paddingX} w-full flex items-center justify-center py-3 sm:py-5 fixed top-0 z-20 transition-all duration-300 ${scrolled ? "bg-black bg-opacity-70 backdrop-blur-md shadow-[0_4px_15px_rgba(0,0,0,0.5)]" : "bg-transparent"}`}
     >
-      <div className='w-full flex justify-between items-center max-w-7xl mx-auto'>
+      <div className='w-full flex justify-center items-center max-w-7xl mx-auto'>
         <motion.div 
-          className="flex items-center justify-between w-full px-3 sm:px-8 py-2 sm:py-3 rounded-full border border-gray-700 bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm navbar-glow relative overflow-visible"
+          className="flex items-center justify-between px-3 sm:px-8 py-2 sm:py-3 rounded-full border border-gray-700 bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm navbar-glow relative overflow-visible"
           whileHover={{ boxShadow: "0 0 15px rgba(0, 0, 0, 0.7)" }}
           transition={{ duration: 0.3 }}
+          animate={{
+            width: isRetracted ? "65%" : "100%",
+            scale: isRetracted ? 0.95 : 1,
+            y: isRetracted ? 10 : 0,
+          }}
         >
           {/* Decorative stars */}
           <div className="absolute top-1/4 left-[10%] w-1 h-1 bg-white rounded-full opacity-70 star-twinkle"></div>
@@ -111,6 +126,7 @@ const Navbar = () => {
           {/* Space dust particles */}
           <div className="absolute top-1/2 left-1/4 w-[2px] h-[2px] bg-blue-400 rounded-full opacity-30" style={{animation: 'space-dust 8s linear infinite'}}></div>
           <div className="absolute top-1/3 left-2/3 w-[1px] h-[1px] bg-purple-400 rounded-full opacity-20" style={{animation: 'space-dust 12s linear infinite', animationDelay: '2s'}}></div>
+          
           {/* Left section - Logo and Name */}
           <div
             className='flex items-center gap-1 sm:gap-2 group cursor-pointer'
@@ -130,21 +146,49 @@ const Navbar = () => {
                 scale: { duration: 0.2 }
               }}
             />
-            <p className='text-[15px] sm:text-[18px] font-bold cursor-pointer flex transition-all duration-300'>
-              <span className="text-[#e8e0cf] group-hover:text-[#f0e9db] drop-shadow-[0_0_3px_rgba(232,224,207,0.3)]">Bepo</span> <span className="ml-1"><span className="text-[#e8e0cf] opacity-70 group-hover:opacity-80">|</span> <span className="text-[#e8e0cf] group-hover:text-[#f0e9db] drop-shadow-[0_0_3px_rgba(232,224,207,0.3)]">Portfolio</span></span>
-            </p>
+            <motion.p 
+              className='text-[15px] sm:text-[18px] font-bold cursor-pointer flex transition-all duration-300'
+              animate={{
+                fontSize: isRetracted ? "20px" : "18px",
+                opacity: isRetracted ? 0.9 : 1
+              }}
+            >
+              <span className="text-[#e8e0cf] group-hover:text-[#f0e9db] drop-shadow-[0_0_3px_rgba(232,224,207,0.3)]">Bepo</span> 
+              <span className="ml-1">
+                <span className="text-[#e8e0cf] opacity-70 group-hover:opacity-80">|</span> 
+                <span className="text-[#e8e0cf] group-hover:text-[#f0e9db] drop-shadow-[0_0_3px_rgba(232,224,207,0.3)]">Portfolio</span>
+              </span>
+            </motion.p>
           </div>
 
           {/* Right section - Navigation and Social Links */}
-          <div className='hidden sm:flex items-center gap-6'>
+          <motion.div 
+            className='hidden sm:flex items-center gap-6'
+            animate={{ 
+              gap: isRetracted ? "12px" : "24px",
+              scale: isRetracted ? 0.9 : 1 
+            }}
+          >
             {/* Navigation Links */}
-            <ul className='list-none flex flex-row gap-6 mr-6'>
-              {navLinks.map((nav) => (
+            <motion.ul 
+              className='list-none flex flex-row gap-6 mr-6'
+              animate={{ 
+                gap: isRetracted ? "12px" : "24px",
+                marginRight: isRetracted ? "12px" : "24px"
+              }}
+            >
+              {navLinks
+                .filter(nav => isRetracted ? ['about', 'projects', 'contact'].includes(nav.id) : true)
+                .map((nav) => (
                 <motion.li
                   key={nav.id}
                   className={`${active === nav.id ? "text-white" : "text-secondary"} hover:text-white text-[16px] font-medium cursor-pointer transition-all duration-300`}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
+                  animate={{ 
+                    fontSize: isRetracted ? "18px" : "16px",
+                    opacity: isRetracted ? 0.9 : 1
+                  }}
                 >
                   <a 
                     href={`#${nav.id}`}
@@ -158,10 +202,16 @@ const Navbar = () => {
                   </a>
                 </motion.li>
               ))}
-            </ul>
+            </motion.ul>
 
             {/* Social Links */}
-            <div className="flex gap-4 border-l border-[#915EFF]/30 pl-6">
+            <motion.div 
+              className="flex gap-4 border-l border-[#915EFF]/30 pl-6"
+              animate={{ 
+                gap: isRetracted ? "8px" : "16px",
+                paddingLeft: isRetracted ? "12px" : "24px"
+              }}
+            >
               {socialLinks.map((social, index) => (
                 <motion.a
                   key={index}
@@ -176,19 +226,16 @@ const Navbar = () => {
                   whileTap={{ scale: 0.9 }}
                   className="text-xl"
                   style={{ color: social.color }}
+                  animate={{ 
+                    fontSize: isRetracted ? "20px" : "20px",
+                    opacity: isRetracted ? 0.8 : 1
+                  }}
                 >
-                  {social.type === 'custom' ? (
-                    <div className="w-4 h-4 flex items-center justify-center relative">
-                      <div className="absolute w-3.5 h-3.5 bg-[#0AB79B] rounded-sm transform rotate-45"></div>
-                      <span className="relative text-xs font-bold text-black">U</span>
-                    </div>
-                  ) : (
-                    <FontAwesomeIcon icon={social.icon} />
-                  )}
+                  <FontAwesomeIcon icon={social.icon} />
                 </motion.a>
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Mobile Menu Button */}
           <div className='sm:hidden flex items-center mr-1'>
@@ -200,7 +247,9 @@ const Navbar = () => {
               animate={{
                 boxShadow: toggle 
                   ? '0 0 12px rgba(255, 255, 255, 0.6)' 
-                  : '0 0 5px rgba(255, 255, 255, 0.3)'
+                  : '0 0 5px rgba(255, 255, 255, 0.3)',
+                width: isRetracted ? "32px" : "38px",
+                height: isRetracted ? "32px" : "38px"
               }}
               transition={{ duration: 0.3 }}
             >
@@ -213,7 +262,9 @@ const Navbar = () => {
                 }}
                 animate={{ 
                   rotate: toggle ? [0, 90, 0] : 0,
-                  scale: toggle ? [1, 1.2, 1] : 1
+                  scale: toggle ? [1, 1.2, 1] : (isRetracted ? 0.8 : 1),
+                  width: isRetracted ? "18px" : "22px",
+                  height: isRetracted ? "18px" : "22px"
                 }}
                 transition={{ duration: 0.3 }}
               />
@@ -271,14 +322,7 @@ const Navbar = () => {
                   className="text-xl"
                   style={{ color: social.color }}
                 >
-                  {social.type === 'custom' ? (
-                    <div className="w-4 h-4 flex items-center justify-center relative">
-                      <div className="absolute w-3.5 h-3.5 bg-[#0AB79B] rounded-sm transform rotate-45"></div>
-                      <span className="relative text-xs font-bold text-black">U</span>
-                    </div>
-                  ) : (
-                    <FontAwesomeIcon icon={social.icon} />
-                  )}
+                  <FontAwesomeIcon icon={social.icon} />
                 </motion.a>
               ))}
             </div>

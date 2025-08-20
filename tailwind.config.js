@@ -9,6 +9,19 @@ export default {
       'exo': ["Exo 2", "sans-serif"],
     },
     extend: {
+      colors: {
+        'blush': {
+          500: '#FF6B9D',
+          600: '#E85A8B',
+        },
+        'golden': {
+          500: '#F7C945',
+        },
+      },
+      fontFamily: {
+        'poppins': ["Poppins", "sans-serif"],
+        'serif': ["Georgia", "serif"],
+      },
       fontSize: {
         "10xl": "10rem",
         "11xl": "11rem",
