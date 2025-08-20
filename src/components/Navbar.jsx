@@ -109,7 +109,9 @@ const Navbar = () => {
       {/* Desktop Container */}
       <div className='w-full hidden sm:flex justify-center items-center max-w-7xl mx-auto'>
         <motion.div 
-          className="flex items-center justify-between px-3 sm:px-8 py-2 sm:py-3 rounded-full border border-gray-700 bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm navbar-glow relative overflow-visible"
+          className={`flex items-center justify-between px-3 sm:px-8 py-2 sm:py-3 border border-gray-700 bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm navbar-glow relative overflow-visible transition-all duration-300 ${
+            isRetracted ? 'rounded-lg' : 'rounded-full'
+          }`}
           whileHover={{ boxShadow: "0 0 15px rgba(0, 0, 0, 0.7)" }}
           transition={{ duration: 0.3 }}
           animate={{
@@ -179,7 +181,12 @@ const Navbar = () => {
               }}
             >
               {navLinks
-                .filter(nav => isRetracted ? ['about', 'projects', 'contact'].includes(nav.id) : true)
+                .filter(nav => {
+                  // For desktop, always exclude technologies
+                  if (nav.id === 'technologies') return false;
+                  // For retracted state, only show core sections
+                  return isRetracted ? ['about', 'projects', 'contact'].includes(nav.id) : true;
+                })
                 .map((nav) => (
                 <motion.li
                   key={nav.id}
