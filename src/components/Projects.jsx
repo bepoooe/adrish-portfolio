@@ -49,10 +49,14 @@ const ProjectCard = ({
 }) => {
   return (
     <motion.div 
-      variants={fadeIn("up", "spring", index * 0.1, 0.75)}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: false, amount: 0.1 }}
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      transition={{ 
+        duration: 1.2, 
+        delay: index * 0.15,
+        ease: [0.25, 0.1, 0.25, 1]
+      }}
+      viewport={{ once: false, amount: 0.2 }}
       className="w-full h-full"
     >      
       <Tilt
