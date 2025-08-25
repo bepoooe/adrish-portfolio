@@ -560,7 +560,7 @@ export const Book = React.memo(({ ...props }) => {
   [delayedPage]);
 
   return (
-    <group {...props} rotation-y={-Math.PI / 2}>
+    <group {...props} rotation-y={-Math.PI / 2} scale={1.2}>
       {visiblePages.map((pageData) => {
         const pageNumber = pageData._index;        return (
           <Page
