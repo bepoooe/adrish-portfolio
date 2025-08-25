@@ -173,6 +173,7 @@
 
 /* Book card overlay positioning */
 .book-card-overlay {
+  /* Desktop positioning */
   position: absolute;
   top: 50%;
   left: 40%;
@@ -183,105 +184,93 @@
   z-index: 15;
   pointer-events: auto;
 
-  /* Mobile responsive adjustments - enhanced prominence */
+  /* Mobile responsive adjustments */
   @media (max-width: 768px) {
     position: relative;
     top: 0;
     left: 0;
     width: 100%;
     transform: none;
-    margin: 0.5rem auto 2rem;
-    height: 50vh; /* Increased height for more prominence */
-    min-height: 350px; /* Increased minimum height */
-    max-height: 450px; /* Increased maximum height */
-    z-index: 20; /* Higher z-index for better prominence */
+    margin: 1rem auto 2.5rem;
+    height: 55vh;
+    min-height: 380px;
+    max-height: 500px;
+    z-index: 20;
+    padding: 0 1rem;
+    align-items: center;
   }
 
   /* Small mobile adjustments */
   @media (max-width: 480px) {
-    margin: 0.5rem auto 1.5rem;
-    height: 45vh; /* Increased from 40vh */
-    min-height: 300px; /* Increased from 250px */
+    margin: 1rem auto 2rem;
+    height: 50vh;
+    min-height: 320px;
+    max-height: 420px;
+    padding: 0 0.75rem;
+  }
+
+  /* Very small screens */
+  @media (max-width: 360px) {
+    height: 45vh;
+    min-height: 280px;
+    max-height: 350px;
+    padding: 0 0.5rem;
   }
 }
 
 /* Book card styling */
 .book-card {
+  /* Desktop styles */
   width: 65%;
   max-width: 550px;
   aspect-ratio: 16/10;
   border-radius: 16px;
   background: rgba(16, 16, 34, 0.25);
   backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px); /* For Safari */
+  -webkit-backdrop-filter: blur(8px);
   box-shadow: 0 8px 20px -5px rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(99, 130, 255, 0.25);
   overflow: hidden;
   position: relative;
   z-index: 10;
-  transition: all 0.4s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateZ(0);
 
-  /* Mobile sizing - enhanced for prominence */
+  /* Mobile responsive adjustments */
   @media (max-width: 768px) {
-    width: 90%; /* Increased from 85% */
-    max-width: 450px; /* Increased from 400px */
-    aspect-ratio: 16/11; /* Adjusted for better proportions */
+    width: 95%;
+    max-width: 480px;
+    aspect-ratio: 16/11;
     margin: 0 auto;
-    border-radius: 14px; /* Increased from 12px */
-    background: rgba(16, 16, 34, 0.3); /* Slightly darker for better contrast */
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4),
-                0 0 15px rgba(99, 130, 255, 0.2); /* Enhanced shadow */
-    border: 1.5px solid rgba(99, 130, 255, 0.35); /* More visible border */
-    transform: translateZ(0); /* Force hardware acceleration */
+    background: rgba(16, 16, 34, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 
+      0 16px 40px -8px rgba(0, 0, 0, 0.5),
+      0 0 20px rgba(99, 130, 255, 0.25),
+      inset 0 1px 3px rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(99, 130, 255, 0.4);
   }
 
   /* Small mobile adjustments */
   @media (max-width: 480px) {
-    width: 92%; /* Increased from 90% */
-    max-width: 350px; /* Increased from 320px */
-    aspect-ratio: 16/12; /* Adjusted from 16/13 */
+    width: 98%;
+    max-width: 380px;
+    aspect-ratio: 16/12;
+    border-radius: 14px;
+    border: 1.8px solid rgba(99, 130, 255, 0.45);
+  }
+  
+  /* Very small screens */
+  @media (max-width: 360px) {
+    width: 100%;
+    max-width: 320px;
+    aspect-ratio: 16/13;
     border-radius: 12px;
+    box-shadow: 
+      0 12px 30px -6px rgba(0, 0, 0, 0.6),
+      0 0 15px rgba(99, 130, 255, 0.3);
   }
-}
-
-/* Book card hover effects */
-.book-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 15px 35px -5px rgba(145, 94, 255, 0.6), inset 0 1px 3px rgba(255, 255, 255, 0.2);
-  border-color: rgba(145, 94, 255, 0.4);
-  animation: cardGlow 4s infinite alternate;
-}
-
-/* Glow animation - only applied on hover */
-@keyframes cardGlow {
-  0% {
-    box-shadow: 0 15px 35px -5px rgba(100, 130, 255, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.1);
-    border-color: rgba(120, 155, 255, 0.3);
-  }
-  100% {
-    box-shadow: 0 15px 35px -5px rgba(145, 94, 255, 0.6), inset 0 1px 3px rgba(255, 255, 255, 0.15);
-    border-color: rgba(145, 94, 255, 0.4);
-  }
-}
-
-/* Add subtle star-like inner glow - only on hover */
-.book-card::before {
-  content: '';
-  position: absolute;
-  top: -10px;
-  left: -10px;
-  right: -10px;
-  bottom: -10px;
-  background: radial-gradient(circle at center, rgba(145, 94, 255, 0.15) 0%, transparent 70%);
-  z-index: -1;
-  filter: blur(8px);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.book-card:hover::before {
-  opacity: 1;
 }
 
 /* Canvas container for the 3D book */
@@ -290,18 +279,16 @@
   height: 100%;
   position: relative;
   z-index: 10;
-  transition: all 0.5s ease-in-out;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   background: transparent !important;
-  touch-action: none; /* Prevent default touch actions */
-  -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
-  user-select: none; /* Prevent text selection */
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  border-radius: inherit;
+  overflow: hidden;
+  overscroll-behavior: none;
 
-  /* Improve mobile touch experience */
-  @media (max-width: 768px) {
-    overscroll-behavior: none; /* Prevent overscroll effects */
-  }
-
-  /* Fix for the blur spot issue */
+  /* Mobile background enhancement */
   &::before {
     content: '';
     position: absolute;
@@ -309,14 +296,19 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: transparent;
+    background: 
+      radial-gradient(circle at 50% 50%, rgba(99, 130, 255, 0.05) 0%, transparent 60%);
     z-index: -1;
-  }
-
-  /* Mobile optimizations */
-  @media (max-width: 768px) {
-    overflow: hidden;
     border-radius: inherit;
+    transition: opacity 0.3s ease;
+    opacity: 0.7;
+  }
+  
+  /* Performance optimization for small screens */
+  @media (max-width: 480px) {
+    &::before {
+      background: rgba(99, 130, 255, 0.03);
+    }
   }
 }
 
