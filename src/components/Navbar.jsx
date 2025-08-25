@@ -288,7 +288,7 @@ const Navbar = () => {
               <span className="text-[#e8e0cf] group-hover:text-[#f0e9db] drop-shadow-[0_0_3px_rgba(232,224,207,0.3)]">Bepo</span> 
               <span className="ml-1">
                 <span className="text-[#e8e0cf] opacity-70 group-hover:opacity-80">|</span> 
-                <span className="text-[#e8e0cf] group-hover:text-[#f0e9db] drop-shadow-[0_0_3px_rgba(232,224,207,0.3)]">Portfolio</span>
+                <span className="text-[#e8e0cf] group-hover:text-[#f0e9db] drop-shadow-[0_0_3px_rgba(232,224,207,0.3)]"> Portfolio</span>
               </span>
             </p>
           </div>
