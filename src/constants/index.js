@@ -306,6 +306,32 @@ export const projects = [
     website_link: "https://mynazaakat.vercel.app/",
   },
   {
+    name: " StoreItSecure - Secure Storage Platform",
+    description:
+      "A modern secure storage platform built with Next.js and Appwrite.",
+    tags: [
+      {
+        name: "Next.js",
+        color: "text-white",
+      },
+      {
+        name: "Tailwind CSS",
+        color: "text-blue-400",
+      },
+      {
+        name: "TypeScript",
+        color: "text-purple-400",
+      },
+      {
+        name: "Appwrite",
+        color: "text-pink-400",
+      },
+    ],
+    image: "/project pics/StoreItSecure.png",
+    source_code_link: "https://github.com/bepoooe/StoreItSecure",
+    website_link: "https://storeitsecure.vercel.app/",
+  },
+  {
     name: " DialogueVault- Prompt Navigator ",
     description:
       "A Chrome extension for navigating conversations in ChatGPT, Claude, and Gemini.",
