@@ -30,6 +30,7 @@ export const UI = () => {
   const [showControls, setShowControls] = useState(true);
   const [userInteracted, setUserInteracted] = useState(false);
   const [showResumeModal, setShowResumeModal] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const handleFirstInteraction = () => {
@@ -48,6 +49,20 @@ export const UI = () => {
       document.removeEventListener('keydown', handleFirstInteraction);
       document.removeEventListener('touchstart', handleFirstInteraction);
     };
+  }, []);
+
+  useEffect(() => {
+    // Check if device is mobile
+    const checkMobile = () => {
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      const isMobileDevice = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase());
+      const isSmallScreen = window.innerWidth <= 768;
+      setIsMobile(isMobileDevice || isSmallScreen);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   // Handle PDF iframe load error
@@ -206,68 +221,132 @@ export const UI = () => {
             
             {/* Resume content area */}
             <div className="pt-16 h-full bg-slate-900 rounded-b-2xl relative overflow-hidden">
-              {/* PDF Viewer */}
-              <div className="w-full h-full bg-white rounded-b-2xl">
-                <iframe
-                  src="/Resume-Adrish.pdf#toolbar=1&navpanes=0&scrollbar=1"
-                  className="w-full h-full border-0 rounded-b-2xl"
-                  title="Adrish Basak Resume"
-                  type="application/pdf"
-                  onError={handlePDFError}
-                  onLoad={(e) => {
-                    // Check if PDF loaded successfully
-                    try {
-                      if (e.target.contentDocument === null) {
-                        handlePDFError();
-                      }
-                    } catch (error) {
-                      // Cross-origin or other access errors
-                      console.log('PDF viewer loaded successfully');
-                    }
-                  }}
-                  style={{
-                    minHeight: '100%'
-                  }}
-                />
-              </div>
-              
-              {/* Fallback for browsers that don't support PDF iframe */}
-              <div className="absolute inset-0 bg-slate-900 flex flex-col items-center justify-center text-center p-8" id="pdf-fallback" style={{display: 'none'}}>
-                <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50 max-w-md">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-slate-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
+              {!isMobile ? (
+                // Desktop PDF Viewer
+                <>
+                  <div className="w-full h-full bg-white rounded-b-2xl">
+                    <iframe
+                      src="/Resume-Adrish.pdf#toolbar=1&navpanes=0&scrollbar=1"
+                      className="w-full h-full border-0 rounded-b-2xl"
+                      title="Adrish Basak Resume"
+                      type="application/pdf"
+                      onError={handlePDFError}
+                      onLoad={(e) => {
+                        // Check if PDF loaded successfully
+                        try {
+                          if (e.target.contentDocument === null) {
+                            handlePDFError();
+                          }
+                        } catch (error) {
+                          // Cross-origin or other access errors
+                          console.log('PDF viewer loaded successfully');
+                        }
+                      }}
+                      style={{
+                        minHeight: '100%'
+                      }}
+                    />
+                  </div>
                   
-                  <h3 className="text-white font-semibold text-lg mb-2">PDF Viewer Not Supported</h3>
-                  <p className="text-slate-400 text-sm mb-6">Your browser doesn't support inline PDF viewing. Please download the PDF to view it.</p>
-                  
-                  <div className="flex flex-col gap-3">
-                    <a
-                      href="https://drive.google.com/file/d/1KgGxu_hs8wl7ggg2gRhqqzINWTcRRc6D/view"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  {/* Fallback for browsers that don't support PDF iframe */}
+                  <div className="absolute inset-0 bg-slate-900 flex flex-col items-center justify-center text-center p-8" id="pdf-fallback" style={{display: 'none'}}>
+                    <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50 max-w-md">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-slate-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
-                      View in Google Drive
-                    </a>
+                      
+                      <h3 className="text-white font-semibold text-lg mb-2">PDF Viewer Not Supported</h3>
+                      <p className="text-slate-400 text-sm mb-6">Your browser doesn't support inline PDF viewing. Please use one of the options below.</p>
+                      
+                      <div className="flex flex-col gap-3">
+                        <a
+                          href="https://drive.google.com/file/d/1KgGxu_hs8wl7ggg2gRhqqzINWTcRRc6D/view"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                          View in Google Drive
+                        </a>
+                        
+                        <a
+                          href="/Resume-Adrish.pdf"
+                          download
+                          className="bg-slate-700 hover:bg-slate-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                          </svg>
+                          Download PDF
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                // Mobile-friendly options
+                <div className="flex flex-col items-center justify-center h-full p-6 text-center">
+                  <div className="bg-slate-800/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 max-w-sm w-full">
+                    <div className="mb-6">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-blue-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      <h3 className="text-white font-semibold text-lg mb-2">View My Resume</h3>
+                      <p className="text-slate-400 text-sm">Choose how you'd like to view my resume on mobile</p>
+                    </div>
                     
-                    <a
-                      href="/Resume-Adrish.pdf"
-                      download
-                      className="bg-slate-700 hover:bg-slate-600 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                      Download PDF
-                    </a>
+                    <div className="space-y-3">
+                      <a
+                        href="https://drive.google.com/file/d/1KgGxu_hs8wl7ggg2gRhqqzINWTcRRc6D/view"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center gap-2 text-sm"
+                        onClick={() => setShowResumeModal(false)}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                        Open in Browser
+                      </a>
+                      
+                      <a
+                        href="/Resume-Adrish.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center gap-2 text-sm"
+                        onClick={() => setShowResumeModal(false)}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 0 6 16 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        View PDF
+                      </a>
+                      
+                      <a
+                        href="/Resume-Adrish.pdf"
+                        download="Adrish_Basak_Resume.pdf"
+                        className="w-full bg-slate-700 hover:bg-slate-600 text-white px-4 py-3 rounded-lg font-medium transition-all duration-200 hover:scale-105 active:scale-95 flex items-center justify-center gap-2 text-sm"
+                        onClick={() => setShowResumeModal(false)}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Download PDF
+                      </a>
+                    </div>
+                    
+                    <div className="mt-4 pt-4 border-t border-slate-700/50">
+                      <p className="text-slate-500 text-xs">
+                        For the best mobile viewing experience, try "Open in Browser" or "View PDF"
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
