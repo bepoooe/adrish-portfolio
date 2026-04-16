@@ -1,5 +1,5 @@
 import { atom, useAtom } from "jotai";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Array of image names to use for book pages
 // These must match exactly with filenames in public/textures
@@ -29,6 +29,8 @@ export const UI = () => {
   const [page, setPage] = useAtom(pageAtom);
   const [showControls, setShowControls] = useState(true);
   const [userInteracted, setUserInteracted] = useState(false);
+  const audioRef = useRef(null);
+  const scrollRafRef = useRef(null);
 
   useEffect(() => {
     const handleFirstInteraction = () => {
@@ -50,8 +52,24 @@ export const UI = () => {
   }, []);
 
   useEffect(() => {
+    const audio = new Audio("/audios/page-flip-01a.mp3");
+    audio.preload = "auto";
+    audioRef.current = audio;
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     if (userInteracted) {
-      const audio = new Audio("/audios/page-flip-01a.mp3");
+      const audio = audioRef.current;
+      if (!audio) return;
+
+      audio.currentTime = 0;
       audio.play().catch(error => {
         console.log("Audio play failed:", error);
       });
@@ -61,22 +79,33 @@ export const UI = () => {
   // Handle scroll to hide/show controls
   useEffect(() => {
     const handleScroll = () => {
+      if (scrollRafRef.current) {
+        return;
+      }
+
+      scrollRafRef.current = window.requestAnimationFrame(() => {
       const bookSection = document.getElementById('book');
       if (bookSection) {
         const bookRect = bookSection.getBoundingClientRect();
         const isVisible = 
           bookRect.top < window.innerHeight && 
           bookRect.bottom > 0;
-        setShowControls(isVisible);
+        setShowControls(prev => prev === isVisible ? prev : isVisible);
       }
+
+      scrollRafRef.current = null;
+      });
     };
     
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     // Initial check
     handleScroll();
     
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      if (scrollRafRef.current) {
+        window.cancelAnimationFrame(scrollRafRef.current);
+      }
     };
   }, []);
 

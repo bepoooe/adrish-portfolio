@@ -1,6 +1,6 @@
 import { useCursor, useTexture } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { easing } from "maath";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -58,20 +58,20 @@ const BOOK_PARAMS = {
     easingFactorFold: 0.08,
     insideCurveStrength: 0.18, // Increased for better structure with wide opening
     outsideCurveStrength: 0.06, // Increased for better page separation
-    turningCurveStrength: 0.09, // Increased for more dynamic turning
+    turningCurveStrength: 0.11, // Stronger turn motion for a more visible flip
     pageSegments: 6, // Reduced from 8 for better performance
     frameSkip: 2, // Increased frame skipping for mobile
-    animationDuration: 450, // Slightly slower for smoother appearance
+    animationDuration: 420, // Slightly quicker and smoother page switching
     structuralOffset: 0.15, // New parameter for better page structure
   },  desktop: {
     easingFactor: 0.15,
     easingFactorFold: 0.1,
     insideCurveStrength: 0.16,
     outsideCurveStrength: 0.045,
-    turningCurveStrength: 0.08,
+    turningCurveStrength: 0.1,
     pageSegments: 12,
     frameSkip: 0,
-    animationDuration: 350,
+    animationDuration: 300,
     structuralOffset: 0.1, // Desktop structural offset
   }
 };
@@ -186,9 +186,7 @@ class ResourceManager {
 // Global resource manager
 let resourceManager = new ResourceManager();
 
-const Page = React.memo(({ number, front, back, page, opened, bookClosed, visible = true, ...props }) => {
-  const isMobile = useIsMobile();
-  const params = getBookParameters(isMobile);
+const Page = React.memo(({ number, front, back, page, opened, bookClosed, visible = true, isMobile, params, ...props }) => {
 
   const group = useRef();
   const turnedAt = useRef(0);
@@ -204,7 +202,7 @@ const Page = React.memo(({ number, front, back, page, opened, bookClosed, visibl
   });
 
   const [highlighted, setHighlighted] = useState(false);
-  const [_, setPage] = useAtom(pageAtom);
+  const setPage = useSetAtom(pageAtom);
 
   // Load textures using useTexture hook properly
   const textures = useMemo(() => {
@@ -283,7 +281,7 @@ const Page = React.memo(({ number, front, back, page, opened, bookClosed, visibl
       // Optimize for mobile
       mesh.castShadow = !isMobile; // Disable shadows on mobile
       mesh.receiveShadow = !isMobile; // Disable shadows on mobile
-      mesh.frustumCulled = true; // Enable frustum culling for better performance
+      mesh.frustumCulled = false; // Avoid skinned-mesh culling artifacts during bone animation
 
       // Create bones and skeleton
       const bones = [];
@@ -327,6 +325,13 @@ const Page = React.memo(({ number, front, back, page, opened, bookClosed, visibl
       return;
     }
 
+    // Handle page turning animation
+    if (lastOpened.current !== opened) {
+      turnedAt.current = now;
+      lastOpened.current = opened;
+      animation.isAnimating = true;
+    }
+
     // Handle emissive intensity
     if (skinnedMeshRef.current.material && Array.isArray(skinnedMeshRef.current.material)) {
       const targetEmissive = highlighted ? 0.1 : 0.0;
@@ -342,19 +347,14 @@ const Page = React.memo(({ number, front, back, page, opened, bookClosed, visibl
       if (materials[5]) materials[5].emissiveIntensity = animation.emissiveIntensity;
     }
 
-    // Handle page turning animation
-    if (lastOpened.current !== opened) {
-      turnedAt.current = now;
-      lastOpened.current = opened;
-      animation.isAnimating = true;
-    }
-
     const timeSinceTurn = Math.min(params.animationDuration, now - turnedAt.current);
     const turningProgress = Math.sin((timeSinceTurn / params.animationDuration) * Math.PI);
 
     if (timeSinceTurn >= params.animationDuration) {
       animation.isAnimating = false;
-    }    // Different angles for closed vs open book states
+    }
+
+    // Different angles for closed vs open book states
     let targetRotation;
     if (bookClosed) {
       // When book is closed, keep at 90 degrees for resting position
@@ -485,68 +485,18 @@ const Page = React.memo(({ number, front, back, page, opened, bookClosed, visibl
 
 export const Book = React.memo(({ ...props }) => {
   const [page] = useAtom(pageAtom);
-  const [delayedPage, setDelayedPage] = useState(page);
-  const isMobile = useIsMobile();
-  const timeoutRef = useRef(null);
+  const { isMobile } = useDevice();
+  const params = getBookParameters(isMobile);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
       if (resourceManager) {
         resourceManager.dispose();
         resourceManager = new ResourceManager();
       }
     };
   }, []);
-
-  // Page transition logic
-  const goToPage = useCallback(() => {
-    setDelayedPage(prevPage => {
-      if (page === prevPage) {
-        return prevPage;
-      }
-
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-
-      const pageDistance = Math.abs(page - prevPage);
-
-      if (pageDistance > 2) {
-        const jumpSize = 2;
-        const newPage = page > prevPage
-          ? Math.min(prevPage + jumpSize, page)
-          : Math.max(prevPage - jumpSize, page);
-
-        timeoutRef.current = setTimeout(() => goToPage(), 50);
-        return newPage;
-      }
-
-      const delay = 80;
-      timeoutRef.current = setTimeout(() => goToPage(), delay);
-
-      if (page > prevPage) {
-        return prevPage + 1;
-      }
-      if (page < prevPage) {
-        return prevPage - 1;
-      }
-      return prevPage;
-    });
-  }, [page]);
-
-  useEffect(() => {
-    goToPage();
-
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, [page, goToPage]);
 
   const visiblePages = useMemo(() => {
     return pages.map((pageData, index) => ({
@@ -556,20 +506,24 @@ export const Book = React.memo(({ ...props }) => {
   }, []);
 
   const isBookClosed = useMemo(() =>
-    delayedPage === 0 || delayedPage === pages.length,
-  [delayedPage]);
+    page === 0 || page === pages.length,
+  [page]);
 
   return (
     <group {...props} rotation-y={-Math.PI / 2} scale={1.2}>
       {visiblePages.map((pageData) => {
-        const pageNumber = pageData._index;        return (
+        const pageNumber = pageData._index;
+
+        return (
           <Page
             key={pageNumber}
-            page={delayedPage}
+            page={page}
             number={pageNumber}
-            opened={delayedPage > pageNumber}
+            opened={page > pageNumber}
             bookClosed={isBookClosed}
             visible={true}
+            isMobile={isMobile}
+            params={params}
             front={pageData.front}
             back={pageData.back}
           />

@@ -3,8 +3,10 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { Book } from "./Book";
 import { Particles } from "./Particles";
 import { Suspense, useEffect, useState, lazy } from "react";
+import { useAtomValue } from "jotai";
 import { useDevice } from "../context/DeviceContext";
 import { cleanupResources } from "../utils/memoryOptimizer";
+import { pageAtom } from "./UI";
 
 // Export the useDevice hook for other components
 export const useIsMobile = () => {
@@ -104,6 +106,7 @@ const OptimizedLighting = () => {
 export const Experience = () => {
   // Use the shared device context
   const { isMobile, isLowPerformance } = useDevice();
+  const page = useAtomValue(pageAtom);
 
   // State to control when to show particles (delayed loading)
   const [showParticles, setShowParticles] = useState(false);
@@ -131,9 +134,9 @@ export const Experience = () => {
       {/* Enhanced Float component for more prominent mobile appearance */}
       <Float
         rotation-x={isMobile ? -Math.PI / 6 : -Math.PI / 4} // Adjusted angle for better mobile view
-        floatIntensity={isMobile ? 0.3 : 0.5} // Increased from 0.1 for more noticeable movement
-        speed={isMobile ? 0.8 : 1} // Increased from 0.5 for more noticeable animation
-        rotationIntensity={isMobile ? 0.4 : 1} // Increased from 0.2 for more noticeable rotation
+        floatIntensity={isMobile ? 0.3 : 0.5}
+        speed={isMobile ? 0.8 : 1}
+        rotationIntensity={isMobile ? 0.4 : 1}
       >
         <Suspense fallback={<BookFallback />}>
           <Book />
@@ -143,7 +146,7 @@ export const Experience = () => {
       {/* Lazy-loaded particles with delayed rendering */}
       {showParticles && (
         <Suspense fallback={null}>
-          <LazyParticles count={isMobile ? 150 : 300} /> {/* Further reduced particle count */}
+          <LazyParticles count={isMobile ? 100 : 220} />
         </Suspense>
       )}
 
@@ -157,8 +160,8 @@ export const Experience = () => {
         rotateSpeed={0.5}
         maxPolarAngle={Math.PI / 1.5}
         minPolarAngle={Math.PI / 3}
-        enableDamping={!isMobile} // Disable damping on mobile
-        dampingFactor={0.05} // Reduced damping factor
+        enableDamping={!isMobile}
+        dampingFactor={0.03}
       />
 
       {/* Simplified environment for better mobile performance */}

@@ -18,14 +18,16 @@ const Portfolio = lazy(() => import("./components/Portfolio").then((module) => (
 const OptimizedCanvas = ({ children }) => {
   const { isMobile, isLowPerformance } = useDevice();
   const [rendererInstance, setRendererInstance] = useState(null);
+  const maxDpr = isLowPerformance ? 1.25 : isMobile ? 1.5 : 2;
+  const useAntialias = !isLowPerformance;
 
   // Basic renderer setup that works on all devices
   const handleCreated = ({ gl, scene, camera }) => {
     // Store renderer instance for cleanup
     setRendererInstance(gl);
 
-    // Set standard pixel ratio
-    gl.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // Adaptive pixel ratio improves responsiveness on constrained devices
+    gl.setPixelRatio(Math.min(window.devicePixelRatio, maxDpr));
 
     // Basic renderer settings
     gl.outputColorSpace = THREE.SRGBColorSpace;
@@ -64,11 +66,11 @@ const OptimizedCanvas = ({ children }) => {
     <Canvas
       shadows={false} // Disable shadows for all devices
       frameloop="always" // Use always frameloop for better compatibility
-      dpr={[1, 2]} // Standard DPR range
+      dpr={[1, maxDpr]} // Adaptive DPR range without texture asset changes
       gl={{
-        antialias: true, // Enable antialiasing for better texture rendering
+        antialias: useAntialias, // Keep AA where performance budget allows
         alpha: true,
-        powerPreference: "default", // Use default power preference for better compatibility
+        powerPreference: "high-performance", // Prefer faster GPU path without changing texture assets
         depth: true,
         stencil: false, // Disable stencil buffer to save memory
         precision: "mediump", // Use medium precision for better compatibility
