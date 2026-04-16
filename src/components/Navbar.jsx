@@ -33,40 +33,43 @@ const Navbar = () => {
 
   // Handle scroll events to change navbar appearance with retractable functionality
   useEffect(() => {
+    let scrollFrame = null;
+
     const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      
-      // Set scrolled state for background
-      if (scrollTop > 100) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
+      if (scrollFrame) {
+        return;
       }
 
-      // Set retracted state for navbar size - retract when scrolled more
-      if (scrollTop > 200) {
-        setIsRetracted(true);
-      } else {
-        setIsRetracted(false);
-      }
-      
-      // Find which section is currently in view
-      const sections = document.querySelectorAll('section[id]');
-      let currentSection = '';
-      
-      sections.forEach((section) => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.offsetHeight;
-        
-        if (window.scrollY >= sectionTop - 200 && window.scrollY < sectionTop + sectionHeight - 200) {
-          currentSection = section.getAttribute('id');
-        }
+      scrollFrame = window.requestAnimationFrame(() => {
+        scrollFrame = null;
+
+        const scrollTop = window.scrollY;
+
+        // Set scrolled state for background
+        setScrolled(scrollTop > 100);
+
+        // Set retracted state for navbar size - retract when scrolled more
+        setIsRetracted(scrollTop > 200);
+
+        // Find which section is currently in view
+        const sections = document.querySelectorAll('section[id]');
+        let currentSection = '';
+
+        sections.forEach((section) => {
+          const sectionTop = section.offsetTop;
+          const sectionHeight = section.offsetHeight;
+
+          if (window.scrollY >= sectionTop - 200 && window.scrollY < sectionTop + sectionHeight - 200) {
+            currentSection = section.getAttribute('id');
+          }
+        });
+
+        setActive(currentSection);
       });
-      
-      setActive(currentSection);
     };
 
     window.addEventListener("scroll", handleScroll);
+    handleScroll();
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);

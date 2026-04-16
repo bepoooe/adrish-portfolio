@@ -1,11 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
 import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
-import Tech from './Tech';
-import Projects from './Projects';
-import GithubStats from './GithubStats';
-import ScholasticRecord from './ScholasticRecord';
-import AboutMe from './AboutMe';
-import Contact from './Contact';
+
+const AboutMe = lazy(() => import('./AboutMe'));
+const ScholasticRecord = lazy(() => import('./ScholasticRecord'));
+const Tech = lazy(() => import('./Tech'));
+const Projects = lazy(() => import('./Projects'));
+const GithubStats = lazy(() => import('./GithubStats'));
+const Contact = lazy(() => import('./Contact'));
+
+const SectionFallback = ({ minHeight = 'min-h-[50vh]' }) => (
+  <div className={`w-full ${minHeight} rounded-2xl border border-white/10 bg-black/40 backdrop-blur-sm animate-pulse`} />
+);
 
 export const Portfolio = () => {
   // State for animation triggers
@@ -42,12 +47,32 @@ export const Portfolio = () => {
   
   // Mouse position for interactive elements
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const mouseFrameRef = useRef(null);
+
+  const renderLazySection = (isVisible, Component, minHeight) => {
+    if (!isVisible) {
+      return <SectionFallback minHeight={minHeight} />;
+    }
+
+    return (
+      <Suspense fallback={<SectionFallback minHeight={minHeight} />}>
+        <Component />
+      </Suspense>
+    );
+  };
   
   // Handle mouse move for interactive elements
   const handleMouseMove = (e) => {
-    setMousePosition({
-      x: e.clientX,
-      y: e.clientY
+    if (mouseFrameRef.current) {
+      cancelAnimationFrame(mouseFrameRef.current);
+    }
+
+    const { clientX, clientY } = e;
+    mouseFrameRef.current = requestAnimationFrame(() => {
+      setMousePosition({
+        x: clientX,
+        y: clientY,
+      });
     });
   };
   
@@ -115,6 +140,9 @@ export const Portfolio = () => {
     window.addEventListener('mousemove', handleMouseMove);
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      if (mouseFrameRef.current) {
+        cancelAnimationFrame(mouseFrameRef.current);
+      }
     };
   }, []);
   // Parallax effect for stars
@@ -161,7 +189,7 @@ export const Portfolio = () => {
         className={`py-8 md:py-16 px-4 md:px-16 max-w-6xl mx-auto relative z-10 transition-all duration-1000 ${visibleSections.about ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
       >
         <div className="bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm rounded-2xl p-8 shadow-xl">
-          <AboutMe />
+          {renderLazySection(visibleSections.about, AboutMe, 'min-h-[55vh]')}
         </div>
       </section>      {/* Scholastic Record Section */}
       <section 
@@ -170,7 +198,7 @@ export const Portfolio = () => {
         className={`py-8 md:py-16 px-4 md:px-16 max-w-6xl mx-auto relative z-10 transition-all duration-1000 ${visibleSections.education ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
       >
         <div className="bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm rounded-2xl p-8 shadow-xl">
-          <ScholasticRecord />
+          {renderLazySection(visibleSections.education, ScholasticRecord, 'min-h-[48vh]')}
         </div>
       </section>      {/* Technologies Section */}
       <section 
@@ -179,7 +207,7 @@ export const Portfolio = () => {
         className={`py-8 md:py-16 px-4 md:px-16 max-w-6xl mx-auto relative z-10 transition-all duration-1000 ${visibleSections.technologies ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
       >
         <div className="bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm rounded-2xl p-8 shadow-xl">
-          <Tech />
+          {renderLazySection(visibleSections.technologies, Tech, 'min-h-[56vh]')}
         </div>
       </section>      {/* Projects Section - Full Width */}
       <div 
@@ -190,7 +218,13 @@ export const Portfolio = () => {
             : 'opacity-0 translate-y-10'
         }`}
       >
-        <Projects />
+          {(visibleSections.projects || isMobile) ? (
+            <Suspense fallback={<SectionFallback minHeight="min-h-screen" />}>
+              <Projects />
+            </Suspense>
+          ) : (
+            <SectionFallback minHeight="min-h-screen" />
+          )}
       </div>
 
       {/* GitHub Stats Section */}
@@ -200,7 +234,7 @@ export const Portfolio = () => {
         className={`py-8 md:py-16 px-4 md:px-16 max-w-6xl mx-auto relative z-10 transition-all duration-1000 ${visibleSections.github ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
       >
         <div className="bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm rounded-2xl p-8 shadow-xl">
-          <GithubStats />
+          {renderLazySection(visibleSections.github, GithubStats, 'min-h-[42vh]')}
         </div>
       </section>      {/* Contact Section */}
       <section 
@@ -209,7 +243,7 @@ export const Portfolio = () => {
         className={`py-6 md:py-16 px-4 md:px-16 max-w-6xl mx-auto relative z-10 transition-all duration-1000 ${visibleSections.contact ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
       >
         <div className="bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm rounded-2xl p-8 shadow-xl">
-          <Contact />
+          {renderLazySection(visibleSections.contact, Contact, 'min-h-[70vh]')}
         </div>
       </section>      {/* Footer */}
       <footer className="py-4 md:py-8 px-4 text-center bg-gray-900 bg-opacity-70 backdrop-filter backdrop-blur-lg relative z-10">

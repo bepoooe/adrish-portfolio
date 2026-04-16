@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-  <path fill="#ffffff" d="M63.994 0L.5 36.9l63.494 36.9 63.506-36.9L63.994 0z"/>
-  <path fill="#ffffff" d="M63.994 73.8L.5 36.9v73.8l63.494 36.9 63.506-36.9V36.9L63.994 73.8z"/>
-  <path fill="#3b82f6" d="M63.994 0l63.506 36.9-63.506 36.9V0z"/>
-  <path fill="#8b5cf6" d="M.5 36.9l63.494 36.9v73.8L.5 110.7V36.9z"/>
-  <path fill="#3b82f6" d="M.5 110.7l63.494 36.9v-73.8L.5 36.9v73.8z"/>
-  <path fill="#8b5cf6" d="M63.994 147.6l63.506-36.9V36.9L63.994 73.8v73.8z"/>
-</svg>

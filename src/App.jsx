@@ -1,10 +1,9 @@
 import { Loader } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { Experience } from "./components/Experience";
 import { UI } from "./components/UI";
 import { MusicPlayer } from "./components/MusicPlayer";
-import { Portfolio } from "./components/Portfolio";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import ScrollToTop from "./components/ScrollToTop";
@@ -12,6 +11,8 @@ import SafeThreeCanvas from "./components/SafeThreeCanvas";
 import { useDevice } from "./context/DeviceContext";
 import { optimizeRenderer } from "./utils/memoryOptimizer";
 import * as THREE from "three";
+
+const Portfolio = lazy(() => import("./components/Portfolio").then((module) => ({ default: module.Portfolio })));
 
 // Memory-optimized Canvas component
 const OptimizedCanvas = ({ children }) => {
@@ -122,7 +123,9 @@ function App() {
           </div>
         </div>
       </div>
-      <Portfolio />
+      <Suspense fallback={<div className="min-h-screen bg-black" aria-hidden="true" />}>
+        <Portfolio />
+      </Suspense>
     </SafeThreeCanvas>
   );
 }

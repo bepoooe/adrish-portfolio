@@ -137,7 +137,7 @@ export const safeDisposeGeometry = (geometry) => {
 export const monitorBufferAttribute = (attribute, name = 'unknown') => {
   if (!attribute) return;
 
-  const originalUpdate = attribute.needsUpdate;
+  let originalUpdate = attribute.needsUpdate;
   
   Object.defineProperty(attribute, 'needsUpdate', {
     get() {

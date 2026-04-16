@@ -5,10 +5,17 @@ import { styles } from '../styles';
 const Hero = () => {
   // Mock-up for scroll tracking
   const [scrollY, setScrollY] = React.useState(0);
+  const scrollFrameRef = React.useRef(null);
 
   React.useEffect(() => {
     const handleScroll = () => {
-      setScrollY(window.scrollY);
+      if (scrollFrameRef.current) {
+        cancelAnimationFrame(scrollFrameRef.current);
+      }
+
+      scrollFrameRef.current = requestAnimationFrame(() => {
+        setScrollY(window.scrollY);
+      });
     };
 
     // Add scroll listener
@@ -17,6 +24,9 @@ const Hero = () => {
     // Cleanup
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      if (scrollFrameRef.current) {
+        cancelAnimationFrame(scrollFrameRef.current);
+      }
     };
   }, []);
 

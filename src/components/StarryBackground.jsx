@@ -1,14 +1,17 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import './StarryBackground.css';
 import { useDevice } from '../context/DeviceContext';
+import { useIntersectionObserver } from '../hooks/useIntersectionObserver';
 
 // Memory-optimized starry background with significantly fewer DOM elements
 const StarryBackground = React.memo(({ density = 100 }) => {
   const { isMobile, isLowPerformance } = useDevice();
+  const wrapperRef = useRef(null);
   const canvasRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const animationRef = useRef(null);
   const frameCountRef = useRef(0);
+  const isVisible = useIntersectionObserver(wrapperRef, { threshold: 0.05 });
 
   // Further reduce density based on device capability
   const adjustedDensity = useMemo(() => {
@@ -93,7 +96,7 @@ const StarryBackground = React.memo(({ density = 100 }) => {
 
   // Animation loop
   useEffect(() => {
-    if (!canvasRef.current || dimensions.width === 0) return;
+    if (!canvasRef.current || dimensions.width === 0 || !isVisible) return;
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
@@ -217,10 +220,11 @@ const StarryBackground = React.memo(({ density = 100 }) => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
-    };  }, [dimensions, starData, shootingStarData, isLowPerformance]);
+    };
+  }, [dimensions, starData, shootingStarData, isLowPerformance, isVisible]);
 
   return (
-    <div className="starry-background">
+    <div className="starry-background" ref={wrapperRef}>
       <canvas
         ref={canvasRef}
         className="stars-canvas"

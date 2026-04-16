@@ -48,15 +48,18 @@ export const setupPageUnloadCleanup = () => {
   window.addEventListener('beforeunload', cleanupAll);
   
   // Also clean up on visibility change
-  document.addEventListener('visibilitychange', () => {
+  const handleVisibilityChange = () => {
     if (document.hidden) {
       // Partial cleanup when tab is hidden
       disposeAllTextures();
     }
-  });
+  };
+
+  document.addEventListener('visibilitychange', handleVisibilityChange);
   
   return () => {
     window.removeEventListener('beforeunload', cleanupAll);
+    document.removeEventListener('visibilitychange', handleVisibilityChange);
   };
 };
 

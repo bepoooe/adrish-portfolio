@@ -209,8 +209,8 @@ const Page = React.memo(({ number, front, back, page, opened, bookClosed, visibl
   // Load textures using useTexture hook properly
   const textures = useMemo(() => {
     const textureList = [];
-    if (front) textureList.push(`/textures/${front}.jpg`);
-    if (back) textureList.push(`/textures/${back}.jpg`);
+    if (front) textureList.push(`/textures/${front}.webp`);
+    if (back) textureList.push(`/textures/${back}.webp`);
     return textureList;
   }, [front, back]);
   // Load textures with proper error handling and mobile optimization

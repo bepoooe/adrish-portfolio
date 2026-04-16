@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import emailjs from "@emailjs/browser";
 import { useInView } from "framer-motion";
 
 import { styles } from "../styles";
@@ -56,6 +55,7 @@ const Contact = () => {
 
   const leftInView = useInView(leftRef, { once: false, amount: 0.2 });
   const rightInView = useInView(rightRef, { once: false, amount: 0.2 });
+  const showEffects = leftInView || rightInView;
 
   const [form, setForm] = useState({
     name: "",
@@ -82,8 +82,8 @@ const Contact = () => {
     e.preventDefault();
     setLoading(true);
 
-    emailjs
-      .send(
+    import('@emailjs/browser')
+      .then(({ default: emailjs }) => emailjs.send(
         'service_6hs7dyb',
         'template_xhef82k',
         {
@@ -94,30 +94,28 @@ const Contact = () => {
           message: form.message,
         },
         'gaxooISZjUYhcdSa9'
-      )
-      .then(
-        () => {
-          setLoading(false);
-          setShowSuccess(true);
+      ))
+      .then(() => {
+        setLoading(false);
+        setShowSuccess(true);
 
-          // Hide success message after 5 seconds
-          setTimeout(() => {
-            setShowSuccess(false);
-          }, 5000);
+        // Hide success message after 5 seconds
+        setTimeout(() => {
+          setShowSuccess(false);
+        }, 5000);
 
-          setForm({
-            name: "",
-            email: "",
-            message: "",
-          });
-        },
-        (error) => {
-          setLoading(false);
-          console.error(error);
+        setForm({
+          name: "",
+          email: "",
+          message: "",
+        });
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.error(error);
 
-          alert("Ahh, something went wrong. Please try again.");
-        }
-      );
+        alert("Ahh, something went wrong. Please try again.");
+      });
   };
   return (
     <div
@@ -125,7 +123,7 @@ const Contact = () => {
       style={{ background: 'none', boxShadow: 'none', border: 'none' }}
     >
       {/* Add StarryBackground with higher density for contact section */}
-      <StarryBackground density={250} />
+      {showEffects && <StarryBackground density={250} />}
       <AnimatePresence>
         {showSuccess && (
           <motion.div
@@ -342,8 +340,8 @@ const Contact = () => {
           </>
         )}
 
-        {/* Always render Earth on desktop, and conditionally on mobile */}
-        <EarthCanvas />
+        {/* Render Earth only when the canvas area is visible */}
+        {rightInView && <EarthCanvas />}
       </motion.div>
     </div>
   );
